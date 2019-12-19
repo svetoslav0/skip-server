@@ -1,10 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import {usersRouter} from "./routers/usersRouter";
+import './config/env';
+
+import {usersRouter} from './routers/usersRouter';
 
 const app = express();
-const port: number = 3300;
+const port: number = +(process.env.SERVER_PORT || 8080);
 
 app.use(bodyParser.urlencoded({
     extended: true
