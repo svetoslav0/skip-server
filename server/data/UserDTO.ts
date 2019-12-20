@@ -12,17 +12,17 @@ export class UserDTO{
     private _middleNameBg: string | undefined;
     private _lastNameBg: string;
 
-    constructor (reqBody: IUser) {
+    constructor (reqBody: any) {
         this._id = reqBody.id;
         this._username = reqBody.username;
         this._email = reqBody.email;
         this._password = reqBody.password;
-        this._firstNameEn = reqBody.firstNameEn;
-        this._middleNameEn = reqBody.middleNameEn;
-        this._lastNameEn = reqBody.lastNameEn;
-        this._firstNameBg = reqBody.firstNameBg;
-        this._middleNameBg = reqBody.middleNameBg;
-        this._lastNameBg = reqBody.lastNameBg;
+        this._firstNameEn = reqBody.first_name_en;
+        this._middleNameEn = reqBody.middle_name_en;
+        this._lastNameEn = reqBody.last_name_en;
+        this._firstNameBg = reqBody.first_name_bg;
+        this._middleNameBg = reqBody.middle_name_bg;
+        this._lastNameBg = reqBody.last_name_bg;
     }
 
 

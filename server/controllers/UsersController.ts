@@ -9,8 +9,8 @@ export class UsersController {
         this.usersModel = usersModel;
     }
 
-    register(user: IUser): boolean {
-        return this.usersModel.add(user);
+    async register(user: IUser): Promise<boolean> {
+        return await this.usersModel.add(user);
     }
 
     login() {
