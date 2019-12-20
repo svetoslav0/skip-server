@@ -1,8 +1,4 @@
-import mysql from 'mysql';
-
-mysql.createConnection({
-
-});
+import mysql from "mysql";
 
 export class MysqlDatabase {
 
@@ -12,16 +8,7 @@ export class MysqlDatabase {
         this.db = this.config();
     }
 
-    private config(): mysql.Connection {
-        return mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASS,
-            database: process.env.DB_DATABASE
-        });
-    }
-
-    public async query(queryString: string, params: Array<any> = []) {
+    public async query(queryString: string, params: any[] = []) {
         this.config().connect();
 
         return new Promise((resolve, reject) => {
@@ -33,6 +20,15 @@ export class MysqlDatabase {
                 resolve(rows);
                 this.db.end();
             });
+        });
+    }
+
+    private config(): mysql.Connection {
+        return mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            database: process.env.DB_DATABASE
         });
     }
 }

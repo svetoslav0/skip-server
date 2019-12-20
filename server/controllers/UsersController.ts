@@ -1,5 +1,5 @@
+import { UsersModel } from "../models/UsersModel";
 import { IUser } from "./IUser";
-import {UsersModel} from "../models/UsersModel";
 
 export class UsersController {
 
@@ -9,11 +9,11 @@ export class UsersController {
         this.usersModel = usersModel;
     }
 
-    async register(user: IUser): Promise<boolean> {
+    public async register(user: IUser): Promise<boolean> {
         return await this.usersModel.add(user);
     }
 
-    login() {
+    public async login() {
         return "Login function";
     }
 }

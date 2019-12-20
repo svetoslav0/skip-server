@@ -1,7 +1,7 @@
-import { resolve } from 'path';
-import { config } from 'dotenv';
+import { config } from "dotenv";
+import { resolve } from "path";
 
-let conf = config({ path: resolve(__dirname, '../../../server/.env') });
+const conf = config({ path: resolve(__dirname, "../../../server/.env") });
 
 if (conf.error) {
     throw conf.error;

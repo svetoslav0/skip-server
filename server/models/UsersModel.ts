@@ -9,7 +9,7 @@ export class UsersModel {
         this.db = db;
     }
 
-    async add(user: IUser): Promise<boolean> {
+    public async add(user: IUser): Promise<boolean> {
 
         let res = await this.db.query(`
                 INSERT INTO

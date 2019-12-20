@@ -1,6 +1,6 @@
 import {IUser} from "../controllers/IUser";
 
-export class UserDTO{
+export class UserDTO {
     private _id: number;
     private _username: string;
     private _email: string | undefined;
@@ -12,7 +12,7 @@ export class UserDTO{
     private _middleNameBg: string | undefined;
     private _lastNameBg: string;
 
-    constructor (reqBody: any) {
+    constructor(reqBody: any) {
         this._id = reqBody.id;
         this._username = reqBody.username;
         this._email = reqBody.email;
@@ -24,7 +24,6 @@ export class UserDTO{
         this._middleNameBg = reqBody.middle_name_bg;
         this._lastNameBg = reqBody.last_name_bg;
     }
-
 
     get id(): number {
         return this._id;
