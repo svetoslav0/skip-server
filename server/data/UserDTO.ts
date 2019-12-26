@@ -1,5 +1,6 @@
 import { IsEmail, MinLength, MaxLength } from "class-validator";
 import { IsUsernameUnique } from "../controllers/validators/IsUsernameUnique";
+import {IsEmailUnique} from "../controllers/validators/IsEmailUnique";
 
 export class UserDTO {
     private static readonly MIN_USERNAME_LENGTH: number = 6;
@@ -14,9 +15,10 @@ export class UserDTO {
     private static readonly MIN_LENGTH_PASSWORD_MESSAGE: string = `Password is too short. Must be at least ${UserDTO.MIN_PASSWORD_LENGTH} characters long.`;
     private static readonly MAX_LENGTH_PASSWORD_MESSAGE: string = `The password seems to be too long. Must be not more than ${UserDTO.MAX_PASSWORD_LENGTH} characters long.`;
 
-    private static readonly INVALID_EMAIL_MESSAGE: string = "Email seems to be invalid";
+    private static readonly INVALID_EMAIL_MESSAGE: string = "Email seems to be invalid.";
 
     private static readonly USERNAME_EXISTS: string = "An user has already been registered with this username. Please choose another one.";
+    private static readonly EMAIL_EXISTS: string = "An user has already been registered with this email. Please choose another one.";
 
     private readonly _id!: number;
 
@@ -33,6 +35,9 @@ export class UserDTO {
 
     @IsEmail({}, {
         message: UserDTO.INVALID_EMAIL_MESSAGE,
+    })
+    @IsEmailUnique({
+        message: UserDTO.EMAIL_EXISTS,
     })
     private readonly _email: string | undefined;
 

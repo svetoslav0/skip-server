@@ -59,4 +59,23 @@ export class UsersModel {
 
         return result.length === 0;
     }
+
+    /**
+     * Returns "true" or "false" depending on whether username is unique or not
+     * @param email
+     */
+    public async isEmailUnique(email: string): Promise<boolean> {
+        const result: any = await this.db.query(`
+                SELECT
+                    id
+                FROM
+                    users
+                WHERE
+                    email = ?
+        `, [email]);
+
+        return result.length === 0;
+    }
+
+
 }
