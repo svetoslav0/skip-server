@@ -1,46 +1,46 @@
-import { IsEmail, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, MinLength, MaxLength } from "class-validator";
 import { IsUsernameUnique } from "../controllers/validators/IsUsernameUnique";
 
 export class UserDTO {
-    static readonly MIN_USERNAME_LENGTH: number = 6;
-    static readonly MAX_USERNAME_LENGTH: number = 64;
+    private static readonly MIN_USERNAME_LENGTH: number = 6;
+    private static readonly MAX_USERNAME_LENGTH: number = 64;
 
-    static readonly MIN_PASSWORD_LENGTH: number = 6;
-    static readonly MAX_PASSWORD_LENGTH: number = 128;
+    private static readonly MIN_PASSWORD_LENGTH: number = 6;
+    private static readonly MAX_PASSWORD_LENGTH: number = 128;
 
-    static readonly MIN_LENGTH_USERNAME_MESSAGE: string = `Username is too short. Must be at least ${UserDTO.MIN_USERNAME_LENGTH} characters long.`;
-    static readonly MAX_LENGTH_USERNAME_MESSAGE: string = `Username is too long. Must be not more than ${UserDTO.MAX_USERNAME_LENGTH} characters long.`;
+    private static readonly MIN_LENGTH_USERNAME_MESSAGE: string = `Username is too short. Must be at least ${UserDTO.MIN_USERNAME_LENGTH} characters long.`;
+    private static readonly MAX_LENGTH_USERNAME_MESSAGE: string = `Username is too long. Must be not more than ${UserDTO.MAX_USERNAME_LENGTH} characters long.`;
 
-    static readonly MIN_LENGTH_PASSWORD_MESSAGE: string = `Password is too short. Must be at least ${UserDTO.MIN_PASSWORD_LENGTH} characters long.`;
-    static readonly MAX_LENGTH_PASSWORD_MESSAGE: string = `The password seems to be too long. Must be not more than ${UserDTO.MAX_PASSWORD_LENGTH} characters long.`;
+    private static readonly MIN_LENGTH_PASSWORD_MESSAGE: string = `Password is too short. Must be at least ${UserDTO.MIN_PASSWORD_LENGTH} characters long.`;
+    private static readonly MAX_LENGTH_PASSWORD_MESSAGE: string = `The password seems to be too long. Must be not more than ${UserDTO.MAX_PASSWORD_LENGTH} characters long.`;
 
-    static readonly INVALID_EMAIL_MESSAGE: string = "Email seems to be invalid";
+    private static readonly INVALID_EMAIL_MESSAGE: string = "Email seems to be invalid";
 
-    static readonly USERNAME_EXISTS: string = "An user has already been registered with this username. Please choose another one.";
+    private static readonly USERNAME_EXISTS: string = "An user has already been registered with this username. Please choose another one.";
 
     private readonly _id!: number;
 
     @MinLength(UserDTO.MIN_USERNAME_LENGTH, {
-        message: UserDTO.MIN_LENGTH_USERNAME_MESSAGE
+        message: UserDTO.MIN_LENGTH_USERNAME_MESSAGE,
     })
     @MaxLength(UserDTO.MAX_USERNAME_LENGTH, {
-        message: UserDTO.MAX_LENGTH_USERNAME_MESSAGE
+        message: UserDTO.MAX_LENGTH_USERNAME_MESSAGE,
     })
     @IsUsernameUnique({
-        message: UserDTO.USERNAME_EXISTS
+        message: UserDTO.USERNAME_EXISTS,
     })
     private readonly _username: string;
 
     @IsEmail({}, {
-        message: UserDTO.INVALID_EMAIL_MESSAGE
+        message: UserDTO.INVALID_EMAIL_MESSAGE,
     })
     private readonly _email: string | undefined;
 
     @MinLength(UserDTO.MIN_PASSWORD_LENGTH, {
-        message: UserDTO.MIN_LENGTH_PASSWORD_MESSAGE
+        message: UserDTO.MIN_LENGTH_PASSWORD_MESSAGE,
     })
     @MaxLength(UserDTO.MAX_PASSWORD_LENGTH, {
-        message: UserDTO.MAX_LENGTH_PASSWORD_MESSAGE
+        message: UserDTO.MAX_LENGTH_PASSWORD_MESSAGE,
     })
     private readonly _password: string;
 

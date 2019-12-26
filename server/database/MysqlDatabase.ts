@@ -18,9 +18,12 @@ export class MysqlDatabase {
                 }
 
                 resolve(rows);
-                // this.db.end();
             });
         });
+    }
+
+    public endConnection() {
+        this.db.end();
     }
 
     private config(): mysql.Connection {

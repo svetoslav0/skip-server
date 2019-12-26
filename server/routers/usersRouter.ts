@@ -14,7 +14,9 @@ usersRouter.get("/register", (req: express.Request, res: express.Response) => {
     usersController
         .register(req.body)
         .then((result) => {
-            res.send(result);
+            res
+                .status(result.status)
+                .send(result);
         });
 });
 

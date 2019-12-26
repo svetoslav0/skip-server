@@ -3,11 +3,15 @@ import express from "express";
 
 import { UsersModel } from "../models/UsersModel";
 import { UserDTO } from "../data/UserDTO";
+import {IRegisterResponse} from "./IRegisterResponse";
 
 export class UsersController {
 
-    readonly REGISTER_SUCCESS_MESSAGE: string = "User registered successfully";
-    readonly REGISTER_FAILED_MESSAGE: string = "The given request is invalid. Some errors have appeared.";
+    private readonly SUCCESS_STATUS_CODE: number = 200;
+    private readonly FAILED_STATUS_CODE: number = 403;
+
+    private readonly REGISTER_SUCCESS_MESSAGE: string = "User registered successfully";
+    private readonly REGISTER_FAILED_MESSAGE: string = "The given request is invalid. Some errors have appeared.";
 
     private usersModel: UsersModel;
 
@@ -15,7 +19,7 @@ export class UsersController {
         this.usersModel = usersModel;
     }
 
-    public async register(request: express.Request): Promise<object>{
+    public async register(request: express.Request): Promise<IRegisterResponse> {
         try {
             const user: UserDTO = new UserDTO(request);
 
@@ -23,14 +27,23 @@ export class UsersController {
             await this.usersModel.isUsernameUnique(user.username);
             await this.usersModel.add(user);
 
-            return this._build_register_response(true, this.REGISTER_SUCCESS_MESSAGE);
+            return this._build_register_response({
+                status: this.SUCCESS_STATUS_CODE,
+                success: true,
+                message: this.REGISTER_SUCCESS_MESSAGE,
+            });
         } catch (validationError) {
             const errors: string[] = validationError
                 .map((error: any) => error.constraints)
                 .map((error: any) => Object.values(error))
                 .flat();
 
-            return this._build_register_response(false, this.REGISTER_FAILED_MESSAGE, errors);
+            return this._build_register_response({
+                status: this.FAILED_STATUS_CODE,
+                success: false,
+                message: this.REGISTER_FAILED_MESSAGE,
+                errors,
+            });
         }
     }
 
@@ -38,11 +51,12 @@ export class UsersController {
         return "Login function";
     }
 
-    private _build_register_response(success: boolean, message: string, errors: string[] = []): object {
+    private _build_register_response(options: IRegisterResponse): IRegisterResponse {
         return {
-            success: success,
-            message: message,
-            errors: errors
-        }
+            status: options.status,
+            success: options.success,
+            message: options.message,
+            errors: options.errors ? options.errors : [],
+        };
     }
 }
