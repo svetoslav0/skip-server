@@ -1,5 +1,5 @@
-import {IUser} from "../controllers/IUser";
 import {MysqlDatabase} from "../database/MysqlDatabase";
+import {UserDTO} from "../data/UserDTO";
 
 export class UsersModel {
 
@@ -9,9 +9,12 @@ export class UsersModel {
         this.db = db;
     }
 
-    public async add(user: IUser): Promise<boolean> {
-
-        let res = await this.db.query(`
+    /**
+     * Inserts a user in the database and returns result that tells if it was successful
+     * @param user
+     */
+    public async add(user: UserDTO): Promise<boolean> {
+        const result: any = await this.db.query(`
                 INSERT INTO
                     users (
                         username,
@@ -34,11 +37,26 @@ export class UsersModel {
             user.lastNameEn,
             user.firstNameBg,
             user.middleNameBg,
-            user.lastNameBg
+            user.lastNameBg,
         ]);
 
-        console.log(res);
+        return result.affectedRows === 1;
+    }
 
-        return false;
+    /**
+     * Returns "true" or "false" depending on whether username is unique or not
+     * @param username
+     */
+    public async isUsernameUnique(username: string): Promise<boolean> {
+        const result: any = await this.db.query(`
+                SELECT
+                    id
+                FROM
+                    users
+                WHERE
+                    username = ?
+        `, [username]);
+
+        return result.length === 0;
     }
 }

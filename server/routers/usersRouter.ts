@@ -1,9 +1,8 @@
-import { IUser } from "../controllers/IUser";
-
 import express from "express";
 import { UsersController } from "../controllers/UsersController";
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { UsersModel } from "../models/UsersModel";
+import { UserDTO } from "../data/UserDTO";
 
 const usersRouter = express.Router();
 
@@ -13,18 +12,18 @@ const usersController: UsersController = new UsersController(usersModel);
 
 usersRouter.get("/register", (req: express.Request, res: express.Response) => {
     usersController
-        .register(req.body as IUser)
+        .register(req.body)
         .then((result) => {
             res.send(result);
         });
 });
 
 usersRouter.get("/login", (req: express.Request, res: express.Response) => {
-   res.send(
-       usersController.login(
-
-       )
-   );
+   // res.send(
+   //     usersController.login(
+   //
+   //     )
+   // );
 });
 
 export { usersRouter };

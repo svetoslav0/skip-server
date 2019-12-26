@@ -12,23 +12,23 @@ export class MysqlDatabase {
         this.config().connect();
 
         return new Promise((resolve, reject) => {
-            this.db.query(queryString, params, (err: mysql.MysqlError | null, rows: []) => {
+            this.db.query(queryString, params, (err: mysql.MysqlError | null, rows: any) => {
                 if (err) {
                     throw err;
                 }
 
                 resolve(rows);
-                this.db.end();
+                // this.db.end();
             });
         });
     }
 
     private config(): mysql.Connection {
         return mysql.createConnection({
+            database: process.env.DB_DATABASE,
             host: process.env.DB_HOST,
-            user: process.env.DB_USER,
             password: process.env.DB_PASS,
-            database: process.env.DB_DATABASE
+            user: process.env.DB_USER,
         });
     }
 }

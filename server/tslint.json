@@ -7,6 +7,15 @@
     "jsRules": {
         "no-empty": true
     },
-    "rules": {},
+    "rules": {
+        "variable-name": [
+            true,
+            "require-const-for-all-caps",
+            "allow-leading-underscore",
+            "allow-pascal-case",
+            "allow-snake-case"
+        ],
+        "no-console": false
+    },
     "rulesDirectory": []
 }
