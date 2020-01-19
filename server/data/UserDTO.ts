@@ -1,6 +1,6 @@
-import { IsEmail, MinLength, MaxLength } from "class-validator";
-import { IsUsernameUnique } from "../controllers/validators/IsUsernameUnique";
-import {IsEmailUnique} from "../controllers/validators/IsEmailUnique";
+import { IsEmail, MinLength, MaxLength, IsDefined } from "class-validator";
+import { IsUsernameUnique } from "../controllers/users/validators/IsUsernameUnique";
+import { IsEmailUnique } from "../controllers/users/validators/IsEmailUnique";
 
 export class UserDTO {
     private static readonly MIN_USERNAME_LENGTH: number = 6;
@@ -22,6 +22,7 @@ export class UserDTO {
 
     private readonly _id!: number;
 
+    @IsDefined()
     @MinLength(UserDTO.MIN_USERNAME_LENGTH, {
         message: UserDTO.MIN_LENGTH_USERNAME_MESSAGE,
     })
@@ -47,7 +48,7 @@ export class UserDTO {
     @MaxLength(UserDTO.MAX_PASSWORD_LENGTH, {
         message: UserDTO.MAX_LENGTH_PASSWORD_MESSAGE,
     })
-    private readonly _password: string;
+    private _password: string;
 
     private readonly _firstNameEn: string;
 
@@ -88,6 +89,10 @@ export class UserDTO {
 
     get password(): string {
         return this._password;
+    }
+
+    set password(password: string) {
+        this._password = password;
     }
 
     get firstNameEn(): string {

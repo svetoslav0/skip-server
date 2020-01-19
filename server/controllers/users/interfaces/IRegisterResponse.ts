@@ -1,5 +1,6 @@
 export interface IRegisterResponse {
-    status: number;
+    httpStatus: number;
+    userId?: number,
     success: boolean;
     message: string;
     errors?: string[];

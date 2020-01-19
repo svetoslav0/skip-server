@@ -5,15 +5,15 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface
 } from "class-validator";
-import { MysqlDatabase } from "../../database/MysqlDatabase";
-import { UsersModel } from "../../models/UsersModel";
+import { MysqlDatabase } from "../../../database/MysqlDatabase";
+import { UsersModel } from "../../../models/UsersModel";
 
 @ValidatorConstraint({async: true})
 export class IsUsernameUniqueConstraint implements ValidatorConstraintInterface {
     validate(username: string, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
         return new Promise((async resolve => {
                 const result = await new UsersModel(new MysqlDatabase())
-                    .isUsernameUnique(username);
+                    .isEmailUnique(username);
 
                 resolve(result);
             }
@@ -21,7 +21,7 @@ export class IsUsernameUniqueConstraint implements ValidatorConstraintInterface 
     }
 }
 
-export function IsUsernameUnique(validationOptions: ValidationOptions) {
+export function IsEmailUnique(validationOptions: ValidationOptions) {
     return function (object: Object, propertyName: string) {
         registerDecorator({
             target: object.constructor,

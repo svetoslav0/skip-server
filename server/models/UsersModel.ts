@@ -10,10 +10,10 @@ export class UsersModel {
     }
 
     /**
-     * Inserts a user in the database and returns result that tells if it was successful
+     * Inserts an user in the database and returns the ID of the created user
      * @param user
      */
-    public async add(user: UserDTO): Promise<boolean> {
+    public async add(user: UserDTO): Promise<number> {
         const result: any = await this.db.query(`
                 INSERT INTO
                     users (
@@ -40,7 +40,7 @@ export class UsersModel {
             user.lastNameBg,
         ]);
 
-        return result.affectedRows === 1;
+        return result.insertId;
     }
 
     /**
@@ -77,5 +77,18 @@ export class UsersModel {
         return result.length === 0;
     }
 
+    public async findByUsername(username: string): Promise<UserDTO> {
+        const result: any = await this.db.query(`
+                SELECT
+                    id,
+                    username,
+                    password
+                FROM
+                    users
+                WHERE
+                    username = ?
+        `, [username]);
 
+        return result[0];
+    }
 }
