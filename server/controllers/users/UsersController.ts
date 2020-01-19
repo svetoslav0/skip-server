@@ -29,9 +29,12 @@ export class UsersController {
         this.usersModel = usersModel;
     }
 
-    public async register(request: any): Promise<IRegisterResponse> {
+    public async register(request: any): Promise<any> {
         try {
             const user: UserDTO = new UserDTO(request);
+
+            console.log("User: ");
+            console.log(user);
 
             await validateOrReject(user);
             await this.usersModel.isUsernameUnique(user.username);
@@ -72,10 +75,10 @@ export class UsersController {
         const isPasswordValid: boolean = await bcrypt.compare(request.password || "", user ? user.password : "");
 
         if (!isPasswordValid || !user) {
-            return this._build_login_response({
+            return {
                 httpStatus: this.UNAUTHORIZED_STATUS_CODE,
                 resultMessage: this.UNSUCCESSFUL_LOGIN_MESSAGE
-            });
+            };
         }
 
         const token = jwt.sign({id: user.id}, process.env.TOKEN_SECRET || "");
@@ -84,23 +87,6 @@ export class UsersController {
             httpStatus: this.SUCCESS_LOGIN_STATUS_CODE,
             authToken: token,
             resultMessage: this.SUCCESS_LOGIN_MESSAGE
-        }
-    }
-
-    private _build_register_response(options: any): IRegisterResponse {
-        return {
-            httpStatus: options.httpStatus,
-            userId: options.userId,
-            success: options.success,
-            message: options.message,
-            errors: options.errors ? options.errors : [],
-        };
-    }
-
-    private _build_login_response(options: any) {
-        return {
-            httpStatus: options.httpStatus,
-            resultMessage: options.resultMessage,
         }
     }
 }

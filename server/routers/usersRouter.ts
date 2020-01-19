@@ -19,7 +19,7 @@ usersRouter.post("/register", (req: express.Request, res: express.Response) => {
                 .status(result.httpStatus)
                 .send(
                     UserResponseBuilder.buildRegisterResponse(result)
-                )
+                );
         });
 });
 
@@ -28,12 +28,12 @@ usersRouter.post("/login", (req: express.Request, res: express.Response) => {
         .login(req.body)
         .then((result) => {
             return res
-                .header('auth-token', result.authToken || '')
+                .header("auth-token", result.authToken || "")
                 .status(result.httpStatus)
                 .send(
                     UserResponseBuilder.buildLoginResponse(result)
-                )
-        })
+                );
+        });
 });
 
 export { usersRouter };
