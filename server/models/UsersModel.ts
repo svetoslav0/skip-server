@@ -20,24 +20,18 @@ export class UsersModel {
                         username,
                         email,
                         password,
-                        first_name_en,
-                        middle_name_en,
-                        last_name_en,
-                        first_name_bg,
-                        middle_name_bg,
-                        last_name_bg
+                        first_name,
+                        middle_name,
+                        last_name
                     )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?)
         `, [
             user.username,
             user.email,
             user.password,
-            user.firstNameEn,
-            user.middleNameEn,
-            user.lastNameEn,
-            user.firstNameBg,
-            user.middleNameBg,
-            user.lastNameBg,
+            user.firstName,
+            user.middleName,
+            user.lastName
         ]);
 
         return result.insertId;

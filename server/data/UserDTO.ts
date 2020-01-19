@@ -50,29 +50,19 @@ export class UserDTO {
     })
     private _password: string;
 
-    private readonly _firstNameEn: string;
+    private readonly _firstName: string;
 
-    private readonly _middleNameEn: string | undefined;
+    private readonly _middleName: string | undefined;
 
-    private readonly _lastNameEn: string;
-
-    private readonly _firstNameBg: string;
-
-    private readonly _middleNameBg: string | undefined;
-
-    private readonly _lastNameBg: string;
+    private readonly _lastName: string;
 
     constructor(reqBody: any) {
-        // this._id = reqBody.id;
         this._username = reqBody.username;
         this._email = reqBody.email;
         this._password = reqBody.password;
-        this._firstNameEn = reqBody.firstNameEn;
-        this._middleNameEn = reqBody.middleNameEn;
-        this._lastNameEn = reqBody.lastNameEn;
-        this._firstNameBg = reqBody.firstNameBg;
-        this._middleNameBg = reqBody.middleNameBg;
-        this._lastNameBg = reqBody.lastNameBg;
+        this._firstName = reqBody.firstName;
+        this._middleName = reqBody.middleName;
+        this._lastName = reqBody.lastName;
     }
 
     get id(): number {
@@ -95,27 +85,15 @@ export class UserDTO {
         this._password = password;
     }
 
-    get firstNameEn(): string {
-        return this._firstNameEn;
+    get firstName(): string {
+        return this._firstName;
     }
 
-    get middleNameEn(): string | undefined {
-        return this._middleNameEn;
+    get middleName(): string | undefined {
+        return this._middleName;
     }
 
-    get lastNameEn(): string {
-        return this._lastNameEn;
-    }
-
-    get firstNameBg(): string {
-        return this._firstNameBg;
-    }
-
-    get middleNameBg(): string | undefined {
-        return this._middleNameBg;
-    }
-
-    get lastNameBg(): string {
-        return this._lastNameBg;
+    get lastName(): string {
+        return this._lastName;
     }
 }
