@@ -33,9 +33,6 @@ export class UsersController {
         try {
             const user: UserDTO = new UserDTO(request);
 
-            console.log("User: ");
-            console.log(user);
-
             await validateOrReject(user);
             await this.usersModel.isUsernameUnique(user.username);
 
