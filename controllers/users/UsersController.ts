@@ -5,9 +5,6 @@ import jwt from "jsonwebtoken";
 import { UsersModel } from "../../models/UsersModel";
 import { UserDTO } from "../../data/UserDTO";
 
-import { IRegisterResponse } from "./interfaces/IRegisterResponse";
-import { ILoginResponse } from "./interfaces/ILoginResponse";
-
 export class UsersController {
 
     private readonly SALT_DIFFICULTY: number = 10;
@@ -63,8 +60,6 @@ export class UsersController {
     }
 
     public async login(request: any): Promise<any> {
-        console.log("Request: ------");
-        console.log(request);
         const user = await this.usersModel
             .findByUsername(
                 (new UserDTO(request)).username

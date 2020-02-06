@@ -2,8 +2,8 @@ import express from "express";
 import { UsersController } from "../controllers/users/UsersController";
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { UsersModel } from "../models/UsersModel";
-import { UserDTO } from "../data/UserDTO";
-import {UserResponseBuilder} from "../controllers/users/UserResponseBuilder";
+import { UserResponseBuilder } from "../controllers/users/UserResponseBuilder";
+import { UsersMiddleware } from "../controllers/users/UsersMiddleware";
 
 const usersRouter = express.Router();
 
@@ -18,7 +18,7 @@ usersRouter.post("/register", (req: express.Request, res: express.Response) => {
             return res
                 .status(result.httpStatus)
                 .send(
-                    UserResponseBuilder.buildRegisterResponse(result)
+                    new UserResponseBuilder().buildRegisterResponse(result)
                 );
         });
 });
@@ -31,7 +31,7 @@ usersRouter.post("/login", (req: express.Request, res: express.Response) => {
                 .header("auth-token", result.authToken || "")
                 .status(result.httpStatus)
                 .send(
-                    UserResponseBuilder.buildLoginResponse(result)
+                    new UserResponseBuilder().buildLoginResponse(result)
                 );
         });
 });

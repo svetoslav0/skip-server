@@ -7,4 +7,4 @@ if (conf.error) {
     throw conf.error;
 }
 
-export { conf }
+export { conf };
