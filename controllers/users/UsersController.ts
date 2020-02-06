@@ -5,9 +5,6 @@ import jwt from "jsonwebtoken";
 import { UsersModel } from "../../models/UsersModel";
 import { UserDTO } from "../../data/UserDTO";
 
-import { IRegisterResponse } from "./interfaces/IRegisterResponse";
-import { ILoginResponse } from "./interfaces/ILoginResponse";
-
 export class UsersController {
 
     private readonly SALT_DIFFICULTY: number = 10;
@@ -15,7 +12,6 @@ export class UsersController {
     private readonly SUCCESS_LOGIN_STATUS_CODE: number = 200;
     private readonly SUCCESS_REGISTER_STATUS_CODE: number = 201;
     private readonly BAD_REQUEST_STATUS_CODE: number = 400;
-    private readonly UNAUTHORIZED_STATUS_CODE: number = 403;
 
     private readonly REGISTER_SUCCESS_MESSAGE: string = "User registered successfully.";
     private readonly REGISTER_FAILED_MESSAGE: string = "The given request is invalid. Some errors have appeared.";
@@ -73,7 +69,7 @@ export class UsersController {
 
         if (!isPasswordValid || !user) {
             return {
-                httpStatus: this.UNAUTHORIZED_STATUS_CODE,
+                httpStatus: this.BAD_REQUEST_STATUS_CODE,
                 resultMessage: this.UNSUCCESSFUL_LOGIN_MESSAGE
             };
         }

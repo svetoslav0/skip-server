@@ -9,10 +9,10 @@ export class MysqlDatabase {
     }
 
     public async query(queryString: string, params: any[] = []) {
-        this.config().connect();
+        await this.config().connect();
 
-        return new Promise((resolve, reject) => {
-            this.db.query(queryString, params, (err: mysql.MysqlError | null, rows: any) => {
+        return new Promise(async (resolve, reject) => {
+                await this.db.query(queryString, params, (err: mysql.MysqlError | null, rows: any) => {
                 if (err) {
                     throw err;
                 }
@@ -22,7 +22,7 @@ export class MysqlDatabase {
         });
     }
 
-    public endConnection() {
+    public closeConnection() {
         this.db.end();
     }
 

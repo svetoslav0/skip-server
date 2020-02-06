@@ -6,3 +6,5 @@ const conf = config({ path: resolve(__dirname, "../../.env") });
 if (conf.error) {
     throw conf.error;
 }
+
+export { conf };

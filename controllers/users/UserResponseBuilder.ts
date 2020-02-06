@@ -1,16 +1,22 @@
 export class UserResponseBuilder {
 
-    static buildRegisterResponse(options: any) {
-        return {
+    public buildRegisterResponse(options: any) {
+        return this.buildData({
             success: options.success,
             message: options.message,
             errors: options.errors
-        }
+        });
     }
 
-    static buildLoginResponse(options: any) {
-        return {
+    public buildLoginResponse(options: any) {
+        return this.buildData({
             message: options.resultMessage
+        });
+    }
+
+    private buildData(data: any) {
+        return {
+            data: data
         }
     }
 }
