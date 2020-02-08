@@ -37,7 +37,7 @@ usersRouter.post("/login", (req: express.Request, res: express.Response) => {
         });
 });
 
-usersRouter.get('/test', APIMiddleware.authorize, (req: express.Request, res: any) => {
+usersRouter.get('/test', APIMiddleware.isUserAdministrator, (req: express.Request, res: any) => {
     res.send('asd');
 });
 

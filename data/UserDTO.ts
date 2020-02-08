@@ -58,7 +58,7 @@ export class UserDTO {
 
     private readonly _lastName: string;
 
-    private readonly _role_id: number;
+    private readonly _roleId: number;
 
     constructor(reqBody: any) {
         this._username = reqBody.username;
@@ -67,7 +67,7 @@ export class UserDTO {
         this._firstName = reqBody.firstName;
         this._middleName = reqBody.middleName;
         this._lastName = reqBody.lastName;
-        this._role_id = +reqBody.roleId || UserDTO.DEFAULT_ROLE_ID;
+        this._roleId = +reqBody.roleId || UserDTO.DEFAULT_ROLE_ID;
     }
 
     get id(): number {
@@ -103,6 +103,6 @@ export class UserDTO {
     }
 
     get roleId(): number {
-        return this._role_id;
+        return this._roleId;
     }
 }
