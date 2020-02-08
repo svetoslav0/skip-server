@@ -22,16 +22,18 @@ export class UsersModel {
                         password,
                         first_name,
                         middle_name,
-                        last_name
+                        last_name,
+                        role_id
                     )
-                VALUES (?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
         `, [
             user.username,
             user.email,
             user.password,
             user.firstName,
             user.middleName,
-            user.lastName
+            user.lastName,
+            user.roleId
         ]);
 
         return result.insertId;
@@ -82,6 +84,19 @@ export class UsersModel {
                 WHERE
                     username = ?
         `, [username]);
+
+        return result[0];
+    }
+
+    public async findRoleIdByUserId(userId: number): Promise<number> {
+        const result: any = await this.db.query(`
+            SELECT
+                roleId
+            FROM
+                users
+            WHERE
+                id = ?     
+        `, [userId]);
 
         return result[0];
     }

@@ -74,7 +74,7 @@ export class UsersController {
             };
         }
 
-        const token = jwt.sign({id: user.id}, process.env.TOKEN_SECRET || "");
+        const token = jwt.sign({userId: user.id}, process.env.TOKEN_SECRET || "");
 
         return {
             httpStatus: this.SUCCESS_LOGIN_STATUS_CODE,
