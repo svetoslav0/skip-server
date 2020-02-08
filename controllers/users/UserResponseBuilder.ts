@@ -1,4 +1,6 @@
-export class UserResponseBuilder {
+import {AbstractResponseBuilder} from "../AbstractResponseBuilder";
+
+export class UserResponseBuilder extends AbstractResponseBuilder{
 
     public buildRegisterResponse(options: any) {
         return this.buildData({
@@ -12,11 +14,5 @@ export class UserResponseBuilder {
         return this.buildData({
             message: options.resultMessage
         });
-    }
-
-    private buildData(data: any) {
-        return {
-            data: data
-        }
     }
 }
