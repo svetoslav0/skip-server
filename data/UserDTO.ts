@@ -20,6 +20,8 @@ export class UserDTO {
     private static readonly USERNAME_EXISTS: string = "An user has already been registered with this username. Please choose another one.";
     private static readonly EMAIL_EXISTS: string = "An user has already been registered with this email. Please choose another one.";
 
+    private static readonly DEFAULT_ROLE_ID: number = 1;
+
     private readonly _id!: number;
 
     @IsDefined()
@@ -56,6 +58,8 @@ export class UserDTO {
 
     private readonly _lastName: string;
 
+    private readonly _role_id: number;
+
     constructor(reqBody: any) {
         this._username = reqBody.username;
         this._email = reqBody.email;
@@ -63,6 +67,7 @@ export class UserDTO {
         this._firstName = reqBody.firstName;
         this._middleName = reqBody.middleName;
         this._lastName = reqBody.lastName;
+        this._role_id = +reqBody.roleId || UserDTO.DEFAULT_ROLE_ID;
     }
 
     get id(): number {
@@ -95,5 +100,9 @@ export class UserDTO {
 
     get lastName(): string {
         return this._lastName;
+    }
+
+    get roleId(): number {
+        return this._role_id;
     }
 }
