@@ -78,7 +78,8 @@ export class UsersModel {
                 SELECT
                     id,
                     username,
-                    password
+                    password,
+                    role_id as roleId
                 FROM
                     users
                 WHERE

@@ -74,7 +74,12 @@ export class UsersController {
             };
         }
 
-        const token = jwt.sign({userId: user.id}, process.env.TOKEN_SECRET || "");
+        const payload = {
+            userId: user.id,
+            roleId: user.roleId
+        };
+
+        const token = jwt.sign(payload, process.env.TOKEN_SECRET || "");
 
         return {
             httpStatus: this.SUCCESS_LOGIN_STATUS_CODE,
