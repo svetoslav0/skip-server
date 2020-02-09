@@ -36,8 +36,6 @@ export class ReportsModel {
                     id = ?
         `, [reportId]);
 
-        let rep = new ReportDTO(result[0]);
-
         return new ReportDTO(result[0]);
     }
 

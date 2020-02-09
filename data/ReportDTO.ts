@@ -5,8 +5,8 @@ export class ReportDTO {
     private _name: string;
 
     constructor(body: any) {
-        this._userId = body.userId;
-        this._name = body.name;
+        this._userId = body ? body.userId : 0;
+        this._name = body ? body.name : "";
     }
 
     get id(): number {

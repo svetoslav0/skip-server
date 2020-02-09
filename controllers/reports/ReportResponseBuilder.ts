@@ -15,7 +15,8 @@ export class ReportResponseBuilder extends AbstractResponseBuilder{
         return this.buildData({
             success: options.success,
             reportId: options.reportId || 0,
-            message: options.message
+            message: options.message,
+            errors: options.errors || []
         });
     }
 }
