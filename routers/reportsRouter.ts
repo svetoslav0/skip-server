@@ -14,8 +14,20 @@ const reportResponseBuilder: ReportResponseBuilder = new ReportResponseBuilder()
 
 reportsRouter.post("/create", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
     reportsController
-        .create(req.body)
+        .create(req)
         .then((result) => {
+            return res
+                .status(result.httpStatus)
+                .send(
+                    reportResponseBuilder.buildCreateResponse(result)
+                );
+        });
+});
+
+reportsRouter.put("/:id", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
+    reportsController
+        .edit(req)
+        .then(result => {
             return res
                 .status(result.httpStatus)
                 .send(

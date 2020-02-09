@@ -8,7 +8,7 @@ export class MysqlDatabase {
         this.db = this.config();
     }
 
-    public async query(queryString: string, params: any[] = []) {
+    public async query(queryString: string, params: any[] = []): Promise<any> {
         await this.config().connect();
 
         return new Promise(async (resolve, reject) => {

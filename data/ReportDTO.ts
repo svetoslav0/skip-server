@@ -1,12 +1,20 @@
 export class ReportDTO {
 
+    private _id!: number;
     private readonly _userId: number;
+    private _name: string;
 
-    private readonly _name: string;
+    constructor(body: any) {
+        this._userId = body.userId;
+        this._name = body.name;
+    }
 
-    constructor(reqBody: any) {
-        this._userId = reqBody.userId;
-        this._name = reqBody.name;
+    get id(): number {
+        return this._id;
+    }
+
+    set id(id: number) {
+        this._id = id;
     }
 
     get userId(): number {
@@ -15,5 +23,9 @@ export class ReportDTO {
 
     get name(): string {
         return this._name;
+    }
+
+    set name(name: string) {
+        this._name = name;
     }
 }
