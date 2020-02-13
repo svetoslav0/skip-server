@@ -36,7 +36,13 @@ export class ReportsModel {
                     id = ?
         `, [reportId]);
 
-        return new ReportDTO(result[0]);
+        const report = new ReportDTO(result[0]);
+
+        if (result.length != 0) {
+            report.id = reportId;
+        }
+
+        return report;
     }
 
     public async getTableFields(): Promise<string[]> {

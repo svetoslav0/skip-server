@@ -1,6 +1,6 @@
 export class ReportRequestOptionsBuilder {
 
-    private readonly forbiddenFields: string[] = [
+    private readonly needlessFields: string[] = [
         'id',
         'userId'
     ];
@@ -9,7 +9,7 @@ export class ReportRequestOptionsBuilder {
         // Get only the fields that attend in the database
         // and removed the forbidden ones
         const allowedKeys: string[] = databaseFields
-            .filter(field => !this.forbiddenFields.includes(field))
+            .filter(field => !this.needlessFields.includes(field))
             .filter(field => Object.keys(reqBody).includes(field));
 
         // Build an object by filtering the reqBody
@@ -20,5 +20,10 @@ export class ReportRequestOptionsBuilder {
                 obj[key] = reqBody[key];
                 return obj;
             }, {});
+    }
+
+    public getRequiredColumns(databaseFields: string[]) {
+        return databaseFields
+            .filter(fields => !this.needlessFields.includes(fields));
     }
 }
