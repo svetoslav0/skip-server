@@ -5,6 +5,7 @@ import {ReportRequestOptionsBuilder} from "./ReportRequestOptionsBuilder";
 
 export class ReportsController {
     private readonly SUCCESS_STATUS_CODE: number = 200;
+    private readonly BAD_REQUEST_STATUS_CODE: number = 400;
     private readonly RESOURCE_NOT_FOUND_CODE: number = 404;
 
     private readonly SUCCESSFUL_CREATED_MESSAGE: string = "Report successfully created.";
@@ -19,6 +20,19 @@ export class ReportsController {
     }
 
     public async create(request: express.Request): Promise<any> {
+        const dbColumns: string[] = await this.getParsedDatabaseColumnNames();
+        const requiredColumns = new ReportRequestOptionsBuilder().getRequiredColumns(dbColumns);
+
+        try {
+            this.proceedMissingParams(request.body, requiredColumns);
+        } catch (e) {
+            return {
+                httpStatus: this.BAD_REQUEST_STATUS_CODE,
+                success: false,
+                message: e.message
+            }
+        }
+
         const report: ReportDTO = new ReportDTO({
             userId: request.userId,
             name: request.body.name
@@ -35,12 +49,13 @@ export class ReportsController {
     }
 
     public async edit(request: express.Request) {
-        const reportId = +request.params.id;
+        const reportId: number = +request.params.id;
 
-        const databaseFields: string[] = this.mapSnakeCaseToCamelCase(await this.reportsModel.getTableFields());
+        const databaseFields: string[] = await this.getParsedDatabaseColumnNames();
+
         const report: ReportDTO = await this.reportsModel.findById(reportId);
 
-        if (report.id !== reportId) {
+        if (report.id != reportId) {
             return {
                 httpStatus: this.RESOURCE_NOT_FOUND_CODE,
                 success: false,
@@ -75,6 +90,18 @@ export class ReportsController {
             success: false,
             message: "Something went wrong..."
         };
+    }
+
+    private proceedMissingParams(reqBody: any, dbColumns: string[]) {
+        dbColumns.forEach(column => {
+            if (!reqBody[column]) {
+                throw new TypeError(`The parameter '${column}' is required!`);
+            }
+        });
+    }
+
+    private async getParsedDatabaseColumnNames() {
+        return this.mapSnakeCaseToCamelCase(await this.reportsModel.getTableFields());
     }
 
     private mapSnakeCaseToCamelCase(fields: string[]) {
