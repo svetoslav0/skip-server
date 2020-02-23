@@ -28,8 +28,13 @@ usersRouter.post("/login", (req: express.Request, res: express.Response) => {
     usersController
         .login(req.body)
         .then((result) => {
+            const authToken = result.authToken || "";
+
+            if (authToken) {
+                res.header("auth-token", authToken)
+            }
+
             return res
-                .header("auth-token", result.authToken || "")
                 .status(result.httpStatus)
                 .send(
                     userResponseBuilder.buildLoginResponse(result)

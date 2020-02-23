@@ -30,14 +30,6 @@ export class MysqlDatabase {
         const connection = this.mysqlDatabaseFactory();
 
         return mysql.createPool(connection);
-        // return mysql.createConnection(connection);
-
-        // return mysql.createConnection({
-        //     database: process.env.DB_DATABASE,
-        //     host: process.env.DB_HOST,
-        //     password: process.env.DB_PASS,
-        //     user: process.env.DB_USER,
-        // });
     }
 
     private mysqlDatabaseFactory() {
@@ -56,6 +48,14 @@ export class MysqlDatabase {
                 connection = defaultConnection;
                 break;
             case "test":
+                connection = {
+                    database: process.env.TEST_DB_DATABASE || "",
+                    host: process.env.TEST_DB_HOST || "",
+                    password: process.env.TEST_DB_PASS || "",
+                    user: process.env.TEST_DB_USER || "",
+                };
+                break;
+            case "remote-test":
                 connection = {
                     database: process.env.REMOTE_TEST_DB_DATABASE || "",
                     host: process.env.REMOTE_TEST_DB_HOST || "",

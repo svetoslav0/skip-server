@@ -13,28 +13,92 @@ import "mocha";
 chai.use(chaiHttp);
 
 const expect = chai.expect;
+const request = chai.request;
 
-const LOGIN_URL: string = "/users";
+const DEFAULT_CONTENT_TYPE: string = "application/x-www-form-urlencoded";
+const CONTENT_TYPE_HEADING: string = "content-type";
 
-describe(`${LOGIN_URL} tests`, () => {
-   describe(`POST ${LOGIN_URL}`, () => {
-       it('should login', () => {
-           return chai.request(server)
-               .post(`${LOGIN_URL}/login`)
-               .set('content-type', 'application/x-www-form-urlencoded')
-               .send({username: "ivanivan", password: "ivanivan"})
+const USERS_CONTROLLER_URL: string = "/users";
+const LOGIN_URL: string = `${USERS_CONTROLLER_URL}/login`;
+
+describe(`${USERS_CONTROLLER_URL} tests`, () => {
+   describe(`POST ${LOGIN_URL} tests`, () => {
+       it("Should login successfully. Username and password are correct", () => {
+           const usernameToSend: string = "hristofor";
+           const passwordToSend: string = "hristofor";
+           const expectedPropertyData: string = "data";
+           const expectedPropertyMessage: string = "message";
+           const expectedAuthHeader: string = "auth-token";
+
+           const expectedStatusCode: number = 200;
+
+           const objectToSend = {
+               username: usernameToSend,
+               password: passwordToSend
+           };
+
+           return request(server)
+               .post(LOGIN_URL)
+               .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+               .send(objectToSend)
                .then(async (result) => {
-                   await expect(result.status).to.eql(200);
+                   await expect(result.status).to.eql(expectedStatusCode);
+                   await expect(result.body).to.have.property(expectedPropertyData);
+                   await expect(result.body.data).to.have.property(expectedPropertyMessage);
+                   await expect(result).to.have.header(expectedAuthHeader);
+                   await expect(result).header(expectedAuthHeader).not.to.be.null;
                });
        });
 
-       it('should NOT login', () => {
-           return chai.request(server)
-               .post(`${LOGIN_URL}/login`)
-               .set('content-type', 'application/x-www-form-urlencoded')
-               .send({username: "ivanivan", password: "ivaniasdvan"})
+       it("Should not login and return error. Username exists but the password is wrong", () => {
+           const usernameToSend: string = "hristofor";
+           const passwordToSend: string = "kolumb";
+           const expectedPropertyData: string = "data";
+           const expectedPropertyMessage: string = "message";
+           const expectedAuthHeader: string = "auth-token";
+
+           const expectedStatusCode: number = 400;
+
+           const objectToSend = {
+               username: usernameToSend,
+               password: passwordToSend
+           };
+
+           return request(server)
+               .post(LOGIN_URL)
+               .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+               .send(objectToSend)
                .then(async (result) => {
-                   await expect(result.status).to.eql(400);
+                   await expect(result.status).to.eql(expectedStatusCode);
+                   await expect(result.body).to.have.property(expectedPropertyData);
+                   await expect(result.body.data).to.have.property(expectedPropertyMessage);
+                   await expect(result).not.to.have.header(expectedAuthHeader);
+               });
+       });
+
+       it("Should not login and return error. This user does not exist",  () => {
+           const usernameToSend: string = "nonExistingUsername";
+           const passwordToSend: string = "someRandPassword";
+           const expectedPropertyData: string = "data";
+           const expectedPropertyMessage: string = "message";
+           const expectedAuthHeader: string = "auth-token";
+
+           const expectedStatus: number = 400;
+
+           const objectToSend = {
+               username: usernameToSend,
+               password: passwordToSend
+           };
+
+           return request(server)
+               .post(LOGIN_URL)
+               .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+               .send(objectToSend)
+               .then(async (result) => {
+                   await expect(result.status).to.eql(expectedStatus);
+                   await expect(result.body).to.have.property(expectedPropertyData);
+                   await expect(result.body.data).to.have.property(expectedPropertyMessage);
+                   await expect(result).not.to.have.header(expectedAuthHeader);
                });
        });
    });
