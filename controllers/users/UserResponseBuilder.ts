@@ -6,6 +6,7 @@ export class UserResponseBuilder extends AbstractResponseBuilder{
         return this.buildData({
             success: options.success,
             message: options.message,
+            userId: options.userId,
             errors: options.errors
         });
     }

@@ -101,4 +101,14 @@ export class UsersModel {
 
         return result[0];
     }
+
+    // Used for testing purposes
+    public async removeById(userId: number): Promise<void> {
+        await this.db.query(`
+            DELETE FROM
+                users
+            WHERE
+                id = ?
+        `, [userId]);
+    }
 }

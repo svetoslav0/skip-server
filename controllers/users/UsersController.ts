@@ -87,4 +87,9 @@ export class UsersController {
             resultMessage: this.SUCCESS_LOGIN_MESSAGE
         }
     }
+
+    public async remove(request: any): Promise<any> {
+        const result = await this.usersModel
+            .removeById(request.userId);
+    }
 }
