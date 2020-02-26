@@ -171,7 +171,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
            const expectedSuccess: boolean = false;
            const expectedErrorsCount: number = 1;
 
-           request(server)
+           return request(server)
                .post(REGISTER_URL)
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
@@ -183,11 +183,10 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                     await expect(result.body.data).to.have.property(expectedPropertyMessage);
                     await expect(result.body.data).to.have.property(expectedPropertyErrors);
 
-                    await expect(result.body.success).to.eql(expectedSuccess);
-                    await expect(result.body.message).to.be("string");
-                    await expect(result.body.errors).to.be("array");
-                    // await expect(result.body.errors.length).to.have.lengthOf(expectedErrorsCount);
-                    // await chai.assert.equal(result.body.errors.length, expectedErrorsCount);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
                });
        });
 
@@ -216,7 +215,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
            const expectedSuccess: boolean = false;
            const expectedErrorsCount: number = 1;
 
-           request(server)
+           return request(server)
                .post(REGISTER_URL)
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
@@ -229,13 +228,109 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                    await expect(result.body.data).to.have.property(expectedPropertyErrors);
 
                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                   await chai.assert.equal(result.body.errors, expectedErrorsCount);
-                   // await expect(result.body.data.errors).to.have.lengthOf(expectedErrorsCount);
+                   // TODO: Will not work properly until GH-2 is resolved
+                   // await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+               });
+       });
+
+       it("Should not register a new user. The given username is too short.", () => {
+           const usernameToSend: string = "sh";
+           const emailToSend: string = "doesitmatteranyway@abv.bg";
+           const passwordToSend: string = "John123as";
+           const firstNameToSend: string = "John";
+           const lastNameToSend: string = "Trifonov";
+           const roleIdToSend: number = 2;
+
+           const objectToSend = {
+               username: usernameToSend,
+               email: emailToSend,
+               password: passwordToSend,
+               firstName: firstNameToSend,
+               lastName: lastNameToSend,
+               roleId: roleIdToSend
+           };
+
+           const expectedStatus: number = 400;
+           const expectedSuccess: boolean = false;
+           const expectedErrorsCount: number = 1;
+
+           return request(server)
+               .post(REGISTER_URL)
+               .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+               .send(objectToSend)
+               .then(async (result) => {
+                   await expect(result.status).to.eql(expectedStatus);
+                   await expect(result.body.data.success).to.eql(expectedSuccess);
+                   await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+               });
+       });
+
+       it("Should not register a new user. The given username is too long.", () => {
+           const usernameToSend: string = "ashrosenbergashrosenbergashrosenbergashrosenbergashrosenbergashrosenberg";
+           const emailToSend: string = "doesthatmatteranyway@abv.bg";
+           const passwordToSend: string = "john123john";
+           const firstNameToSend: string = "Johny";
+           const lastNameToSend: string = "Johsef";
+           const roleIdToSend: number = 1;
+
+           const objectToSend = {
+               username: usernameToSend,
+               email: emailToSend,
+               password: passwordToSend,
+               firstName: firstNameToSend,
+               lastName: lastNameToSend,
+               roleId: roleIdToSend
+           };
+
+           const expectedHttpStatus: number = 400;
+           const expectedSuccess: boolean = false;
+           const expectedErrorsCount: number = 1;
+
+           return request(server)
+               .post(REGISTER_URL)
+               .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+               .send(objectToSend)
+               .then(async (result) => {
+                   await expect(result.status).to.eql(expectedHttpStatus);
+                   await expect(result.body.data.success).to.eql(expectedSuccess);
+                   await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+               });
+       });
+
+       it("Should not register a new user. The given email is invalid.", () => {
+           const usernameToSend: string = "ashrosenberg";
+           const emailToSend: string = "bademail";
+           const passwordToSend: string = "John123";
+           const firstNameToSend: string = "Johneff";
+           const lastNameToSend: string = "George";
+           const roleIdToSend: number = 1;
+
+           const objectToSend = {
+               username: usernameToSend,
+               email: emailToSend,
+               password: passwordToSend,
+               firstName: firstNameToSend,
+               lastName: lastNameToSend,
+               roleId: roleIdToSend
+           };
+
+           const expectedStatusCode: number = 400;
+           const expectedSuccess: boolean = false;
+           const expectedErrorsCount: number = 1;
+
+           return request(server)
+               .post(REGISTER_URL)
+               .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+               .send(objectToSend)
+               .then(async (result) => {
+                   await expect(result.status).to.eql(expectedStatusCode);
+                   await expect(result.body.data.success).to.eql(expectedSuccess);
+                   await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
                });
        });
 
        it("Should not register a new user. The given email already exists in the database.", () => {
-           const usernameToSend: string = "johnwaste";
+           const usernameToSend: string = "johnwastetimer";
            const emailToSend: string = "hristofor@abv.bg";
            const passwordToSend: string = "John123";
            const firstNameToSend: string = "John";
@@ -249,7 +344,85 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                firstName: firstNameToSend,
                lastName: lastNameToSend,
                roleId: roleIdToSend
-           }
+           };
+
+           const expectedHttpStatusCode: number = 400;
+           const expectedSuccess: boolean = false;
+           const expectedErrorsCount: number = 1;
+
+           return request(server)
+               .post(REGISTER_URL)
+               .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+               .send(objectToSend)
+               .then(async (result) => {
+                   await expect(result.status).to.eql(expectedHttpStatusCode);
+                   await expect(result.body.data.success).to.eql(expectedSuccess);
+                   await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+               });
+       });
+
+       it("Should not register a new user. The given password is too short.", () => {
+           const usernameToSend: string = "johnywastetimer";
+           const emailToSend: string = "hristoforoff@abv.bg";
+           const passwordToSend: string = "sh";
+           const firstNameToSend: string = "Marvin";
+           const lastNameToSend: string = "John";
+           const roleIdToSend: number = 2;
+
+           const objectToSend = {
+               username: usernameToSend,
+               email: emailToSend,
+               password: passwordToSend,
+               firstName: firstNameToSend,
+               lastName: lastNameToSend,
+               roleId: roleIdToSend
+           };
+
+           const expectedHttpStatusCode: number = 400;
+           const expectedSuccess: boolean = false;
+           const expectedErrorsCount: number = 1;
+
+           return request(server)
+               .post(REGISTER_URL)
+               .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+               .send(objectToSend)
+               .then(async (result) => {
+                   await expect(result.status).to.eql(expectedHttpStatusCode);
+                   await expect(result.body.data.success).to.eql(expectedSuccess);
+                   await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+               });
+       });
+
+       it("Should not register a new user. The given password is too long.", () => {
+           const usernameToSend: string = "johnywastetimer2";
+           const emailToSend: string = "hristoforoff2@abv.bg";
+           const passwordToSend: string = "dontaskmehowlongisthispassworditswaaaaaaaaaaaaaaaaaaaaaaaaaytooooooooooooooooooooooooloooooooooooooooooooooooooooongdaaaaaaaaaaaaaaaaaaaaaaaaaaamn";
+           const firstNameToSend: string = "Marvinski";
+           const lastNameToSend: string = "Johneff";
+           const roleIdToSend: number = 2;
+
+           const objectToSend = {
+               username: usernameToSend,
+               email: emailToSend,
+               password: passwordToSend,
+               firstName: firstNameToSend,
+               lastName: lastNameToSend,
+               roleId: roleIdToSend
+           };
+
+           const expectedHttpStatusCode: number = 400;
+           const expectedSuccess: boolean = false;
+           const expectedErrorsCount: number = 1;
+
+           return request(server)
+               .post(REGISTER_URL)
+               .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+               .send(objectToSend)
+               .then(async (result) => {
+                   await expect(result.status).to.eql(expectedHttpStatusCode);
+                   await expect(result.body.data.success).to.eql(expectedSuccess);
+                   await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+               });
        });
    });
 });
