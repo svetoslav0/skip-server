@@ -9,10 +9,8 @@ export class MysqlDatabase {
     }
 
     public async query(queryString: string, params: any[] = []): Promise<any> {
-        // await this.db.connect();
-
         return new Promise(async (resolve, reject) => {
-                await this.db.query(queryString, params, (err: mysql.MysqlError | null, rows: any) => {
+            await this.db.query(queryString, params, (err: mysql.MysqlError | null, rows: any) => {
                 if (err) {
                     throw err;
                 }
@@ -33,7 +31,6 @@ export class MysqlDatabase {
     }
 
     private mysqlDatabaseFactory() {
-
         // Dev environment
         const defaultConnection = {
             database: process.env.DB_DATABASE || "",
