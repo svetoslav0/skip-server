@@ -9,11 +9,11 @@ import { MysqlDatabase } from "../../../database/MysqlDatabase";
 import { UsersModel } from "../../../models/UsersModel";
 
 @ValidatorConstraint({async: true})
-export class IsUsernameUniqueConstraint implements ValidatorConstraintInterface {
-    validate(username: string, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
+export class IsEmailUniqueConstraint implements ValidatorConstraintInterface {
+    validate(email: string, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
         return new Promise((async resolve => {
                 const result = await new UsersModel(new MysqlDatabase())
-                    .isEmailUnique(username);
+                    .isEmailUnique(email);
 
                 resolve(result);
             }
@@ -28,7 +28,7 @@ export function IsEmailUnique(validationOptions: ValidationOptions) {
             propertyName: propertyName,
             options: validationOptions,
             constraints: [],
-            validator: IsUsernameUniqueConstraint
+            validator: IsEmailUniqueConstraint
         })
     }
 }
