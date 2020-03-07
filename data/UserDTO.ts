@@ -8,6 +8,8 @@ export class UserDTO {
     private static readonly USERNAME_NOT_DEFINED_MESSAGE: string = "Field 'username' is required!";
     private static readonly EMAIL_NOT_DEFINED_MESSAGE: string = "Field 'email' is required!";
     private static readonly PASSWORD_NOT_DEFINED_MESSAGE: string = "Field 'password' is not defined!";
+    private static readonly FIRST_NAME_NOT_DEFINED_MESSAGE: string = "Field 'firstName' is not defined!";
+    private static readonly LAST_NAME_NOT_DEFINED_MESSAGE: string = "Field 'lastName' is not defined!";
 
     public static readonly MIN_USERNAME_LENGTH: number = 6;
     public static readonly MAX_USERNAME_LENGTH: number = 64;
@@ -66,10 +68,16 @@ export class UserDTO {
     })
     private _password: string;
 
+    @IsDefined({
+        message: UserDTO.FIRST_NAME_NOT_DEFINED_MESSAGE
+    })
     private readonly _firstName: string;
 
     private readonly _middleName: string | undefined;
 
+    @IsDefined({
+        message: UserDTO.LAST_NAME_NOT_DEFINED_MESSAGE
+    })
     private readonly _lastName: string;
 
     private readonly _roleId: number;
