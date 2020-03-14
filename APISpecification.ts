@@ -1,4 +1,4 @@
-import { UserDTO } from "./data/UserDTO";
+import { UserDTO } from "./data/users/UserDTO";
 
 export class APISpecification {
     public buildSpecification() {

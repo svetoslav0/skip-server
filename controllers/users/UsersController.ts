@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { UsersModel } from "../../models/UsersModel";
-import { UserDTO } from "../../data/UserDTO";
+import { UserDTO } from "../../data/users/UserDTO";
 
 export class UsersController {
 
