@@ -46,7 +46,7 @@ export class ReportsRouter {
         this.router.put("/:id", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
             this.controller
                 .edit(req)
-                .then(result => {
+                .then((result) => {
                     return res
                         .status(result.httpStatus)
                         .send(

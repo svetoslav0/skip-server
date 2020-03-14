@@ -38,7 +38,7 @@ export class ReportsModel {
 
         const report = new ReportDTO(result[0]);
 
-        if (result.length != 0) {
+        if (result.length !== 0) {
             report.id = reportId;
         }
 
@@ -55,7 +55,7 @@ export class ReportsModel {
                     TABLE_SCHEMA = ?
                 AND
                     TABLE_NAME = ?
-        `, [process.env.DB_DATABASE, 'reports']);
+        `, [process.env.DB_DATABASE, "reports"]);
 
         return result
                 .map((obj: any) => Object.values(obj))
@@ -72,6 +72,6 @@ export class ReportsModel {
                 id = ?
         `, [report.name, report.id]);
 
-        return result.affectedRows == 1;
+        return result.affectedRows === 1;
     }
 }

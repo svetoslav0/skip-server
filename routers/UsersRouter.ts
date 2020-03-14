@@ -37,7 +37,7 @@ export class UsersRouter {
                     const authToken = result.authToken || "";
 
                     if (authToken) {
-                        res.header("auth-token", authToken)
+                        res.header("auth-token", authToken);
                     }
 
                     return res

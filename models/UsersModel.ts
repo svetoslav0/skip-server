@@ -96,7 +96,7 @@ export class UsersModel {
             FROM
                 users
             WHERE
-                id = ?     
+                id = ?
         `, [userId]);
 
         return result[0];

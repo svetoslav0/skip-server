@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import express from "express";
 
-
 export class APIMiddleware {
 
     private static readonly AUTHORIZATION_ERROR_MESSAGE: string = "Authorization error";
@@ -16,7 +15,7 @@ export class APIMiddleware {
     private static readonly UNAUTHORIZED_STATUS_CODE: number = 401;
     private static readonly FORBIDDEN_STATUS_CODE: number = 403;
 
-    public static authorize (req: express.Request, res: express.Response, next: express.NextFunction) {
+    public static authorize(req: express.Request, res: express.Response, next: express.NextFunction) {
         const token: string = req.header("auth-token") || "";
 
         if (! token) {
@@ -56,7 +55,7 @@ export class APIMiddleware {
     public static isUserAdministrator(req: express.Request, res: express.Response, next: express.NextFunction) {
         APIMiddleware.authorize(req, res, next);
 
-        if (req.roleId == APIMiddleware.ADMIN_ROLE_ID) {
+        if (req.roleId === APIMiddleware.ADMIN_ROLE_ID) {
             return next();
         }
 
@@ -65,12 +64,12 @@ export class APIMiddleware {
             .send(APIMiddleware.buildResponse(APIMiddleware.FORBIDDEN_RESOURCE_MESSAGE));
     }
 
-    private static buildResponse (message: string) {
+    private static buildResponse(message: string) {
         return {
             data: {
                 error: APIMiddleware.AUTHORIZATION_ERROR_MESSAGE,
-                message: message
+                message
             }
-        }
+        };
     }
 }
