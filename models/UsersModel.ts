@@ -1,5 +1,5 @@
 import {MysqlDatabase} from "../database/MysqlDatabase";
-import {UserDTO} from "../data/UserDTO";
+import {UserDTO} from "../data/users/UserDTO";
 
 export class UsersModel {
 
@@ -58,7 +58,8 @@ export class UsersModel {
 
     /**
      * Returns "true" or "false" depending on whether username is unique or not
-     * @param email
+     * @param {string} email
+     * @return Promise<boolean>
      */
     public async isEmailUnique(email: string): Promise<boolean> {
         const result: any = await this.db.query(`
@@ -73,13 +74,33 @@ export class UsersModel {
         return result.length === 0;
     }
 
+    /**
+     * Finds user by given ID and returns UserDTO
+     * @param {number} id
+     * @return Promise<UserDTO>
+     */
+    public async findById(id: number): Promise<UserDTO> {
+        const result: any = await this.db.query(`
+                SELECT
+                    id,
+                    username,
+                    role_id AS roleId
+                FROM
+                    users
+                WHERE
+                    id = ?
+        `, [id]);
+
+        return result[0];
+    }
+
     public async findByUsername(username: string): Promise<UserDTO> {
         const result: any = await this.db.query(`
                 SELECT
                     id,
                     username,
                     password,
-                    role_id as roleId
+                    role_id AS roleId
                 FROM
                     users
                 WHERE

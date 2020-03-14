@@ -1,8 +1,8 @@
-import {IsEmail, MinLength, MaxLength, IsDefined, Validate, ValidateIf} from "class-validator";
-import { IsUsernameUnique } from "../controllers/users/validators/IsUsernameUnique";
-import { IsEmailUnique } from "../controllers/users/validators/IsEmailUnique";
-import { UsernameMinLength } from "../controllers/users/validators/UsernameMinLength";
-import { UsernameMaxLength } from "../controllers/users/validators/UsernameMaxLength";
+import { IsEmail, MinLength, MaxLength, IsDefined } from "class-validator";
+import { IsUsernameUnique } from "./validators/IsUsernameUnique";
+import { IsEmailUnique } from "./validators/IsEmailUnique";
+import { UsernameMinLength } from "./validators/UsernameMinLength";
+import { UsernameMaxLength } from "./validators/UsernameMaxLength";
 
 export class UserDTO {
     private static readonly USERNAME_NOT_DEFINED_MESSAGE: string = "Field 'username' is required!";

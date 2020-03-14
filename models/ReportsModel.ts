@@ -1,5 +1,5 @@
 import {MysqlDatabase} from "../database/MysqlDatabase";
-import {ReportDTO} from "../data/ReportDTO";
+import {ReportDTO} from "../data/reports/ReportDTO";
 
 export class ReportsModel {
     private db: MysqlDatabase;
@@ -36,6 +36,10 @@ export class ReportsModel {
                     id = ?
         `, [reportId]);
 
+        if (!result.length) {
+            return null;
+        }
+
         const report = new ReportDTO(result[0]);
 
         if (result.length !== 0) {
@@ -43,23 +47,6 @@ export class ReportsModel {
         }
 
         return report;
-    }
-
-    public async getTableFields(): Promise<string[]> {
-        const result = await this.db.query(`
-                SELECT
-                    COLUMN_NAME
-                FROM
-                    INFORMATION_SCHEMA.COLUMNS
-                WHERE
-                    TABLE_SCHEMA = ?
-                AND
-                    TABLE_NAME = ?
-        `, [process.env.DB_DATABASE, "reports"]);
-
-        return result
-                .map((obj: any) => Object.values(obj))
-                .flat();
     }
 
     public async update(report: ReportDTO): Promise<boolean> {
