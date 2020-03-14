@@ -109,7 +109,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
    });
 
    describe(`POST ${REGISTER_URL} tests`, () => {
-       it("Should register a new user. After then test passed, the new user should be deleted.",() => {
+       it("Should register a new user. After then test passed, the new user should be deleted.", () => {
            const usernameToSend: string = "trifon";
            const emailToSend: string = "trifon@tri.fon";
            const passwordToSend: string = "trifon";
