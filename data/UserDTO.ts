@@ -14,8 +14,8 @@ export class UserDTO {
     public static readonly MIN_USERNAME_LENGTH: number = 6;
     public static readonly MAX_USERNAME_LENGTH: number = 64;
 
-    private static readonly MIN_PASSWORD_LENGTH: number = 6;
-    private static readonly MAX_PASSWORD_LENGTH: number = 128;
+    public static readonly MIN_PASSWORD_LENGTH: number = 6;
+    public static readonly MAX_PASSWORD_LENGTH: number = 128;
 
     private static readonly MIN_LENGTH_USERNAME_MESSAGE: string = `Username is too short. Must be at least ${UserDTO.MIN_USERNAME_LENGTH} characters long.`;
     private static readonly MAX_LENGTH_USERNAME_MESSAGE: string = `Username is too long. Must be not more than ${UserDTO.MAX_USERNAME_LENGTH} characters long.`;
