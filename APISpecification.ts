@@ -18,15 +18,22 @@ export class APISpecification {
                 },
                 "/users/login": {
                     post: this.buildUsersLoginPath()
+                },
+                "/reports": {
+                    post: this.buildReportsCreatePath()
                 }
             },
             components: {
                 schemas: {
                     RegisterUserSchema: this.buildRegisterUserSchema(),
                     LoginUserSchema: this.buildLoginUserSchema(),
-                    OkResponseSchema: this.buildOkResponseSchema(),
+                    CreateReportRequestSchema: this.buildCreateReportRequestSchema(),
+
+                    LoginResponseSchema: this.buildLoginResponseSchema(),
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
-                    BadRequestResponseSchema: this.buildBasRequestResponseSchema()
+                    CreateReportResponseSchema: this.buildCreateReportResponseSchema(),
+
+                    BadRequestResponseSchema: this.buildBadRequestResponseSchema()
                 }
             }
         }
@@ -84,7 +91,7 @@ export class APISpecification {
             },
             responses: {
                 200: {
-                    description: "The operation was done successfully.",
+                    description: "Successfully logged in.",
                     headers: {
                         "auth-token": {
                             description: "Authorization token. This token will be user everywhere in the entire application to authorize and authenticate the user.",
@@ -96,7 +103,40 @@ export class APISpecification {
                     content: {
                         "application/json": {
                             schema: {
-                                $ref: "#/components/schemas/OkResponseSchema"
+                                $ref: "#/components/schemas/LoginResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        }
+    }
+
+    private buildReportsCreatePath() {
+        return {
+            summary: "Create new report",
+            description: "Create new empty report and fill it with entities after that",
+            tags: [
+                "Reports"
+            ],
+            requestBody: {
+                required: true,
+                content: {
+                    [this.FORM_URLENCODED_CONTENT]: {
+                        schema: {
+                            $ref: "#/components/schemas/CreateReportRequestSchema"
+                        }
+                    }
+                }
+            },
+            responses: {
+                200: {
+                    description: "Report was created successfully.",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $ref: "#/components/schemas/CreateReportResponseSchema"
                             }
                         }
                     }
@@ -174,6 +214,22 @@ export class APISpecification {
         }
     }
 
+    private buildCreateReportRequestSchema() {
+        return {
+            type: "object",
+            properties: {
+                name: {
+                    type: "string",
+                    example: "September 2019"
+                },
+                userId: {
+                    type: "number",
+                    example: 12
+                }
+            }
+        }
+    }
+
     private buildCreatedUserResponseSchema() {
         return {
             type: "object",
@@ -196,7 +252,7 @@ export class APISpecification {
         };
     }
 
-    private buildOkResponseSchema() {
+    private buildLoginResponseSchema() {
         return {
             type: "object",
             properties: {
@@ -212,7 +268,30 @@ export class APISpecification {
         }
     }
 
-    private buildBasRequestResponseSchema() {
+    private buildCreateReportResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean"
+                        },
+                        reportId: {
+                            type: "number",
+                            description: "The ID of the new report"
+                        },
+                        message: {
+                            type: "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private buildBadRequestResponseSchema() {
         return {
             type: "object",
             properties: {
