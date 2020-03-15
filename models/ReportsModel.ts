@@ -61,4 +61,20 @@ export class ReportsModel {
 
         return result.affectedRows === 1;
     }
+
+    /**
+     * Deletes report from the database by given report ID
+     * @param {number} id
+     * @return Promise<boolean>
+     */
+    public async deleteById(id: number): Promise<boolean> {
+        const result = await this.db.query(`
+            DELETE FROM
+                reports
+            WHERE
+                id = ?
+        `, [id]);
+
+        return result.affectedRows === 1;
+    }
 }
