@@ -29,7 +29,7 @@ export class ReportsRouter {
     }
 
     private signCreateRoute() {
-        this.router.post("/create", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
+        this.router.post("/", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
             this.controller
                 .create(req)
                 .then((result) => {
