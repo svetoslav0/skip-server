@@ -22,9 +22,6 @@ export class ReportsController {
     }
 
     public async create(request: express.Request): Promise<any> {
-        // const dbColumns: string[] = await this.getParsedDatabaseColumnNames();
-        // const requiredColumns = new ReportRequestOptionsBuilder().getRequiredColumns(dbColumns);
-
         try {
             const report: ReportDTO = new ReportDTO({
                 userId: request.body.userId,
