@@ -2,7 +2,8 @@ import { UserDTO } from "./data/users/UserDTO";
 
 export class APISpecification {
 
-    private readonly FORM_URLENCODED_CONTENT: string = "application/x-www-form-urlencoded";
+    private readonly JSON_CONTENT_TYPE: string = "application/json";
+    private readonly FORM_URLENCODED_CONTENT_TYPE: string = "application/x-www-form-urlencoded";
 
     public buildSpecification() {
         return {
@@ -21,6 +22,9 @@ export class APISpecification {
                 },
                 "/reports": {
                     post: this.buildReportsCreatePath()
+                },
+                "/reports/:id": {
+                    put: this.buildReportsEditPath()
                 }
             },
             components: {
@@ -28,10 +32,12 @@ export class APISpecification {
                     RegisterUserSchema: this.buildRegisterUserSchema(),
                     LoginUserSchema: this.buildLoginUserSchema(),
                     CreateReportRequestSchema: this.buildCreateReportRequestSchema(),
+                    EditReportRequestSchema: this.buildEditReportRequestSchema(),
 
                     LoginResponseSchema: this.buildLoginResponseSchema(),
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
                     CreateReportResponseSchema: this.buildCreateReportResponseSchema(),
+                    EditReportResponseSchema: this.buildEditReportResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema()
                 }
@@ -49,7 +55,7 @@ export class APISpecification {
             requestBody: {
                 required: true,
                 content: {
-                    [this.FORM_URLENCODED_CONTENT]: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
                         schema: {
                             $ref: "#/components/schemas/RegisterUserSchema"
                         }
@@ -60,7 +66,7 @@ export class APISpecification {
                 201: {
                     description: "Message that shows that the user has been successfully added it the database and its ID",
                     content: {
-                        "application/json": {
+                        [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/CreatedUserResponseSchema"
                             }
@@ -82,7 +88,7 @@ export class APISpecification {
             requestBody: {
                 required: true,
                 content: {
-                    [this.FORM_URLENCODED_CONTENT]: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
                         schema: {
                             $ref: "#/components/schemas/LoginUserSchema"
                         }
@@ -101,7 +107,7 @@ export class APISpecification {
                         }
                     },
                     content: {
-                        "application/json": {
+                        [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/LoginResponseSchema"
                             }
@@ -123,7 +129,7 @@ export class APISpecification {
             requestBody: {
                 required: true,
                 content: {
-                    [this.FORM_URLENCODED_CONTENT]: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
                         schema: {
                             $ref: "#/components/schemas/CreateReportRequestSchema"
                         }
@@ -134,9 +140,54 @@ export class APISpecification {
                 200: {
                     description: "Report was created successfully.",
                     content: {
-                        "application/json": {
+                        [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/CreateReportResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        }
+    }
+
+    private buildReportsEditPath() {
+        return {
+            summary: "Edit existing report",
+            description: "Edit existing report. Only the passed fields will be updated.",
+            tags: [
+                "Reports"
+            ],
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    description: "The ID of the report.",
+                    schema: {
+                        type: "number",
+                        minimum: 1
+                    }
+                }
+            ],
+            requestBody: {
+                required: true,
+                content: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
+                        schema: {
+                            $ref: "#/components/schemas/EditReportRequestSchema"
+                        }
+                    }
+                }
+            },
+            responses: {
+                200: {
+                    description: "Report was successfully updated.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/EditReportResponseSchema"
                             }
                         }
                     }
@@ -226,6 +277,26 @@ export class APISpecification {
                     type: "number",
                     example: 12
                 }
+            },
+            required: [
+                "name",
+                "userId"
+            ]
+        }
+    }
+
+    private buildEditReportRequestSchema() {
+        return {
+            type: "object",
+            properties: {
+                name: {
+                    type: "string",
+                    example: "September 2019"
+                },
+                userId: {
+                    type: "number",
+                    example: 12
+                }
             }
         }
     }
@@ -291,6 +362,29 @@ export class APISpecification {
         }
     }
 
+    private buildEditReportResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean"
+                        },
+                        reportId: {
+                            type: "number",
+                            description: "The ID of the new report"
+                        },
+                        message: {
+                            type: "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private buildBadRequestResponseSchema() {
         return {
             type: "object",
@@ -322,7 +416,7 @@ export class APISpecification {
             400: {
                 description: "The given request cannot be proceeded from the server due to something that is perceived to be a client error.",
                 content: {
-                    "application/json": {
+                    [this.JSON_CONTENT_TYPE]: {
                         schema: {
                             $ref: "#/components/schemas/BadRequestResponseSchema"
                         }
