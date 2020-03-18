@@ -109,7 +109,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
    });
 
    describe(`POST ${REGISTER_URL} tests`, () => {
-       it("Should register a new user. After then test passed, the new user should be deleted.", () => {
+       it("Should register a new user. After the test passes, the new user should be deleted.", () => {
            const usernameToSend: string = "trifon";
            const emailToSend: string = "trifon@tri.fon";
            const passwordToSend: string = "trifon";
@@ -128,8 +128,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
 
            const expectedHttpStatus: number = 201;
 
-           let userId: number = 0;
-
            return request(server)
                .post(REGISTER_URL)
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
@@ -137,9 +135,9 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .then(async (result) => {
                    await expect(result.status).to.eql(expectedHttpStatus);
 
-                   userId = result.body.data.userId;
+                   return  result.body.data.userId;
                })
-               .then(async () => {
+               .then(async (userId) => {
                    await usersModel.removeById(userId);
                });
        });
