@@ -200,6 +200,57 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     });
 
     describe(`PUT ${REPORTS_CONTROLLERS_URL}/{id} tests`, () => {
+        it('Should update an report.',  () => {
+            const nameToSend: string = "October 2020";
+            const userIdToSend: number = 4;
+            const reportIdToUpdate: number = 15;
+
+            const objectToSend = {
+                name: nameToSend,
+                userId: userIdToSend
+            };
+
+            const expectedStatus: number = 200;
+            const expectedSuccess: boolean = true;
+
+            return request(server)
+                .put(EDIT_URL(reportIdToUpdate))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, token)
+                .send(objectToSend)
+                .then(async (result) => {
+                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                    await expect(result.body.data.reportId).to.eql(reportIdToUpdate);
+                });
+        });
+
+        it(`Should not update the report. 
+            The given "id" does not correspond to an existing report`,  () => {
+            const nameToSend: string = "October 2020";
+            const userIdToSend: number = 4;
+            const reportIdToUpdate: number = 91501;
+
+            const objectToSend = {
+                name: nameToSend,
+                userId: userIdToSend
+            };
+
+            const expectedStatus: number = 404;
+            const expectedSuccess: boolean = false;
+            const expectedErrorsProperty: string = "errors";
+
+            return request(server)
+                .put(EDIT_URL(reportIdToUpdate))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, token)
+                .send(objectToSend)
+                .then(async (result) => {
+                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                    await expect(result.body.data).to.have.property(expectedErrorsProperty);
+                });
+        });
 
     });
 });
