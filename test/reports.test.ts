@@ -61,8 +61,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                  });
         });
 
-        // TODO: Should be done after GH-76 is fixed.
-        it.skip("Should not add a new report. No 'auth-token' header was provided.", () => {
+        it("Should not add a new report. No 'auth-token' header was provided.", () => {
             const nameToSend: string = "May 2020";
             const userIdToSend: number = 4;
 
@@ -83,8 +82,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
-        // TODO: Should be done after GH-76 is fixed.
-        it.skip("Should not add a new report. Header 'auth-token' is provided but is invalid.", () => {
+        it("Should not add a new report. Header 'auth-token' is provided but is invalid.", () => {
             const nameToSend: string = "August 2020";
             const userIdToSend: number = 4;
             const wrongTokenToSet: string = "WrOnGtOkEn";
