@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import express from "express";
+import {IAuthResponse} from "./interfaces/IAuthResponse";
 
 export class APIMiddleware {
 
@@ -15,13 +16,15 @@ export class APIMiddleware {
     private static readonly UNAUTHORIZED_STATUS_CODE: number = 401;
     private static readonly FORBIDDEN_STATUS_CODE: number = 403;
 
-    public static authorize(req: express.Request, res: express.Response, next: express.NextFunction) {
+    public static authorize(req: express.Request, res: express.Response, next: express.NextFunction): IAuthResponse {
         const token: string = req.header("auth-token") || "";
 
         if (! token) {
-            return res
-                .status(APIMiddleware.UNAUTHORIZED_STATUS_CODE)
-                .send(APIMiddleware.buildResponse(APIMiddleware.NO_TOKEN_MESSAGE));
+            return {
+                isAuthorized: false,
+                status: APIMiddleware.UNAUTHORIZED_STATUS_CODE,
+                response: APIMiddleware.buildResponse(APIMiddleware.NO_TOKEN_MESSAGE)
+            };
         }
 
         try {
@@ -32,16 +35,24 @@ export class APIMiddleware {
             req.userId = userId;
             req.roleId = roleId;
 
-            return; // next();
+            return {
+                isAuthorized: true
+            };
         } catch (error) {
-            return res
-                .status(APIMiddleware.BAD_REQUEST_STATUS_CODE)
-                .send(APIMiddleware.buildResponse(APIMiddleware.INVALID_TOKEN_MESSAGE));
+            return {
+                isAuthorized: false,
+                status: APIMiddleware.BAD_REQUEST_STATUS_CODE,
+                response: APIMiddleware.buildResponse(APIMiddleware.INVALID_TOKEN_MESSAGE)
+            };
         }
     }
 
     public static isUserEmployee(req: express.Request, res: express.Response, next: express.NextFunction) {
-        APIMiddleware.authorize(req, res, next);
+        const auth: IAuthResponse = APIMiddleware.authorize(req, res, next);
+        if (!auth.isAuthorized) {
+            return res.status(auth.status || APIMiddleware.UNAUTHORIZED_STATUS_CODE)
+                .send(auth.response);
+        }
 
         if (req.roleId >= APIMiddleware.EMPLOYEE_ROLE_ID) {
             return next();
@@ -53,7 +64,11 @@ export class APIMiddleware {
     }
 
     public static isUserAdministrator(req: express.Request, res: express.Response, next: express.NextFunction) {
-        APIMiddleware.authorize(req, res, next);
+        const auth: IAuthResponse = APIMiddleware.authorize(req, res, next);
+        if (!auth.isAuthorized) {
+            return res.status(auth.status || APIMiddleware.UNAUTHORIZED_STATUS_CODE)
+                .send(auth.response);
+        }
 
         if (req.roleId === APIMiddleware.ADMIN_ROLE_ID) {
             return next();
