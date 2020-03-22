@@ -1,5 +1,6 @@
 import {MysqlDatabase} from "../database/MysqlDatabase";
 import {ReportDTO} from "../data/reports/ReportDTO";
+import {ReportEditDTO} from "../data/reports/ReportEditDTO";
 
 export class ReportsModel {
     private db: MysqlDatabase;
@@ -24,7 +25,7 @@ export class ReportsModel {
         return result.insertId;
     }
 
-    public async findById(reportId: number): Promise<any> {
+    public async findById(reportId: number): Promise<ReportEditDTO|null> {
         const result: any = await this.db.query(`
                 SELECT
                     id,
@@ -40,7 +41,8 @@ export class ReportsModel {
             return null;
         }
 
-        const report = new ReportDTO(result[0]);
+        const report = new ReportEditDTO(result[0].id, result[0]);
+        // const report = new ReportDTO(result[0]);
 
         if (result.length !== 0) {
             report.id = reportId;
@@ -49,7 +51,7 @@ export class ReportsModel {
         return report;
     }
 
-    public async update(report: ReportDTO): Promise<boolean> {
+    public async update(report: ReportEditDTO): Promise<boolean> {
         const result = await this.db.query(`
             UPDATE
                 reports

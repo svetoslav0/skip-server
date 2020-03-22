@@ -25,7 +25,7 @@ const TOKEN_HEADING: string = "auth-token";
 
 const REPORTS_CONTROLLERS_URL: string = "/reports";
 const CREATE_URL: string = `${REPORTS_CONTROLLERS_URL}`;
-const EDIT_URL = function (id: number) {
+const EDIT_URL = (id: number) => {
     return `${REPORTS_CONTROLLERS_URL}/${id}`;
 };
 
@@ -198,7 +198,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     });
 
     describe(`PUT ${REPORTS_CONTROLLERS_URL}/{id} tests`, () => {
-        it('Should update an report.',  () => {
+        it("Should update an report.",  () => {
             const nameToSend: string = "October 2020";
             const userIdToSend: number = 4;
             const reportIdToUpdate: number = 15;
@@ -223,7 +223,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
-        it(`Should not update the report. 
+        it(`Should not update the report.
             The given "id" does not correspond to an existing report`,  () => {
             const nameToSend: string = "October 2020";
             const userIdToSend: number = 4;
@@ -234,7 +234,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 userId: userIdToSend
             };
 
-            const expectedStatus: number = 404;
+            const expectedStatus: number = 400;
             const expectedSuccess: boolean = false;
             const expectedErrorsProperty: string = "errors";
 
