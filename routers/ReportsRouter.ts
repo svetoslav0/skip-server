@@ -22,6 +22,7 @@ export class ReportsRouter {
     public registerRoutes(): express.Router {
         this.signCreateRoute();
         this.signEditRoute();
+        this.signArchiveRoute();
 
         return this.router;
     }
@@ -48,5 +49,17 @@ export class ReportsRouter {
                         .send(result.buildResponse());
                 });
         });
+    }
+
+    private signArchiveRoute() {
+        this.router.delete("/:id", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
+            this.controller
+                .archive(req)
+                .then((result: ReportsResponseBuilder) => {
+                    return res
+                        .status(result.httpStatus)
+                        .send(result.buildResponse());
+                })
+        })
     }
 }

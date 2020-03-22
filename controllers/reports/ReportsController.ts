@@ -11,10 +11,12 @@ export class ReportsController {
     private readonly INTERNAL_SERVER_ERROR_STATUS_CODE: number = 500;
 
     private readonly SUCCESSFUL_CREATED_MESSAGE: string = "Report successfully created.";
+    private readonly SUCCESSFUL_UPDATE_MESSAGE: string = "Report has been successfully updated.";
+    private readonly SUCCESSFUL_ARCHIVED_MESSAGE: string = "Report has been successfully archived";
     private readonly CREATION_FAILED_MESSAGE: string = "Report with the given parameters cannot be created!";
     private readonly UPDATE_FAILED_MESSAGE: string = "Report with the given parameters cannot be update!";
+    private readonly ARCHIVE_FAILED_MESSAGE: string = "Report with the given 'id' cannot be updated!";
     private readonly MAIN_ERROR_MESSAGE: string = "Something went wrong...";
-    private readonly SUCCESSFUL_UPDATE_MESSAGE: string = "Report has been successfully updated.";
 
     private reportsModel: ReportsModel;
 
@@ -112,5 +114,34 @@ export class ReportsController {
             .fillErrors(this.UPDATE_FAILED_MESSAGE);
 
         return responseBuilder;
+    }
+
+    public async archive(request: express.Request) {
+        const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
+
+        const reportId: number = +request.params.id;
+
+        const report = this.reportsModel.findById(reportId);
+
+        if (!report) {
+            return responseBuilder
+                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setSuccess(false)
+                .setMessage(this.ARCHIVE_FAILED_MESSAGE);
+        }
+
+        const isArchived: boolean = await this.reportsModel.archive(reportId);
+
+        if (isArchived) {
+            return responseBuilder
+                .setHttpStatus(this.SUCCESS_STATUS_CODE)
+                .setSuccess(true)
+                .setMessage(this.SUCCESSFUL_ARCHIVED_MESSAGE);
+        }
+
+        return responseBuilder
+            .setHttpStatus(this.INTERNAL_SERVER_ERROR_STATUS_CODE)
+            .setSuccess(false)
+            .setMessage(this.MAIN_ERROR_MESSAGE);
     }
 }

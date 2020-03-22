@@ -64,7 +64,23 @@ export class ReportsModel {
         return result.affectedRows === 1;
     }
 
+    public async archive(id: number): Promise<boolean> {
+        const archived: number = 1;
+
+        const result = await this.db.query(`
+            UPDATE
+                reports
+            SET
+                is_archived = ?
+            WHERE
+                id = ?
+        `, [archived, id]);
+
+        return result.affectedRows === 1;
+    }
+
     /**
+     * *** USED FOR TEST PURPOSES ***
      * Deletes report from the database by given report ID
      * @param {number} id
      * @return Promise<boolean>
