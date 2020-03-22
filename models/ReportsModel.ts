@@ -56,10 +56,11 @@ export class ReportsModel {
             UPDATE
                 reports
             SET
-                name = ?
+                name = ?,
+                user_id = ?
             WHERE
                 id = ?
-        `, [report.name, report.id]);
+        `, [report.name, report.userId, report.id]);
 
         return result.affectedRows === 1;
     }
