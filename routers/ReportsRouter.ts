@@ -3,7 +3,7 @@ import { MysqlDatabase } from "../database/MysqlDatabase";
 import { APIMiddleware } from "../common/APIMiddleware";
 import { ReportsModel } from "../models/ReportsModel";
 import { ReportsController } from "../controllers/reports/ReportsController";
-import { ReportResponseBuilder } from "../controllers/reports/ReportResponseBuilder";
+import { ReportsResponseBuilder } from "../data/reports/ReportsResponseBuilder";
 
 export class ReportsRouter {
 
@@ -11,14 +11,12 @@ export class ReportsRouter {
     private readonly router: express.Router;
     private readonly model: ReportsModel;
     private controller: ReportsController;
-    private responseBuilder: ReportResponseBuilder;
 
     constructor(database: MysqlDatabase) {
         this.db = database;
         this.router = express.Router();
         this.model = new ReportsModel(this.db);
         this.controller = new ReportsController(this.model);
-        this.responseBuilder = new ReportResponseBuilder();
     }
 
     public registerRoutes(): express.Router {
@@ -32,12 +30,10 @@ export class ReportsRouter {
         this.router.post("/", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
             this.controller
                 .create(req)
-                .then((result) => {
+                .then((result: ReportsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
-                        .send(
-                            this.responseBuilder.buildCreateResponse(result)
-                        );
+                        .send(result.buildResponse());
                 });
         });
     }
@@ -46,12 +42,10 @@ export class ReportsRouter {
         this.router.put("/:id", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
             this.controller
                 .edit(req)
-                .then((result) => {
+                .then((result: ReportsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
-                        .send(
-                            this.responseBuilder.buildCreateResponse(result)
-                        );
+                        .send(result.buildResponse());
                 });
         });
     }

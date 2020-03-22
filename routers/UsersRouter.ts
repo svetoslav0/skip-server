@@ -2,7 +2,7 @@ import express from "express";
 import { UsersController } from "../controllers/users/UsersController";
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { UsersModel } from "../models/UsersModel";
-import { UserResponseBuilder } from "../controllers/users/UserResponseBuilder";
+import { UsersResponseBuilder } from "../data/users/UsersResponseBuilder";
 
 export class UsersRouter {
 
@@ -10,14 +10,12 @@ export class UsersRouter {
     private readonly router: express.Router;
     private readonly model: UsersModel;
     private controller: UsersController;
-    private responseBuilder: UserResponseBuilder;
 
     constructor(database: MysqlDatabase) {
         this.db = database;
         this.router = express.Router();
         this.model = new UsersModel(this.db);
         this.controller = new UsersController(this.model);
-        this.responseBuilder = new UserResponseBuilder();
 
         this.registerRoutes();
     }
@@ -33,7 +31,7 @@ export class UsersRouter {
         this.router.post("/login", (req: express.Request, res: express.Response) => {
             this.controller
                 .login(req.body)
-                .then((result) => {
+                .then((result: UsersResponseBuilder) => {
                     const authToken = result.authToken || "";
 
                     if (authToken) {
@@ -42,9 +40,7 @@ export class UsersRouter {
 
                     return res
                         .status(result.httpStatus)
-                        .send(
-                            this.responseBuilder.buildLoginResponse(result)
-                        );
+                        .send(result.buildResponse());
                 });
         });
     }
@@ -53,12 +49,10 @@ export class UsersRouter {
         this.router.post("/register", (req: express.Request, res: express.Response) => {
             this.controller
                 .register(req.body)
-                .then((result) => {
+                .then((result: UsersResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
-                        .send(
-                            this.responseBuilder.buildRegisterResponse(result)
-                        );
+                        .send(result.buildResponse());
                 });
         });
     }

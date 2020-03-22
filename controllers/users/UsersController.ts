@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 
 import { UsersModel } from "../../models/UsersModel";
 import { UserDTO } from "../../data/users/UserDTO";
+import { UsersResponseBuilder } from "../../data/users/UsersResponseBuilder";
 
 export class UsersController {
 
@@ -25,7 +26,9 @@ export class UsersController {
         this.usersModel = usersModel;
     }
 
-    public async register(request: any): Promise<any> {
+    public async register(request: any): Promise<UsersResponseBuilder> {
+        const responseBuilder: UsersResponseBuilder = new UsersResponseBuilder();
+
         try {
             const user: UserDTO = new UserDTO(request);
 
@@ -37,12 +40,11 @@ export class UsersController {
 
             const userId: number = await this.usersModel.add(user);
 
-            return {
-                httpStatus: this.SUCCESS_REGISTER_STATUS_CODE,
-                userId: userId,
-                success: true,
-                message: this.REGISTER_SUCCESS_MESSAGE
-            }
+            return responseBuilder
+                .setHttpStatus(this.SUCCESS_REGISTER_STATUS_CODE)
+                .setUserId(userId)
+                .setSuccess(true)
+                .setMessage(this.REGISTER_SUCCESS_MESSAGE);
 
         } catch (validationError) {
             const errors: string[] = validationError
@@ -50,16 +52,17 @@ export class UsersController {
                 .map((error: any) => Object.values(error))
                 .flat();
 
-            return {
-                httpStatus: this.BAD_REQUEST_STATUS_CODE,
-                success: false,
-                message: this.REGISTER_FAILED_MESSAGE,
-                errors: errors,
-            }
+            return responseBuilder
+                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setSuccess(false)
+                .setMessage(this.REGISTER_FAILED_MESSAGE)
+                .setErrors(errors);
         }
     }
 
-    public async login(request: any): Promise<any> {
+    public async login(request: any): Promise<UsersResponseBuilder> {
+        const responseBuilder: UsersResponseBuilder = new UsersResponseBuilder();
+
         const user = await this.usersModel
             .findByUsername(
                 (new UserDTO(request)).username
@@ -68,10 +71,10 @@ export class UsersController {
         const isPasswordValid: boolean = await bcrypt.compare(request.password || "", user ? user.password : "");
 
         if (!isPasswordValid || !user) {
-            return {
-                httpStatus: this.BAD_REQUEST_STATUS_CODE,
-                resultMessage: this.UNSUCCESSFUL_LOGIN_MESSAGE
-            };
+            return responseBuilder
+                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setSuccess(false)
+                .setMessage(this.UNSUCCESSFUL_LOGIN_MESSAGE);
         }
 
         const payload = {
@@ -81,11 +84,11 @@ export class UsersController {
 
         const token = jwt.sign(payload, process.env.TOKEN_SECRET || "");
 
-        return {
-            httpStatus: this.SUCCESS_LOGIN_STATUS_CODE,
-            authToken: token,
-            resultMessage: this.SUCCESS_LOGIN_MESSAGE
-        }
+        return responseBuilder
+            .setHttpStatus(this.SUCCESS_LOGIN_STATUS_CODE)
+            .setSuccess(true)
+            .setMessage(this.SUCCESS_LOGIN_MESSAGE)
+            .setAuthToken(token);
     }
 
     public async remove(request: any): Promise<any> {
