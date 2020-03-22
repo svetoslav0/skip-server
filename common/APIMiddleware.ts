@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import express from "express";
-import {IAuthResponse} from "./interfaces/IAuthResponse";
+import { IAuthResult } from "./IAuthResult";
 
 export class APIMiddleware {
 
@@ -16,10 +16,10 @@ export class APIMiddleware {
     private static readonly UNAUTHORIZED_STATUS_CODE: number = 401;
     private static readonly FORBIDDEN_STATUS_CODE: number = 403;
 
-    public static authorize(req: express.Request, res: express.Response, next: express.NextFunction): IAuthResponse {
+    public static authorize(req: express.Request, res: express.Response, next: express.NextFunction): IAuthResult {
         const token: string = req.header("auth-token") || "";
 
-        if (! token) {
+        if (!token) {
             return {
                 isAuthorized: false,
                 status: APIMiddleware.UNAUTHORIZED_STATUS_CODE,
@@ -48,7 +48,7 @@ export class APIMiddleware {
     }
 
     public static isUserEmployee(req: express.Request, res: express.Response, next: express.NextFunction) {
-        const auth: IAuthResponse = APIMiddleware.authorize(req, res, next);
+        const auth: IAuthResult = APIMiddleware.authorize(req, res, next);
         if (!auth.isAuthorized) {
             return res.status(auth.status || APIMiddleware.UNAUTHORIZED_STATUS_CODE)
                 .send(auth.response);
@@ -64,7 +64,7 @@ export class APIMiddleware {
     }
 
     public static isUserAdministrator(req: express.Request, res: express.Response, next: express.NextFunction) {
-        const auth: IAuthResponse = APIMiddleware.authorize(req, res, next);
+        const auth: IAuthResult = APIMiddleware.authorize(req, res, next);
         if (!auth.isAuthorized) {
             return res.status(auth.status || APIMiddleware.UNAUTHORIZED_STATUS_CODE)
                 .send(auth.response);

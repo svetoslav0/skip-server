@@ -3,6 +3,7 @@ import { ReportsModel } from "../../models/ReportsModel";
 import { ReportDTO } from "../../data/reports/ReportDTO";
 import { validateOrReject } from "class-validator";
 import { ReportEditDTO } from "../../data/reports/ReportEditDTO";
+import { ReportsResponseBuilder } from "../../data/reports/ReportsResponseBuilder";
 
 export class ReportsController {
     private readonly SUCCESS_STATUS_CODE: number = 200;
@@ -21,7 +22,9 @@ export class ReportsController {
         this.reportsModel = reportsModel;
     }
 
-    public async create(request: express.Request): Promise<any> {
+    public async create(request: express.Request): Promise<ReportsResponseBuilder> {
+        const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
+
         try {
             const report: ReportDTO = new ReportDTO({
                 userId: request.body.userId,
@@ -32,28 +35,32 @@ export class ReportsController {
 
             const reportId: number = await this.reportsModel.add(report);
 
-            return {
-                httpStatus: this.SUCCESS_STATUS_CODE,
-                reportId: reportId,
-                success: true,
-                message: this.SUCCESSFUL_CREATED_MESSAGE
-            }
+            responseBuilder
+                .setHttpStatus(this.SUCCESS_STATUS_CODE)
+                .setReportId(reportId)
+                .setSuccess(true)
+                .setMessage(this.SUCCESSFUL_CREATED_MESSAGE);
+
+            return responseBuilder;
         } catch (validationError) {
             const errors: string[] = validationError
                 .map((error: any) => error.constraints)
                 .map((error: any) => Object.values(error))
                 .flat();
 
-            return {
-                httpStatus: this.BAD_REQUEST_STATUS_CODE,
-                success: false,
-                message: this.CREATION_FAILED_MESSAGE,
-                errors
-            }
+            responseBuilder
+                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setSuccess(false)
+                .setMessage(this.CREATION_FAILED_MESSAGE)
+                .setErrors(errors);
+
+            return responseBuilder;
         }
     }
 
-    public async edit(request: express.Request) {
+    public async edit(request: express.Request): Promise<ReportsResponseBuilder> {
+        const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
+
         const reportId: number = +request.params.id;
 
         let report: ReportEditDTO | null = await this.reportsModel.findById(reportId);
@@ -76,32 +83,34 @@ export class ReportsController {
                 .map((error: any) => Object.values(error))
                 .flat();
 
-            return {
-                httpStatus: this.BAD_REQUEST_STATUS_CODE,
-                success: false,
-                message: this.UPDATE_FAILED_MESSAGE,
-                errors
-            }
+            responseBuilder
+                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setSuccess(false)
+                .setMessage(this.UPDATE_FAILED_MESSAGE)
+                .setErrors(errors);
+
+            return responseBuilder;
         }
 
         const isUpdated: boolean = await this.reportsModel.update(report);
 
         if (isUpdated) {
-            return {
-                httpStatus: this.SUCCESS_STATUS_CODE,
-                reportId: reportId,
-                success: true,
-                message: this.SUCCESSFUL_UPDATE_MESSAGE
-            }
+            responseBuilder
+                .setHttpStatus(this.SUCCESS_STATUS_CODE)
+                .setReportId(reportId)
+                .setSuccess(true)
+                .setMessage(this.SUCCESSFUL_UPDATE_MESSAGE);
+
+            return responseBuilder;
         }
 
-        errors.push(this.UPDATE_FAILED_MESSAGE);
+        responseBuilder
+            .setHttpStatus(this.INTERNAL_SERVER_ERROR_STATUS_CODE)
+            .setSuccess(false)
+            .setMessage(this.MAIN_ERROR_MESSAGE)
+            .setErrors(errors)
+            .fillErrors(this.UPDATE_FAILED_MESSAGE);
 
-        return {
-            httpStatus: this.INTERNAL_SERVER_ERROR_STATUS_CODE,
-            success: false,
-            message: this.MAIN_ERROR_MESSAGE,
-            errors
-        }
+        return responseBuilder;
     }
 }
