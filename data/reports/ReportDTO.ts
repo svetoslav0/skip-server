@@ -6,9 +6,7 @@ export class ReportDTO {
     private static readonly USER_ID_NOT_DEFINED_MESSAGE: string = "Field 'userId' is required!";
     private static readonly NAME_NOT_DEFINED_MESSAGE: string = "Field 'name' is required!";
 
-    private static readonly USER_ID_NOT_EXISTING_MESSAGE: string = "The given 'userId' does not exist!";
-
-    private _id!: number;
+    public static readonly USER_ID_NOT_EXISTING_MESSAGE: string = "The given 'userId' does not exist!";
 
     @IsDefined({
         message: ReportDTO.USER_ID_NOT_DEFINED_MESSAGE
@@ -26,14 +24,6 @@ export class ReportDTO {
     constructor(reqBody: any) {
         this._userId = reqBody.userId;
         this._name = reqBody.name;
-    }
-
-    get id(): number {
-        return this._id;
-    }
-
-    set id(id: number) {
-        this._id = id;
     }
 
     get userId(): number {
