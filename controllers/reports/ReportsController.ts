@@ -121,7 +121,7 @@ export class ReportsController {
 
         const reportId: number = +request.params.id;
 
-        const report = this.reportsModel.findById(reportId);
+        const report = await this.reportsModel.findById(reportId);
 
         if (!report) {
             return responseBuilder

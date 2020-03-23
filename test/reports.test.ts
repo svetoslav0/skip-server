@@ -28,6 +28,9 @@ const CREATE_URL: string = `${REPORTS_CONTROLLERS_URL}`;
 const EDIT_URL = (id: number) => {
     return `${REPORTS_CONTROLLERS_URL}/${id}`;
 };
+const ARCHIVE_URL = (id: number) => {
+    return `${REPORTS_CONTROLLERS_URL}/${id}`;
+};
 
 const token: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGVJZCI6MiwiaWF0IjoxNTg0Mjg2MjUzfQ.dUm6sU7RobQucIRH3Vf1C-tr2EgwL0gQ49xQ9CAPIqs";
 
@@ -250,5 +253,50 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
+    });
+
+    describe(`DELETE ${REPORTS_CONTROLLERS_URL}/id tests`, () => {
+        it(`Should archive the report`, () => {
+            const reportIdToSend: number = 14;
+
+            const expectedStatus: number = 200;
+            const dataProperty: string = "data";
+            const successProperty: string = "success";
+            const expectedSuccess: boolean = true;
+
+            return request(server)
+                .delete(ARCHIVE_URL(reportIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, token)
+                .send()
+                .then(async (result) => {
+                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.body).to.have.property(dataProperty);
+                    await expect(result.body.data).to.have.property(successProperty);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                });
+        });
+
+        it(`Should not archive the report. 
+        The given ID does not correspond to an existing report.`, () => {
+            const reportIdToSend: number = 99999;
+
+            const expectedStatus: number = 400;
+            const dataProperty: string = "data";
+            const successProperty: string = "success";
+            const expectedSuccess: boolean = false;
+
+            return request(server)
+                .delete(ARCHIVE_URL(reportIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, token)
+                .send()
+                .then(async (result) => {
+                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.body).to.have.property(dataProperty);
+                    await expect(result.body.data).to.have.property(successProperty);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                });
+        });
     });
 });

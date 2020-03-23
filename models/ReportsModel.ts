@@ -42,7 +42,6 @@ export class ReportsModel {
         }
 
         const report = new ReportEditDTO(result[0].id, result[0]);
-        // const report = new ReportDTO(result[0]);
 
         if (result.length !== 0) {
             report.id = reportId;
