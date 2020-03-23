@@ -24,8 +24,9 @@ export class APISpecification {
                     post: this.buildReportsCreatePath()
                 },
                 "/reports/:id": {
-                    put: this.buildReportsEditPath()
-                }
+                    put: this.buildReportsEditPath(),
+                    delete: this.buildReportsDeletePath()
+                },
             },
             components: {
                 schemas: {
@@ -38,6 +39,7 @@ export class APISpecification {
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
                     CreateReportResponseSchema: this.buildCreateReportResponseSchema(),
                     EditReportResponseSchema: this.buildEditReportResponseSchema(),
+                    DeleteReportResponseSchema: this.buildDeleteReportResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema()
                 }
@@ -195,6 +197,41 @@ export class APISpecification {
                 ...this.buildCommonResponses()
             }
         }
+    }
+
+    private buildReportsDeletePath() {
+        return {
+            summary: "Deletes a report",
+            description: "Deletes a report with the given ID.",
+            tags: [
+                "Reports"
+            ],
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    description: "The ID of the report.",
+                    schema: {
+                        type: "number",
+                        minimum: 1
+                    }
+                }
+            ],
+            responses: {
+                200: {
+                    description: "Report was successfully archived.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/DeleteReportResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        };
     }
 
     private buildRegisterUserSchema() {
@@ -385,6 +422,25 @@ export class APISpecification {
         }
     }
 
+    private buildDeleteReportResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean"
+                        },
+                        message: {
+                            type: "string"
+                        }
+                    }
+                }
+            }
+        };
+    }
+
     private buildBadRequestResponseSchema() {
         return {
             type: "object",
@@ -409,7 +465,6 @@ export class APISpecification {
             }
         };
     }
-
 
     private buildCommonResponses() {
         return {
