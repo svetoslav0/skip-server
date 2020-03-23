@@ -1,6 +1,6 @@
-import {MysqlDatabase} from "../database/MysqlDatabase";
-import {ReportDTO} from "../data/reports/ReportDTO";
-import {ReportEditDTO} from "../data/reports/ReportEditDTO";
+import { MysqlDatabase } from "../database/MysqlDatabase";
+import { ReportDTO } from "../data/reports/ReportDTO";
+import { ReportEditDTO } from "../data/reports/ReportEditDTO";
 
 export class ReportsModel {
     private db: MysqlDatabase;

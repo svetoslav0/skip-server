@@ -42,8 +42,6 @@ export class ReportsController {
                 .setReportId(reportId)
                 .setSuccess(true)
                 .setMessage(this.SUCCESSFUL_CREATED_MESSAGE);
-
-            return responseBuilder;
         } catch (validationError) {
             const errors: string[] = validationError
                 .map((error: any) => error.constraints)
@@ -55,9 +53,9 @@ export class ReportsController {
                 .setSuccess(false)
                 .setMessage(this.CREATION_FAILED_MESSAGE)
                 .setErrors(errors);
-
-            return responseBuilder;
         }
+
+        return responseBuilder;
     }
 
     public async edit(request: express.Request): Promise<ReportsResponseBuilder> {
@@ -85,35 +83,29 @@ export class ReportsController {
                 .map((error: any) => Object.values(error))
                 .flat();
 
-            responseBuilder
+            return responseBuilder
                 .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
                 .setSuccess(false)
                 .setMessage(this.UPDATE_FAILED_MESSAGE)
                 .setErrors(errors);
-
-            return responseBuilder;
         }
 
         const isUpdated: boolean = await this.reportsModel.update(report);
 
         if (isUpdated) {
-            responseBuilder
+            return responseBuilder
                 .setHttpStatus(this.SUCCESS_STATUS_CODE)
                 .setReportId(reportId)
                 .setSuccess(true)
                 .setMessage(this.SUCCESSFUL_UPDATE_MESSAGE);
-
-            return responseBuilder;
         }
 
-        responseBuilder
+        return responseBuilder
             .setHttpStatus(this.INTERNAL_SERVER_ERROR_STATUS_CODE)
             .setSuccess(false)
             .setMessage(this.MAIN_ERROR_MESSAGE)
             .setErrors(errors)
             .fillErrors(this.UPDATE_FAILED_MESSAGE);
-
-        return responseBuilder;
     }
 
     public async archive(request: express.Request) {
