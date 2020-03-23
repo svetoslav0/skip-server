@@ -7,12 +7,15 @@ import cors from "cors";
 import { UsersRouter } from "./routers/UsersRouter";
 import { MysqlDatabase } from "./database/MysqlDatabase";
 import { ReportsRouter } from "./routers/ReportsRouter";
+import { ClassesRouter } from "./routers/ClassesRouter"
+
 import { APISpecification } from "./APISpecification";
 
 const database = new MysqlDatabase();
 
 const usersRouter = new UsersRouter(database);
 const reportsRouter = new ReportsRouter(database);
+const classesRouter = new ClassesRouter(database);
 
 const server = express();
 const port: number = +(process.env.SERVER_PORT || 8080);
@@ -24,6 +27,7 @@ server.use(bodyParser.urlencoded({
 
 server.use("/users", usersRouter.registerRoutes());
 server.use("/reports", reportsRouter.registerRoutes());
+server.use("/classes", classesRouter.registerRoutes());
 
 server.get("/specification", (req, res) => {
     res.send(
