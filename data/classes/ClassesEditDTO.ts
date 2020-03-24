@@ -1,6 +1,6 @@
 import { IsDefined } from "class-validator";
 import { ClassesDTO } from "./ClassesDTO";
-import {IsClassIdExisting} from "./validators/IsClassIdExisting";
+import {IsClassIdExisting} from "../validators/IsClassIdExisting";
 
 
 export class ClassesEditDTO {

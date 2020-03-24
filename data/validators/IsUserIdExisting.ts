@@ -5,18 +5,19 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface
 } from "class-validator";
-import { MysqlDatabase } from "../../../database/MysqlDatabase";
-import { ClassesModel } from "../../../models/ClassesModel";
+import { MysqlDatabase } from "../../database/MysqlDatabase";
+import { UsersModel } from "../../models/UsersModel";
 
 @ValidatorConstraint({async: true})
-export class IsClassIdExistingConstraint implements ValidatorConstraintInterface {
+export class IsUserIdExistingConstraint implements ValidatorConstraintInterface {
     validate(id: number, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
         return new Promise(async resolve => {
             if (!id) {
+
                 resolve(true);
             }
 
-            const result = await new ClassesModel(new MysqlDatabase())
+            const result = await new UsersModel(new MysqlDatabase())
                 .findById(id);
 
             resolve(!!result);
@@ -24,14 +25,14 @@ export class IsClassIdExistingConstraint implements ValidatorConstraintInterface
     }
 }
 
-export function IsClassIdExisting(validationOptions: ValidationOptions) {
+export function IsUserIdExisting(validationOptions: ValidationOptions) {
     return function (object: Object, propertyName: string) {
         registerDecorator({
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,
             constraints: [],
-            validator: IsClassIdExistingConstraint
+            validator: IsUserIdExistingConstraint
         })
     }
 }

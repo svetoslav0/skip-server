@@ -5,8 +5,8 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface
 } from "class-validator";
-import { MysqlDatabase } from "../../../database/MysqlDatabase";
-import { UsersModel } from "../../../models/UsersModel";
+import { MysqlDatabase } from "../../database/MysqlDatabase";
+import { UsersModel } from "../../models/UsersModel";
 
 @ValidatorConstraint({async: true})
 export class IsEmailUniqueConstraint implements ValidatorConstraintInterface {
