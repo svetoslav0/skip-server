@@ -1,18 +1,15 @@
-import {validateOrReject} from "class-validator";
+import { validateOrReject } from "class-validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { UsersModel } from "../../models/UsersModel";
 import { UserDTO } from "../../data/users/UserDTO";
 import { UsersResponseBuilder } from "../../data/users/UsersResponseBuilder";
+import { BaseController } from "../BaseController";
 
-export class UsersController {
+export class UsersController extends BaseController {
 
     private readonly SALT_DIFFICULTY: number = 10;
-
-    private readonly SUCCESS_LOGIN_STATUS_CODE: number = 200;
-    private readonly SUCCESS_REGISTER_STATUS_CODE: number = 201;
-    private readonly BAD_REQUEST_STATUS_CODE: number = 400;
 
     private readonly REGISTER_SUCCESS_MESSAGE: string = "User registered successfully.";
     private readonly REGISTER_FAILED_MESSAGE: string = "The given request is invalid. Some errors have appeared.";
@@ -23,6 +20,7 @@ export class UsersController {
     private usersModel: UsersModel;
 
     constructor(usersModel: UsersModel) {
+        super();
         this.usersModel = usersModel;
     }
 
@@ -41,19 +39,16 @@ export class UsersController {
             const userId: number = await this.usersModel.add(user);
 
             return responseBuilder
-                .setHttpStatus(this.SUCCESS_REGISTER_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_CREATED)
                 .setUserId(userId)
                 .setSuccess(true)
                 .setMessage(this.REGISTER_SUCCESS_MESSAGE);
 
         } catch (validationError) {
-            const errors: string[] = validationError
-                .map((error: any) => error.constraints)
-                .map((error: any) => Object.values(error))
-                .flat();
+            const errors: string[] = this.buildValidationErrors(validationError);
 
             return responseBuilder
-                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(this.REGISTER_FAILED_MESSAGE)
                 .setErrors(errors);
@@ -72,7 +67,7 @@ export class UsersController {
 
         if (!isPasswordValid || !user) {
             return responseBuilder
-                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(this.UNSUCCESSFUL_LOGIN_MESSAGE);
         }
@@ -85,7 +80,7 @@ export class UsersController {
         const token = jwt.sign(payload, process.env.TOKEN_SECRET || "");
 
         return responseBuilder
-            .setHttpStatus(this.SUCCESS_LOGIN_STATUS_CODE)
+            .setHttpStatus(this.STATUS_CODE_OK)
             .setSuccess(true)
             .setMessage(this.SUCCESS_LOGIN_MESSAGE)
             .setAuthToken(token);

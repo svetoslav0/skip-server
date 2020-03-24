@@ -4,24 +4,16 @@ import { ReportDTO } from "../../data/reports/ReportDTO";
 import { validateOrReject } from "class-validator";
 import { ReportEditDTO } from "../../data/reports/ReportEditDTO";
 import { ReportsResponseBuilder } from "../../data/reports/ReportsResponseBuilder";
+import { BaseController } from "../BaseController";
 
-export class ReportsController {
-    private readonly SUCCESS_STATUS_CODE: number = 200;
-    private readonly CREATED_STATUS_CODE: number = 201;
-    private readonly BAD_REQUEST_STATUS_CODE: number = 400;
-    private readonly INTERNAL_SERVER_ERROR_STATUS_CODE: number = 500;
+export class ReportsController extends BaseController{
 
-    private readonly SUCCESSFUL_CREATED_MESSAGE: string = "Report successfully created.";
-    private readonly SUCCESSFUL_UPDATE_MESSAGE: string = "Report has been successfully updated.";
-    private readonly SUCCESSFUL_ARCHIVED_MESSAGE: string = "Report has been successfully archived";
-    private readonly CREATION_FAILED_MESSAGE: string = "Report with the given parameters cannot be created!";
-    private readonly UPDATE_FAILED_MESSAGE: string = "Report with the given parameters cannot be update!";
-    private readonly ARCHIVE_FAILED_MESSAGE: string = "Report with the given 'id' cannot be updated!";
-    private readonly MAIN_ERROR_MESSAGE: string = "Something went wrong...";
+    private readonly CONTROLLER_NAME: string = "Report";
 
     private reportsModel: ReportsModel;
 
     constructor(reportsModel: ReportsModel) {
+        super();
         this.reportsModel = reportsModel;
     }
 
@@ -39,20 +31,17 @@ export class ReportsController {
             const reportId: number = await this.reportsModel.add(report);
 
             responseBuilder
-                .setHttpStatus(this.CREATED_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_CREATED)
                 .setReportId(reportId)
                 .setSuccess(true)
-                .setMessage(this.SUCCESSFUL_CREATED_MESSAGE);
+                .setMessage(this.buildSuccessfullyCreatedMessage(this.CONTROLLER_NAME));
         } catch (validationError) {
-            const errors: string[] = validationError
-                .map((error: any) => error.constraints)
-                .map((error: any) => Object.values(error))
-                .flat();
+            const errors: string[] = this.buildValidationErrors(validationError);
 
             responseBuilder
-                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(this.CREATION_FAILED_MESSAGE)
+                .setMessage(this.buildFailedCreationMessage(this.CONTROLLER_NAME))
                 .setErrors(errors);
         }
 
@@ -79,15 +68,12 @@ export class ReportsController {
 
             await validateOrReject(report);
         } catch (validationError) {
-            errors = validationError
-                .map((error: any) => error.constraints)
-                .map((error: any) => Object.values(error))
-                .flat();
+            errors = this.buildValidationErrors(validationError);
 
             return responseBuilder
-                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(this.UPDATE_FAILED_MESSAGE)
+                .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
                 .setErrors(errors);
         }
 
@@ -95,18 +81,18 @@ export class ReportsController {
 
         if (isUpdated) {
             return responseBuilder
-                .setHttpStatus(this.SUCCESS_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_OK)
                 .setReportId(reportId)
                 .setSuccess(true)
-                .setMessage(this.SUCCESSFUL_UPDATE_MESSAGE);
+                .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME));
         }
 
         return responseBuilder
-            .setHttpStatus(this.INTERNAL_SERVER_ERROR_STATUS_CODE)
+            .setHttpStatus(this.STATUS_CODE_INTERNAL_SERVER_ERROR)
             .setSuccess(false)
             .setMessage(this.MAIN_ERROR_MESSAGE)
             .setErrors(errors)
-            .fillErrors(this.UPDATE_FAILED_MESSAGE);
+            .fillErrors(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME));
     }
 
     public async archive(request: express.Request) {
@@ -118,22 +104,22 @@ export class ReportsController {
 
         if (!report) {
             return responseBuilder
-                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(this.ARCHIVE_FAILED_MESSAGE);
+                .setMessage(this.buildFailedArchivingMessage(this.CONTROLLER_NAME));
         }
 
         const isArchived: boolean = await this.reportsModel.archive(reportId);
 
         if (isArchived) {
             return responseBuilder
-                .setHttpStatus(this.SUCCESS_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_OK)
                 .setSuccess(true)
-                .setMessage(this.SUCCESSFUL_ARCHIVED_MESSAGE);
+                .setMessage(this.buildSuccessfullyArchivedMessage(this.CONTROLLER_NAME));
         }
 
         return responseBuilder
-            .setHttpStatus(this.INTERNAL_SERVER_ERROR_STATUS_CODE)
+            .setHttpStatus(this.STATUS_CODE_INTERNAL_SERVER_ERROR)
             .setSuccess(false)
             .setMessage(this.MAIN_ERROR_MESSAGE);
     }
