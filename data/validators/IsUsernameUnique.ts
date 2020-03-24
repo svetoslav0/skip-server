@@ -5,30 +5,30 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface
 } from "class-validator";
-import { UserDTO } from "../UserDTO";
-
+import { MysqlDatabase } from "../../database/MysqlDatabase";
+import { UsersModel } from "../../models/UsersModel";
 
 @ValidatorConstraint({async: true})
-export class UsernameMinLengthConstraint implements ValidatorConstraintInterface {
+export class IsUsernameUniqueConstraint implements ValidatorConstraintInterface {
     validate(username: string, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
-        let result: boolean = true;
+        return new Promise((async resolve => {
+                const result = await new UsersModel(new MysqlDatabase())
+                    .isUsernameUnique(username);
 
-        if (username) {
-            result = username.length >= UserDTO.MIN_USERNAME_LENGTH;
-        }
-
-        return result;
+                resolve(result);
+            }
+        ));
     }
 }
 
-export function UsernameMinLength(validationOptions: ValidationOptions) {
+export function IsUsernameUnique(validationOptions: ValidationOptions) {
     return function (object: Object, propertyName: string) {
         registerDecorator({
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,
             constraints: [],
-            validator: UsernameMinLengthConstraint
+            validator: IsUsernameUniqueConstraint
         })
     }
 }

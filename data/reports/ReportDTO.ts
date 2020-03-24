@@ -1,5 +1,5 @@
 import { IsDefined } from "class-validator";
-import { IsUserIdExisting } from "./validators/IsUserIdExisting";
+import { IsUserIdExisting } from "../validators/IsUserIdExisting";
 
 export class ReportDTO {
 

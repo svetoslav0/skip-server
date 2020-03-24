@@ -1,8 +1,8 @@
-import { IsEmail, MinLength, MaxLength, IsDefined } from "class-validator";
-import { IsUsernameUnique } from "./validators/IsUsernameUnique";
-import { IsEmailUnique } from "./validators/IsEmailUnique";
-import { UsernameMinLength } from "./validators/UsernameMinLength";
-import { UsernameMaxLength } from "./validators/UsernameMaxLength";
+import { IsEmail, IsDefined, Validate } from "class-validator";
+import { IsUsernameUnique } from "../validators/IsUsernameUnique";
+import { IsEmailUnique } from "../validators/IsEmailUnique";
+import { MinimumLength } from "../validators/MinimumLength";
+import { MaximumLength } from "../validators/MaximumLength";
 
 export class UserDTO {
     private static readonly USERNAME_NOT_DEFINED_MESSAGE: string = "Field 'username' is required!";
@@ -33,10 +33,10 @@ export class UserDTO {
     @IsDefined({
         message: UserDTO.USERNAME_NOT_DEFINED_MESSAGE
     })
-    @UsernameMinLength({
+    @Validate(MinimumLength, [UserDTO.MIN_USERNAME_LENGTH], {
         message: UserDTO.MIN_LENGTH_USERNAME_MESSAGE
     })
-    @UsernameMaxLength({
+    @Validate(MaximumLength, [UserDTO.MAX_USERNAME_LENGTH], {
         message: UserDTO.MAX_LENGTH_USERNAME_MESSAGE
     })
     @IsUsernameUnique({
@@ -60,11 +60,11 @@ export class UserDTO {
     @IsDefined({
         message: UserDTO.PASSWORD_NOT_DEFINED_MESSAGE
     })
-    @MinLength(UserDTO.MIN_PASSWORD_LENGTH, {
-        message: UserDTO.MIN_LENGTH_PASSWORD_MESSAGE,
+    @Validate(MinimumLength, [UserDTO.MIN_PASSWORD_LENGTH], {
+        message: UserDTO.MIN_LENGTH_PASSWORD_MESSAGE
     })
-    @MaxLength(UserDTO.MAX_PASSWORD_LENGTH, {
-        message: UserDTO.MAX_LENGTH_PASSWORD_MESSAGE,
+    @Validate(MaximumLength, [UserDTO.MAX_PASSWORD_LENGTH], {
+        message: UserDTO.MAX_LENGTH_PASSWORD_MESSAGE
     })
     private _password: string;
 

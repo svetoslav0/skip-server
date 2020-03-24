@@ -1,7 +1,7 @@
 import { IsDefined } from "class-validator";
-import { IsUserIdExisting } from "./validators/IsUserIdExisting";
+import { IsUserIdExisting } from "../validators/IsUserIdExisting";
 import { ReportDTO } from "./ReportDTO";
-import { IsIdExisting } from "./validators/IsIdExisting";
+import { IsReportIdExisting } from "../validators/IsReportIdExisting";
 
 export class ReportEditDTO {
 
@@ -11,7 +11,7 @@ export class ReportEditDTO {
     @IsDefined({
         message: ReportEditDTO.ID_NOT_DEFINED_MESSAGE
     })
-    @IsIdExisting({
+    @IsReportIdExisting({
         message: ReportEditDTO.ID_NOT_EXISTING_MESSAGE
     })
     private _id: number;
