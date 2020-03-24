@@ -59,7 +59,7 @@ export class ReportsRouter {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
-                })
-        })
+                });
+        });
     }
 }
