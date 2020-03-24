@@ -4,18 +4,16 @@ import { ClassesDTO } from "../../data/classes/ClassesDTO";
 import { ClassesEditDTO } from "../../data/classes/ClassesEditDTO";
 import { ClassesResponseBuilder } from "../../data/classes/ClassesResponseBuilder";
 import { validateOrReject } from "class-validator";
+import { BaseController } from "../BaseController";
 
-export class ClassesController {
+export class ClassesController extends BaseController{
 
-    private readonly SUCCESSFULLY_CREATED_STATUS_CODE: number = 201;
-    private readonly BAD_REQUEST_STATUS_CODE: number = 400;
-
-    private readonly SUCCESS_MESSAGE: string = "Class was successfully created!";
-    private readonly UNSUCCESSFUL_CREATION: string = "Class with given parameters cannot be created!";
+    private readonly CONTROLLER_NAME: string = "Class";
 
     private classesModel: ClassesModel;
 
     constructor(classesModel: ClassesModel) {
+        super();
         this.classesModel = classesModel;
     }
 
@@ -30,10 +28,10 @@ export class ClassesController {
             const classId: number = await this.classesModel.add(currentClass);
 
             return responseBuilder
-                .setHttpStatus(this.SUCCESSFULLY_CREATED_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_CREATED)
                 .setClassId(classId)
                 .setSuccess(true)
-                .setMessage(this.SUCCESS_MESSAGE);
+                .setMessage(this.buildSuccessfullyCreatedMessage(this.CONTROLLER_NAME));
 
         } catch (validationError) {
             const errors: string[] = validationError
@@ -42,9 +40,9 @@ export class ClassesController {
                 .flat();
 
             return responseBuilder
-                .setHttpStatus(this.BAD_REQUEST_STATUS_CODE)
+                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(this.UNSUCCESSFUL_CREATION)
+                .setMessage(this.buildFailedCreationMessage(this.CONTROLLER_NAME))
                 .setErrors(errors)
         }
     }
