@@ -95,7 +95,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 userId: userIdToSend
             };
 
-            const expectedHttpStatus: number = 400;
+            const expectedHttpStatus: number = 401;
 
             return request(server)
                 .post(CREATE_URL)
