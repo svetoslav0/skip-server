@@ -7,7 +7,7 @@ import { validateOrReject } from "class-validator";
 
 export class ClassesController {
 
-    private readonly SUCCESS_STATUS_CODE: number = 200;
+    private readonly SUCCESSFULLY_CREATED_STATUS_CODE: number = 201;
     private readonly BAD_REQUEST_STATUS_CODE: number = 400;
 
     private readonly SUCCESS_MESSAGE: string = "Class was successfully created!";
@@ -30,7 +30,7 @@ export class ClassesController {
             const classId: number = await this.classesModel.add(currentClass);
 
             return responseBuilder
-                .setHttpStatus(this.SUCCESS_STATUS_CODE)
+                .setHttpStatus(this.SUCCESSFULLY_CREATED_STATUS_CODE)
                 .setClassId(classId)
                 .setSuccess(true)
                 .setMessage(this.SUCCESS_MESSAGE);
