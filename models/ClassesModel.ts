@@ -43,4 +43,21 @@ export class ClassesModel {
 
         return new ClassesEditDTO(result[0].id, result[0]);
     }
+
+    /**
+     * *** USED FOR TEST PURPOSES ***
+     * Deletes class from the database by given report ID
+     * @param {number} id
+     * @return Promise<boolean>
+     */
+    public async deleteById(id: number): Promise<boolean> {
+        const result = await this.db.query(`
+            DELETE FROM
+                classes
+            WHERE
+                id = ?
+        `, [id]);
+
+        return result.affectedRows === 1;
+    }
 }
