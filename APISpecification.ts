@@ -27,6 +27,9 @@ export class APISpecification {
                     put: this.buildReportsEditPath(),
                     delete: this.buildReportsDeletePath()
                 },
+                "/classes": {
+                    post: this.buildClassesCreatePath()
+                }
             },
             components: {
                 schemas: {
@@ -34,12 +37,14 @@ export class APISpecification {
                     LoginUserSchema: this.buildLoginUserSchema(),
                     CreateReportRequestSchema: this.buildCreateReportRequestSchema(),
                     EditReportRequestSchema: this.buildEditReportRequestSchema(),
+                    CreateClassRequestSchema: this.buildCreateClassRequestSchema(),
 
                     LoginResponseSchema: this.buildLoginResponseSchema(),
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
                     CreateReportResponseSchema: this.buildCreateReportResponseSchema(),
                     EditReportResponseSchema: this.buildEditReportResponseSchema(),
                     DeleteReportResponseSchema: this.buildDeleteReportResponseSchema(),
+                    CreateClassResponseSchema: this.buildCreateClassResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema()
                 }
@@ -234,6 +239,39 @@ export class APISpecification {
         };
     }
 
+    private buildClassesCreatePath() {
+        return {
+            summary: "Create new class.",
+            description: "Create new class and give it a name",
+            tags: [
+                "Classes"
+            ],
+            requestBody: {
+                required: true,
+                content: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
+                        schema: {
+                            $ref: "#/components/schemas/CreateClassRequestSchema"
+                        }
+                    }
+                }
+            },
+            responses: {
+                201: {
+                    description: "Class was successfully created.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/CreateClassResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        }
+    }
+
     private buildRegisterUserSchema() {
         return {
             type: "object",
@@ -338,6 +376,25 @@ export class APISpecification {
         }
     }
 
+    private buildCreateClassRequestSchema() {
+        return {
+            type: "object",
+            properties: {
+                name: {
+                    type: "string",
+                    example: "HTML5 & CSS3"
+                },
+                ageGroup: {
+                    type: "string",
+                    example: "4 - 6 Grade"
+                }
+            },
+            required: [
+                "name"
+            ]
+        }
+    }
+
     private buildCreatedUserResponseSchema() {
         return {
             type: "object",
@@ -439,6 +496,28 @@ export class APISpecification {
                 }
             }
         };
+    }
+
+    private buildCreateClassResponseSchema() {
+        return  {
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean"
+                        },
+                        classId: {
+                            type: "number",
+                            description: "The ID of the new class"
+                        },
+                        message: {
+                            type: "string"
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private buildBadRequestResponseSchema() {
