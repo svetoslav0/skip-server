@@ -7,6 +7,7 @@ import { ReportsResponseBuilder } from "../../data/reports/ReportsResponseBuilde
 
 export class ReportsController {
     private readonly SUCCESS_STATUS_CODE: number = 200;
+    private readonly CREATED_STATUS_CODE: number = 201;
     private readonly BAD_REQUEST_STATUS_CODE: number = 400;
     private readonly INTERNAL_SERVER_ERROR_STATUS_CODE: number = 500;
 
@@ -38,7 +39,7 @@ export class ReportsController {
             const reportId: number = await this.reportsModel.add(report);
 
             responseBuilder
-                .setHttpStatus(this.SUCCESS_STATUS_CODE)
+                .setHttpStatus(this.CREATED_STATUS_CODE)
                 .setReportId(reportId)
                 .setSuccess(true)
                 .setMessage(this.SUCCESSFUL_CREATED_MESSAGE);

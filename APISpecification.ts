@@ -144,7 +144,7 @@ export class APISpecification {
                 }
             },
             responses: {
-                200: {
+                201: {
                     description: "Report was created successfully.",
                     content: {
                         [this.JSON_CONTENT_TYPE]: {

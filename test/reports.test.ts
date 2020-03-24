@@ -45,7 +45,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                  userId: userIdToSend
              };
 
-             const expectedHttpStatus: number = 200;
+             const expectedHttpStatus: number = 201;
              const expectedIsReportDeleted: boolean = true;
 
              return request(server)
@@ -277,7 +277,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
-        it(`Should not archive the report. 
+        it(`Should not archive the report.
         The given ID does not correspond to an existing report.`, () => {
             const reportIdToSend: number = 99999;
 
