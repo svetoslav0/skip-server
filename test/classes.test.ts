@@ -1,27 +1,22 @@
-process.env.ENVIRONMENT = "test";
+const {
+    server,
+    database,
+    expect,
+    Request,
+    CONTENT_TYPE_HEADING,
+    DEFAULT_CONTENT_TYPE,
+    TOKEN_HEADING,
+    token
+} = require("./base");
 
-import { server, database } from "../server";
+const {
+    noTokenTest,
+    wrongTokenTest
+} = require("./commonTests");
+
 import { ClassesModel } from "../models/ClassesModel";
 
-import { config } from "dotenv";
-import { resolve } from "path";
-
-config({ path: resolve(__dirname, "../.env") });
-
-import chai from "chai";
-import chaiHttp from "chai-http";
-import "mocha";
-
-chai.use(chaiHttp);
-
-const expect = chai.expect;
-const request = chai.request;
-
 const classesModel: ClassesModel = new ClassesModel(database);
-
-const DEFAULT_CONTENT_TYPE: string = "application/x-www-form-urlencoded";
-const CONTENT_TYPE_HEADING: string = "content-type";
-const TOKEN_HEADING: string = "auth-token";
 
 const CLASSES_CONTROLLER_URL: string = "/classes";
 const CREATE_URL: string = `${CLASSES_CONTROLLER_URL}`;
@@ -32,10 +27,11 @@ const ARCHIVE_URL = (id: number) => {
     return `${CLASSES_CONTROLLER_URL}/${id}`;
 };
 
-const token: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGVJZCI6MiwiaWF0IjoxNTg0Mjg2MjUzfQ.dUm6sU7RobQucIRH3Vf1C-tr2EgwL0gQ49xQ9CAPIqs";
-
 describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
     describe(`POST ${CREATE_URL} tests`, () => {
+        noTokenTest(CREATE_URL);
+        wrongTokenTest(CREATE_URL);
+
         it(`Should add a new class. Should delete it after the test finishes.`, () => {
             const nameToSend: string = "Scratch games";
             const ageGroupToSend: string = "2 - 3 grade";
@@ -49,18 +45,18 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const expectedSuccess: boolean = true;
             const expectedIsReportDeleted: boolean = true;
 
-            return request(server)
+            return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
                 .send(objectToSend)
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedHttpStatus);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
 
                     return result.body.data.classId;
                 })
-                .then(async (id) => {
+                .then(async (id: number) => {
                     const result = await classesModel.deleteById(id);
                     await expect(result).to.eql(expectedIsReportDeleted);
                 });
@@ -77,18 +73,18 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const expectedStatus: number = 201;
             const expectedSuccess: boolean = true;
 
-            return request(server)
+            return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
                 .send(objectToSend)
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedStatus);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
 
                     return result.body.data.classId;
                 })
-                .then(async (classId) => {
+                .then(async (classId: number) => {
                     const result = await classesModel.deleteById(classId);
                     await expect(result).to.eql(expectedSuccess);
                 });
@@ -105,12 +101,12 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const expectedSuccess: boolean = false;
             const expectedErrors: number = 1;
 
-            return request(server)
+            return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
                 .send(objectToSend)
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedStatus);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
                     await expect(result.body.data.errors.length).to.eql(expectedErrors);
