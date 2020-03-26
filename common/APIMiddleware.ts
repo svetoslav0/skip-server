@@ -41,7 +41,7 @@ export class APIMiddleware {
         } catch (error) {
             return {
                 isAuthorized: false,
-                status: APIMiddleware.BAD_REQUEST_STATUS_CODE,
+                status: APIMiddleware.UNAUTHORIZED_STATUS_CODE,
                 response: APIMiddleware.buildResponse(APIMiddleware.INVALID_TOKEN_MESSAGE)
             };
         }

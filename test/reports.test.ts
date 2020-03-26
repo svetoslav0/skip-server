@@ -1,27 +1,22 @@
-process.env.ENVIRONMENT = "test";
+const {
+    server,
+    database,
+    expect,
+    Request,
+    CONTENT_TYPE_HEADING,
+    DEFAULT_CONTENT_TYPE,
+    TOKEN_HEADING,
+    token
+} = require("./base");
 
-import { server, database } from "../server";
+const {
+    noTokenTest,
+    wrongTokenTest
+} = require("./commonTests");
+
 import { ReportsModel } from "../models/ReportsModel";
 
-import { config } from "dotenv";
-import { resolve } from "path";
-
-config({ path: resolve(__dirname, "../.env") });
-
-import chai from "chai";
-import chaiHttp from "chai-http";
-import "mocha";
-
-chai.use(chaiHttp);
-
-const expect = chai.expect;
-const request = chai.request;
-
 const reportsModel: ReportsModel = new ReportsModel(database);
-
-const DEFAULT_CONTENT_TYPE: string = "application/x-www-form-urlencoded";
-const CONTENT_TYPE_HEADING: string = "content-type";
-const TOKEN_HEADING: string = "auth-token";
 
 const REPORTS_CONTROLLERS_URL: string = "/reports";
 const CREATE_URL: string = `${REPORTS_CONTROLLERS_URL}`;
@@ -32,10 +27,12 @@ const ARCHIVE_URL = (id: number) => {
     return `${REPORTS_CONTROLLERS_URL}/${id}`;
 };
 
-const token: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGVJZCI6MiwiaWF0IjoxNTg0Mjg2MjUzfQ.dUm6sU7RobQucIRH3Vf1C-tr2EgwL0gQ49xQ9CAPIqs";
-
 describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     describe(`POST ${CREATE_URL} tests`, () => {
+
+        noTokenTest(CREATE_URL);
+        wrongTokenTest(CREATE_URL);
+
         it("Should add a new report. After the test passes, the new report should be deleted.", () => {
              const nameToSend: string = "September 2019";
              const userIdToSend: number = 4;
@@ -48,63 +45,20 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
              const expectedHttpStatus: number = 201;
              const expectedIsReportDeleted: boolean = true;
 
-             return request(server)
+             return Request(server)
                  .post(CREATE_URL)
                  .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                  .set(TOKEN_HEADING, token)
                  .send(objectToSend)
-                 .then(async (result) => {
+                 .then(async (result: any) => {
                      await expect(result.status).to.eql(expectedHttpStatus);
 
                      return result.body.data.reportId;
                  })
-                 .then(async (reportId) => {
+                 .then(async (reportId: number) => {
                      const result = await reportsModel.deleteById(reportId);
                      await expect(result).to.eql(expectedIsReportDeleted);
                  });
-        });
-
-        it("Should not add a new report. No 'auth-token' header was provided.", () => {
-            const nameToSend: string = "May 2020";
-            const userIdToSend: number = 4;
-
-            const objectToSend = {
-                name: nameToSend,
-                userId: userIdToSend
-            };
-
-            const expectedHttpStatus: number = 401;
-
-            return request(server)
-                .post(CREATE_URL)
-                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .send(objectToSend)
-                .then(async (result) => {
-                    await expect(result.status).to.eql(expectedHttpStatus);
-
-                });
-        });
-
-        it("Should not add a new report. Header 'auth-token' is provided but is invalid.", () => {
-            const nameToSend: string = "August 2020";
-            const userIdToSend: number = 4;
-            const wrongTokenToSet: string = "WrOnGtOkEn";
-
-            const objectToSend = {
-                name: nameToSend,
-                userId: userIdToSend
-            };
-
-            const expectedHttpStatus: number = 401;
-
-            return request(server)
-                .post(CREATE_URL)
-                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, wrongTokenToSet)
-                .send(objectToSend)
-                .then(async (result) => {
-                    await expect(result.status).to.eql(expectedHttpStatus);
-                });
         });
 
         it("Should not add a new report. Field 'name' is not provided.", () => {
@@ -122,12 +76,12 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = false;
             const expectedErrorsCount: number = 1;
 
-            return request(server)
+            return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
                 .send(objectToSend)
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedHttpStatus);
                     await expect(result.body.data).to.have.property(expectedSuccessProperty);
                     await expect(result.body.data).to.have.property(expectedMessageProperty);
@@ -155,12 +109,12 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = false;
             const minimumExpectedErrorsCount: number = 1;
 
-            return request(server)
+            return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
                 .send(objectToSend)
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedHttpStatus);
                     await expect(result.body.data).to.have.property(expectedSuccessProperty);
                     await expect(result.body.data).to.have.property(expectedMessageProperty);
@@ -182,11 +136,11 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = false;
             const minimumExpectedErrorsCount: number = 2;
 
-            return request(server)
+            return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedHttpStatus);
                     await expect(result.body.data).to.have.property(expectedErrorsProperty);
                     await expect(result.body.data).to.have.property(expectedMessageProperty);
@@ -201,6 +155,10 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     });
 
     describe(`PUT ${REPORTS_CONTROLLERS_URL}/{id} tests`, () => {
+
+        noTokenTest(REPORTS_CONTROLLERS_URL);
+        wrongTokenTest(REPORTS_CONTROLLERS_URL);
+
         it("Should update an report.",  () => {
             const nameToSend: string = "October 2020";
             const userIdToSend: number = 4;
@@ -214,12 +172,12 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedStatus: number = 200;
             const expectedSuccess: boolean = true;
 
-            return request(server)
+            return Request(server)
                 .put(EDIT_URL(reportIdToUpdate))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
                 .send(objectToSend)
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedStatus);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
                     await expect(result.body.data.reportId).to.eql(reportIdToUpdate);
@@ -241,12 +199,12 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = false;
             const expectedErrorsProperty: string = "errors";
 
-            return request(server)
+            return Request(server)
                 .put(EDIT_URL(reportIdToUpdate))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
                 .send(objectToSend)
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedStatus);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
                     await expect(result.body.data).to.have.property(expectedErrorsProperty);
@@ -256,6 +214,10 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     });
 
     describe(`DELETE ${REPORTS_CONTROLLERS_URL}/id tests`, () => {
+
+        noTokenTest(REPORTS_CONTROLLERS_URL);
+        wrongTokenTest(REPORTS_CONTROLLERS_URL);
+
         it(`Should archive the report`, () => {
             const reportIdToSend: number = 14;
 
@@ -264,12 +226,12 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const successProperty: string = "success";
             const expectedSuccess: boolean = true;
 
-            return request(server)
+            return Request(server)
                 .delete(ARCHIVE_URL(reportIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
                 .send()
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedStatus);
                     await expect(result.body).to.have.property(dataProperty);
                     await expect(result.body.data).to.have.property(successProperty);
@@ -286,12 +248,12 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const successProperty: string = "success";
             const expectedSuccess: boolean = false;
 
-            return request(server)
+            return Request(server)
                 .delete(ARCHIVE_URL(reportIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, token)
                 .send()
-                .then(async (result) => {
+                .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedStatus);
                     await expect(result.body).to.have.property(dataProperty);
                     await expect(result.body.data).to.have.property(successProperty);
