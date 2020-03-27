@@ -28,7 +28,7 @@ export class UsersRouter {
     }
 
     private signLoginRoute() {
-        this.router.post("/login", (req: express.Request, res: express.Response) => {
+        this.router.post("/login", (req: express.Request, res: express.Response, next: express.NextFunction) => {
             this.controller
                 .login(req.body)
                 .then((result: UsersResponseBuilder) => {
@@ -41,19 +41,21 @@ export class UsersRouter {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
-                });
+                })
+                .catch(next);
         });
     }
 
     private signRegisterRoute() {
-        this.router.post("/register", (req: express.Request, res: express.Response) => {
+        this.router.post("/register", (req: express.Request, res: express.Response, next: express.NextFunction) => {
             this.controller
                 .register(req.body)
                 .then((result: UsersResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
-                });
+                })
+                .catch(next);
         });
     }
 }

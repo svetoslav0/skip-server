@@ -28,38 +28,50 @@ export class ReportsRouter {
     }
 
     private signCreateRoute() {
-        this.router.post("/", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
+        this.router.post("/",
+            APIMiddleware.isUserEmployee,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
             this.controller
                 .create(req)
                 .then((result: ReportsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
-                });
+                })
+                .catch(next);
         });
     }
 
     private signEditRoute() {
-        this.router.put("/:id", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
+        this.router.put("/:id",
+            APIMiddleware.isUserEmployee,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
             this.controller
                 .edit(req)
                 .then((result: ReportsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
-                });
+                })
+                .catch(next);
         });
     }
 
     private signArchiveRoute() {
-        this.router.delete("/:id", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
+        this.router.delete("/:id",
+            APIMiddleware.isUserEmployee,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
             this.controller
                 .archive(req)
                 .then((result: ReportsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
-                });
+                })
+                .catch(next);
         });
     }
 }
