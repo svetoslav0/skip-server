@@ -12,7 +12,8 @@ export class MysqlDatabase {
         return new Promise(async (resolve, reject) => {
             await this.db.query(queryString, params, (err: mysql.MysqlError | null, rows: any) => {
                 if (err) {
-                    throw err;
+                    console.error(err);
+                    reject(err);
                 }
 
                 resolve(rows);

@@ -10,6 +10,7 @@ import { ReportsRouter } from "./routers/ReportsRouter";
 import { ClassesRouter } from "./routers/ClassesRouter"
 
 import { APISpecification } from "./APISpecification";
+import { handleError } from "./common/ErrorHandler";
 
 const database = new MysqlDatabase();
 
@@ -33,6 +34,15 @@ server.get("/specification", (req, res) => {
     res.send(
         new APISpecification().buildSpecification()
     );
+});
+
+server.use((
+        err: express.ErrorRequestHandler,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction) => {
+
+    handleError(err, res);
 });
 
 server.listen(port, () => console.log(`Listening on port ${port}`));

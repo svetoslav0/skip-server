@@ -26,14 +26,18 @@ export class ClassesRouter {
     }
 
     private signCreateRoute() {
-        this.router.post("/", APIMiddleware.isUserEmployee, (req: express.Request, res: express.Response) => {
+        this.router.post("/",
+            APIMiddleware.isUserEmployee,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
             this.controller
                 .create(req)
                 .then((result: ClassesResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
-                });
+                })
+                .catch(next);
         });
     }
 }
