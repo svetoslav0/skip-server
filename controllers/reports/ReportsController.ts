@@ -1,7 +1,9 @@
 import express from "express";
+import { validateOrReject } from "class-validator";
+import httpStatus from "http-status-codes";
+
 import { ReportsModel } from "../../models/ReportsModel";
 import { ReportDTO } from "../../data/reports/ReportDTO";
-import { validateOrReject } from "class-validator";
 import { ReportEditDTO } from "../../data/reports/ReportEditDTO";
 import { ReportsResponseBuilder } from "../../data/reports/ReportsResponseBuilder";
 import { BaseController } from "../BaseController";
@@ -31,7 +33,7 @@ export class ReportsController extends BaseController{
             const reportId: number = await this.reportsModel.add(report);
 
             responseBuilder
-                .setHttpStatus(this.STATUS_CODE_CREATED)
+                .setHttpStatus(httpStatus.CREATED)
                 .setReportId(reportId)
                 .setSuccess(true)
                 .setMessage(this.buildSuccessfullyCreatedMessage(this.CONTROLLER_NAME));
@@ -39,7 +41,7 @@ export class ReportsController extends BaseController{
             const errors: string[] = this.buildValidationErrors(validationError);
 
             responseBuilder
-                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
+                .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(this.buildFailedCreationMessage(this.CONTROLLER_NAME))
                 .setErrors(errors);
@@ -71,7 +73,7 @@ export class ReportsController extends BaseController{
             errors = this.buildValidationErrors(validationError);
 
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
+                .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
                 .setErrors(errors);
@@ -81,14 +83,14 @@ export class ReportsController extends BaseController{
 
         if (isUpdated) {
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_OK)
+                .setHttpStatus(httpStatus.OK)
                 .setReportId(reportId)
                 .setSuccess(true)
                 .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME));
         }
 
         return responseBuilder
-            .setHttpStatus(this.STATUS_CODE_INTERNAL_SERVER_ERROR)
+            .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)
             .setSuccess(false)
             .setMessage(this.MAIN_ERROR_MESSAGE)
             .setErrors(errors)
@@ -104,7 +106,7 @@ export class ReportsController extends BaseController{
 
         if (!report) {
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
+                .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(this.buildFailedArchivingMessage(this.CONTROLLER_NAME));
         }
@@ -113,13 +115,13 @@ export class ReportsController extends BaseController{
 
         if (isArchived) {
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_OK)
+                .setHttpStatus(httpStatus.OK)
                 .setSuccess(true)
                 .setMessage(this.buildSuccessfullyArchivedMessage(this.CONTROLLER_NAME));
         }
 
         return responseBuilder
-            .setHttpStatus(this.STATUS_CODE_INTERNAL_SERVER_ERROR)
+            .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)
             .setSuccess(false)
             .setMessage(this.MAIN_ERROR_MESSAGE);
     }

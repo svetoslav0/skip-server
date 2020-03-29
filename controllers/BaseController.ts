@@ -1,10 +1,5 @@
 export abstract class BaseController {
 
-    protected readonly STATUS_CODE_OK: number = 200;
-    protected readonly STATUS_CODE_CREATED: number = 201;
-    protected readonly STATUS_CODE_BAD_REQUEST: number = 400;
-    protected readonly STATUS_CODE_INTERNAL_SERVER_ERROR: number = 500;
-
     protected readonly MAIN_ERROR_MESSAGE: string = "Something went wrong...";
 
     protected buildSuccessfullyCreatedMessage(controllerName: string): string {

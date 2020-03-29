@@ -1,6 +1,7 @@
 import { validateOrReject } from "class-validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import httpStatus from "http-status-codes";
 
 import { UsersModel } from "../../models/UsersModel";
 import { UserDTO } from "../../data/users/UserDTO";
@@ -39,7 +40,7 @@ export class UsersController extends BaseController {
             const userId: number = await this.usersModel.add(user);
 
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_CREATED)
+                .setHttpStatus(httpStatus.CREATED)
                 .setUserId(userId)
                 .setSuccess(true)
                 .setMessage(this.REGISTER_SUCCESS_MESSAGE);
@@ -48,7 +49,7 @@ export class UsersController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
+                .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(this.REGISTER_FAILED_MESSAGE)
                 .setErrors(errors);
@@ -67,7 +68,7 @@ export class UsersController extends BaseController {
 
         if (!isPasswordValid || !user) {
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
+                .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(this.UNSUCCESSFUL_LOGIN_MESSAGE);
         }
@@ -80,7 +81,7 @@ export class UsersController extends BaseController {
         const token = jwt.sign(payload, process.env.TOKEN_SECRET || "");
 
         return responseBuilder
-            .setHttpStatus(this.STATUS_CODE_OK)
+            .setHttpStatus(httpStatus.OK)
             .setSuccess(true)
             .setMessage(this.SUCCESS_LOGIN_MESSAGE)
             .setAuthToken(token);
