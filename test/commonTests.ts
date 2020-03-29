@@ -38,6 +38,6 @@ const wrongTokenTest = (url: string) => {
 };
 
 module.exports = {
-    noTokenTest: noTokenTest,
-    wrongTokenTest: wrongTokenTest
+    noTokenTest,
+    wrongTokenTest
 };
