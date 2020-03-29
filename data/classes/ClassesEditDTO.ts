@@ -30,6 +30,18 @@ export class ClassesEditDTO {
             .setAgeGroup(reqBody.ageGroup);
     }
 
+    get id(): number {
+        return this._id;
+    }
+
+    get name(): string {
+        return this._name;
+    }
+
+    get ageGroup(): string {
+        return this._ageGroup;
+    }
+
     public setId(id: number) {
         this._id = id;
         return this;

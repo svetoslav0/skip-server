@@ -6,7 +6,7 @@ import { ClassesResponseBuilder } from "../../data/classes/ClassesResponseBuilde
 import { validateOrReject } from "class-validator";
 import { BaseController } from "../BaseController";
 
-export class ClassesController extends BaseController{
+export class ClassesController extends BaseController {
 
     private readonly CONTROLLER_NAME: string = "Class";
 
@@ -34,10 +34,7 @@ export class ClassesController extends BaseController{
                 .setMessage(this.buildSuccessfullyCreatedMessage(this.CONTROLLER_NAME));
 
         } catch (validationError) {
-            const errors: string[] = validationError
-                .map((error: any) => error.constraints)
-                .map((error: any) => Object.values(error))
-                .flat();
+            const errors: string[] = this.buildValidationErrors(validationError);
 
             return responseBuilder
                 .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
@@ -45,5 +42,55 @@ export class ClassesController extends BaseController{
                 .setMessage(this.buildFailedCreationMessage(this.CONTROLLER_NAME))
                 .setErrors(errors)
         }
+    }
+
+    public async edit(request: express.Request): Promise<ClassesResponseBuilder> {
+        const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
+
+        const classId: number = +request.params.id;
+
+        let currentClass: ClassesEditDTO | null = await this.classesModel.findById(classId);
+
+        if (!currentClass || !currentClass.id || currentClass.id !== classId) {
+            currentClass = new ClassesEditDTO(classId, {});
+        }
+
+        let errors: string[] = [];
+
+        try {
+            currentClass
+                .setId(classId)
+                .setName(request.body.name || currentClass.name)
+                .setAgeGroup(request.body.ageGroup || currentClass.ageGroup);
+
+            await validateOrReject(currentClass);
+        } catch (validationError) {
+            errors = this.buildValidationErrors(validationError);
+
+            return responseBuilder
+                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
+                .setSuccess(false)
+                .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
+                .setErrors(errors);
+        }
+
+        const isUpdated: boolean = await this.classesModel.update(currentClass);
+
+        if (isUpdated) {
+            return responseBuilder
+                .setHttpStatus(this.STATUS_CODE_OK)
+                .setClassId(classId)
+                .setSuccess(true)
+                .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME))
+        }
+
+        return responseBuilder
+            .setHttpStatus(this.STATUS_CODE_INTERNAL_SERVER_ERROR)
+            .setSuccess(false)
+            .setMessage(this.MAIN_ERROR_MESSAGE)
+            .setErrors([
+                ...errors,
+                this.buildFailedUpdatingMessage(this.CONTROLLER_NAME)
+            ]);
     }
 }

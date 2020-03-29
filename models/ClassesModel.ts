@@ -44,6 +44,20 @@ export class ClassesModel {
         return new ClassesEditDTO(result[0].id, result[0]);
     }
 
+    public async update(currentClass: ClassesEditDTO): Promise<boolean> {
+        const result = await this.db.query(`
+            UPDATE
+                classes
+            SET
+                name = ?,
+                age_group = ?
+            WHERE
+                id = ?
+        `, [currentClass.name, currentClass.ageGroup, currentClass.id]);
+
+        return result.affectedRows === 1;
+    }
+
     /**
      * *** USED FOR TEST PURPOSES ***
      * Deletes class from the database by given report ID
