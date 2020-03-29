@@ -1,9 +1,11 @@
 import express from "express";
+import { validateOrReject } from "class-validator";
+import httpStatus from "http-status-codes";
+
 import { ClassesModel } from "../../models/ClassesModel";
 import { ClassesDTO } from "../../data/classes/ClassesDTO";
 import { ClassesEditDTO } from "../../data/classes/ClassesEditDTO";
 import { ClassesResponseBuilder } from "../../data/classes/ClassesResponseBuilder";
-import { validateOrReject } from "class-validator";
 import { BaseController } from "../BaseController";
 
 export class ClassesController extends BaseController {
@@ -28,7 +30,7 @@ export class ClassesController extends BaseController {
             const classId: number = await this.classesModel.add(currentClass);
 
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_CREATED)
+                .setHttpStatus(httpStatus.CREATED)
                 .setClassId(classId)
                 .setSuccess(true)
                 .setMessage(this.buildSuccessfullyCreatedMessage(this.CONTROLLER_NAME));
@@ -37,7 +39,7 @@ export class ClassesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
+                .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(this.buildFailedCreationMessage(this.CONTROLLER_NAME))
                 .setErrors(errors)
@@ -68,7 +70,7 @@ export class ClassesController extends BaseController {
             errors = this.buildValidationErrors(validationError);
 
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_BAD_REQUEST)
+                .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
                 .setErrors(errors);
@@ -78,14 +80,14 @@ export class ClassesController extends BaseController {
 
         if (isUpdated) {
             return responseBuilder
-                .setHttpStatus(this.STATUS_CODE_OK)
+                .setHttpStatus(httpStatus.OK)
                 .setClassId(classId)
                 .setSuccess(true)
                 .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME))
         }
 
         return responseBuilder
-            .setHttpStatus(this.STATUS_CODE_INTERNAL_SERVER_ERROR)
+            .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)
             .setSuccess(false)
             .setMessage(this.MAIN_ERROR_MESSAGE)
             .setErrors([
