@@ -2,7 +2,7 @@ import { AbstractResponseBuilder } from "../AbstractResponseBuilder";
 import { IResponseBuilder } from "../IResponseBuilder";
 import { IReportsResponseBuilder } from "./IReportsResponseBuilder";
 
-export class ReportsResponseBuilder extends AbstractResponseBuilder implements IResponseBuilder {
+export class ReportsResponseBuilder extends AbstractResponseBuilder {
 
     _reportId!: number;
 

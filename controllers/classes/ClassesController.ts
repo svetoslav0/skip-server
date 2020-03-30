@@ -7,6 +7,7 @@ import { ClassesDTO } from "../../data/classes/ClassesDTO";
 import { ClassesEditDTO } from "../../data/classes/ClassesEditDTO";
 import { ClassesResponseBuilder } from "../../data/classes/ClassesResponseBuilder";
 import { BaseController } from "../BaseController";
+import { AbstractResponseBuilder } from "../../data/AbstractResponseBuilder";
 
 export class ClassesController extends BaseController {
 
@@ -19,7 +20,7 @@ export class ClassesController extends BaseController {
         this.classesModel = classesModel;
     }
 
-    public async create(request: express.Request): Promise<ClassesResponseBuilder> {
+    public async create(request: express.Request): Promise<AbstractResponseBuilder> {
         const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
 
         try {
@@ -38,15 +39,13 @@ export class ClassesController extends BaseController {
         } catch (validationError) {
             const errors: string[] = this.buildValidationErrors(validationError);
 
-            return responseBuilder
-                .setHttpStatus(httpStatus.BAD_REQUEST)
-                .setSuccess(false)
-                .setMessage(this.buildFailedCreationMessage(this.CONTROLLER_NAME))
-                .setErrors(errors)
+            return this.buildBadRequestResponse(
+                responseBuilder, this.CONTROLLER_NAME, errors
+            );
         }
     }
 
-    public async edit(request: express.Request): Promise<ClassesResponseBuilder> {
+    public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
         const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
 
         const classId: number = +request.params.id;
@@ -69,11 +68,9 @@ export class ClassesController extends BaseController {
         } catch (validationError) {
             errors = this.buildValidationErrors(validationError);
 
-            return responseBuilder
-                .setHttpStatus(httpStatus.BAD_REQUEST)
-                .setSuccess(false)
-                .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
-                .setErrors(errors);
+            return this.buildBadRequestResponse(
+                responseBuilder, this.CONTROLLER_NAME, errors
+            );
         }
 
         const isUpdated: boolean = await this.classesModel.update(currentClass);
@@ -86,13 +83,6 @@ export class ClassesController extends BaseController {
                 .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME))
         }
 
-        return responseBuilder
-            .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)
-            .setSuccess(false)
-            .setMessage(this.MAIN_ERROR_MESSAGE)
-            .setErrors([
-                ...errors,
-                this.buildFailedUpdatingMessage(this.CONTROLLER_NAME)
-            ]);
+        return this.buildInternalErrorResponse(responseBuilder, this.CONTROLLER_NAME);
     }
 }

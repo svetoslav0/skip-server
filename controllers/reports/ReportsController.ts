@@ -7,20 +7,29 @@ import { ReportDTO } from "../../data/reports/ReportDTO";
 import { ReportEditDTO } from "../../data/reports/ReportEditDTO";
 import { ReportsResponseBuilder } from "../../data/reports/ReportsResponseBuilder";
 import { BaseController } from "../BaseController";
+import { ROLES } from "../../common/ROLES";
+import {AbstractResponseBuilder} from "../../data/AbstractResponseBuilder";
 
 export class ReportsController extends BaseController{
 
     private readonly CONTROLLER_NAME: string = "Report";
 
     private reportsModel: ReportsModel;
+    private request!: express.Request;
 
     constructor(reportsModel: ReportsModel) {
         super();
         this.reportsModel = reportsModel;
     }
 
-    public async create(request: express.Request): Promise<ReportsResponseBuilder> {
-        const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
+    /**
+     * This method handles the creation of a report and its validations
+     *
+     * @param {express.Request} request
+     * @returns {Promise<AbstractResponseBuilder>>}
+     */
+    public async create(request: express.Request): Promise<AbstractResponseBuilder> {
+        let responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
 
         try {
             const report: ReportDTO = new ReportDTO({
@@ -32,7 +41,7 @@ export class ReportsController extends BaseController{
 
             const reportId: number = await this.reportsModel.add(report);
 
-            responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
                 .setReportId(reportId)
                 .setSuccess(true)
@@ -40,18 +49,21 @@ export class ReportsController extends BaseController{
         } catch (validationError) {
             const errors: string[] = this.buildValidationErrors(validationError);
 
-            responseBuilder
-                .setHttpStatus(httpStatus.BAD_REQUEST)
-                .setSuccess(false)
-                .setMessage(this.buildFailedCreationMessage(this.CONTROLLER_NAME))
-                .setErrors(errors);
+            return this.buildBadRequestResponse(
+                responseBuilder, this.CONTROLLER_NAME, errors
+            );
         }
-
-        return responseBuilder;
     }
 
-    public async edit(request: express.Request): Promise<ReportsResponseBuilder> {
-        const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
+    /**
+     * This method handles the updating of a report and its validations
+     *
+     * @param {express.Request} request
+     * @returns {Promise<AbstractResponseBuilder>>}
+     */
+    public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
+        let responseBuilder = new ReportsResponseBuilder();
+        this.request = request;
 
         const reportId: number = +request.params.id;
 
@@ -59,6 +71,10 @@ export class ReportsController extends BaseController{
 
         if (!report || !report.id || report.id !== reportId) {
             report = new ReportEditDTO(reportId, {});
+        }
+
+        if (!await this.hasUserAccess(reportId)) {
+            return this.buildForbiddenResponse(responseBuilder, this.CONTROLLER_NAME);
         }
 
         let errors: string[] = [];
@@ -72,11 +88,7 @@ export class ReportsController extends BaseController{
         } catch (validationError) {
             errors = this.buildValidationErrors(validationError);
 
-            return responseBuilder
-                .setHttpStatus(httpStatus.BAD_REQUEST)
-                .setSuccess(false)
-                .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
-                .setErrors(errors);
+            return this.buildBadRequestResponse(responseBuilder, this.CONTROLLER_NAME, errors);
         }
 
         const isUpdated: boolean = await this.reportsModel.update(report);
@@ -89,26 +101,32 @@ export class ReportsController extends BaseController{
                 .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME));
         }
 
-        return responseBuilder
-            .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)
-            .setSuccess(false)
-            .setMessage(this.MAIN_ERROR_MESSAGE)
-            .setErrors(errors)
-            .fillErrors(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME));
+        return this.buildInternalErrorResponse(
+            responseBuilder, this.CONTROLLER_NAME
+        );
     }
 
-    public async archive(request: express.Request) {
+    /**
+     * This method handles the archiving of a report and its validations
+     *  The report is not actually deleted, its status is changed in the database.
+     *
+     * @param {express.Request} request
+     * @returns {Promise<AbstractResponseBuilder>}
+     */
+    public async archive(request: express.Request): Promise<AbstractResponseBuilder> {
         const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
+        this.request = request;
 
         const reportId: number = +request.params.id;
 
         const report = await this.reportsModel.findById(reportId);
 
         if (!report) {
-            return responseBuilder
-                .setHttpStatus(httpStatus.BAD_REQUEST)
-                .setSuccess(false)
-                .setMessage(this.buildFailedArchivingMessage(this.CONTROLLER_NAME));
+            return this.buildBadRequestResponse(responseBuilder, this.CONTROLLER_NAME, []);
+        }
+
+        if (!this.hasUserAccess(reportId)) {
+            return this.buildForbiddenResponse(responseBuilder, this.CONTROLLER_NAME);
         }
 
         const isArchived: boolean = await this.reportsModel.archive(reportId);
@@ -120,9 +138,26 @@ export class ReportsController extends BaseController{
                 .setMessage(this.buildSuccessfullyArchivedMessage(this.CONTROLLER_NAME));
         }
 
-        return responseBuilder
-            .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)
-            .setSuccess(false)
-            .setMessage(this.MAIN_ERROR_MESSAGE);
+        return this.buildInternalErrorResponse(
+            responseBuilder, this.CONTROLLER_NAME
+        );
+    }
+
+    /**
+     * This methods checks if the logged user has access
+     *  to edit or delete this report.
+     *  NOTE: Admins can edit and delete every report
+     *
+     * @param {number} reportId
+     * @returns {Promise<boolean>}
+     */
+    private async hasUserAccess(reportId: number): Promise<boolean> {
+        if (this.request.roleId === ROLES.ADMIN) {
+            return true;
+        }
+
+        const ownerId: number = await this.reportsModel.findUserIdById(reportId);
+
+        return ownerId == this.request.userId;
     }
 }

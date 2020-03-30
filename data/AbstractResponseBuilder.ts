@@ -1,4 +1,6 @@
-export abstract class AbstractResponseBuilder {
+import { IResponseBuilder } from "./IResponseBuilder";
+
+export abstract class AbstractResponseBuilder implements IResponseBuilder {
 
     protected _httpStatus!: number;
     protected _success!: boolean;
@@ -43,5 +45,9 @@ export abstract class AbstractResponseBuilder {
                 errors: this._errors
             }
         };
+    }
+
+    public buildResponse() {
+        return this.buildData({});
     }
 }
