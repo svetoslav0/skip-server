@@ -3,7 +3,7 @@ import { MysqlDatabase } from "../database/MysqlDatabase";
 import { APIMiddleware } from "../common/APIMiddleware";
 import { ClassesModel } from "../models/ClassesModel";
 import { ClassesController } from "../controllers/classes/ClassesController";
-import { ClassesResponseBuilder } from "../data/classes/ClassesResponseBuilder";
+import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
 
 export class ClassesRouter {
 
@@ -19,6 +19,11 @@ export class ClassesRouter {
         this.controller = new ClassesController(this.model);
     }
 
+    /**
+     * This method registers all Classes endpoints
+     *
+     * @returns {express.Router}
+     */
     public registerRoutes(): express.Router {
         this.signCreateRoute();
         this.signEditRoute();
@@ -26,6 +31,9 @@ export class ClassesRouter {
         return this.router;
     }
 
+    /**
+     * This method registers POST /classes
+     */
     private signCreateRoute() {
         this.router.post("/",
             APIMiddleware.isUserEmployee,
@@ -33,7 +41,7 @@ export class ClassesRouter {
 
             this.controller
                 .create(req)
-                .then((result: ClassesResponseBuilder) => {
+                .then((result: AbstractResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -42,6 +50,9 @@ export class ClassesRouter {
         });
     }
 
+    /**
+     * This method registers PUT /classes/{id}
+     */
     private signEditRoute() {
         this.router.put("/:id",
             APIMiddleware.isUserEmployee,
@@ -49,7 +60,7 @@ export class ClassesRouter {
 
             this.controller
                 .edit(req)
-                .then((result: ClassesResponseBuilder) => {
+                .then((result: AbstractResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());

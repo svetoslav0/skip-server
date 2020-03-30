@@ -3,7 +3,7 @@ import { MysqlDatabase } from "../database/MysqlDatabase";
 import { APIMiddleware } from "../common/APIMiddleware";
 import { ReportsModel } from "../models/ReportsModel";
 import { ReportsController } from "../controllers/reports/ReportsController";
-import { ReportsResponseBuilder } from "../data/reports/ReportsResponseBuilder";
+import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
 
 export class ReportsRouter {
 
@@ -19,6 +19,11 @@ export class ReportsRouter {
         this.controller = new ReportsController(this.model);
     }
 
+    /**
+     * This method registers all Reports endpoints
+     *
+     * @returns {express.Router}
+     */
     public registerRoutes(): express.Router {
         this.signCreateRoute();
         this.signEditRoute();
@@ -27,6 +32,9 @@ export class ReportsRouter {
         return this.router;
     }
 
+    /**
+     * This method registers POST /reports
+     */
     private signCreateRoute() {
         this.router.post("/",
             APIMiddleware.isUserEmployee,
@@ -34,7 +42,7 @@ export class ReportsRouter {
 
             this.controller
                 .create(req)
-                .then((result: ReportsResponseBuilder) => {
+                .then((result: AbstractResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -43,6 +51,9 @@ export class ReportsRouter {
         });
     }
 
+    /**
+     * This method registers PUT /reports/{id}
+     */
     private signEditRoute() {
         this.router.put("/:id",
             APIMiddleware.isUserEmployee,
@@ -50,7 +61,7 @@ export class ReportsRouter {
 
             this.controller
                 .edit(req)
-                .then((result: ReportsResponseBuilder) => {
+                .then((result: AbstractResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -59,6 +70,9 @@ export class ReportsRouter {
         });
     }
 
+    /**
+     * This method registers DELETE /reports/{id}
+     */
     private signArchiveRoute() {
         this.router.delete("/:id",
             APIMiddleware.isUserEmployee,
@@ -66,7 +80,7 @@ export class ReportsRouter {
 
             this.controller
                 .archive(req)
-                .then((result: ReportsResponseBuilder) => {
+                .then((result: AbstractResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
