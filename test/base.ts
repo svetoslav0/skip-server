@@ -10,7 +10,6 @@ config({ path: resolve(__dirname, "../.env") });
 import chai from "chai";
 import chaiHttp from "chai-http";
 import "mocha";
-
 chai.use(chaiHttp);
 
 const expect = chai.expect;
@@ -20,7 +19,9 @@ const DEFAULT_CONTENT_TYPE: string = "application/x-www-form-urlencoded";
 const CONTENT_TYPE_HEADING: string = "content-type";
 const TOKEN_HEADING: string = "auth-token";
 
-const token: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGVJZCI6MiwiaWF0IjoxNTg0Mjg2MjUzfQ.dUm6sU7RobQucIRH3Vf1C-tr2EgwL0gQ49xQ9CAPIqs";
+const adminToken: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEzNiwicm9sZUlkIjoyLCJpYXQiOjE1ODU5MTQzNDB9.U9G-udZGXB45bymReME00JhGtZlPpxaNOT4FGLN9-jo";
+const employeeToken: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEzNywicm9sZUlkIjoxLCJpYXQiOjE1ODU5MTQzNzB9.g1y3a-ATpXbkumNSNd6JayOzLNeRPzAMtv-9zsA31ig";
+const employeeReportId: number = 13;
 
 module.exports = {
     server,
@@ -30,5 +31,7 @@ module.exports = {
     DEFAULT_CONTENT_TYPE,
     CONTENT_TYPE_HEADING,
     TOKEN_HEADING,
-    token
+    adminToken,
+    employeeToken,
+    employeeReportId
 };

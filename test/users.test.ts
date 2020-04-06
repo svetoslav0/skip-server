@@ -7,6 +7,8 @@ const {
     DEFAULT_CONTENT_TYPE
 } = require("./base");
 
+import httpStatus from "http-status-codes";
+
 import { UsersModel } from "../models/UsersModel";
 
 const usersModel: UsersModel = new UsersModel(database);
@@ -24,8 +26,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
            const expectedPropertyMessage: string = "message";
            const expectedAuthHeader: string = "auth-token";
 
-           const expectedStatusCode: number = 200;
-
            const objectToSend = {
                username: usernameToSend,
                password: passwordToSend
@@ -36,7 +36,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedStatusCode);
+                   await expect(result.status).to.eql(httpStatus.OK);
                    await expect(result.body).to.have.property(expectedPropertyData);
                    await expect(result.body.data).to.have.property(expectedPropertyMessage);
                    await expect(result).to.have.header(expectedAuthHeader);
@@ -51,8 +51,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
            const expectedPropertyMessage: string = "message";
            const expectedAuthHeader: string = "auth-token";
 
-           const expectedStatusCode: number = 400;
-
            const objectToSend = {
                username: usernameToSend,
                password: passwordToSend
@@ -63,7 +61,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedStatusCode);
+                   await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                    await expect(result.body).to.have.property(expectedPropertyData);
                    await expect(result.body.data).to.have.property(expectedPropertyMessage);
                    await expect(result).not.to.have.header(expectedAuthHeader);
@@ -77,8 +75,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
            const expectedPropertyMessage: string = "message";
            const expectedAuthHeader: string = "auth-token";
 
-           const expectedStatus: number = 400;
-
            const objectToSend = {
                username: usernameToSend,
                password: passwordToSend
@@ -89,7 +85,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedStatus);
+                   await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                    await expect(result.body).to.have.property(expectedPropertyData);
                    await expect(result.body.data).to.have.property(expectedPropertyMessage);
                    await expect(result).not.to.have.header(expectedAuthHeader);
@@ -115,14 +111,12 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                roleId: roleIdToSend
            };
 
-           const expectedHttpStatus: number = 201;
-
            return Request(server)
                .post(REGISTER_URL)
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedHttpStatus);
+                   await expect(result.status).to.eql(httpStatus.CREATED);
 
                    return  result.body.data.userId;
                })
@@ -148,8 +142,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                roleId: roleIdToSend
            };
 
-           const expectedHttpStatus: number = 400;
-
            const expectedPropertyData: string = "data";
            const expectedPropertySuccess: string = "success";
            const expectedPropertyMessage: string = "message";
@@ -163,7 +155,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedHttpStatus);
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
 
                     await expect(result.body).to.have.property(expectedPropertyData);
                     await expect(result.body.data).to.have.property(expectedPropertySuccess);
@@ -192,8 +184,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                roleId: roleIdToSend
            };
 
-           const expectedStatus: number = 400;
-
            const expectedPropertyData: string = "data";
            const expectedPropertySuccess: string = "success";
            const expectedPropertyMessage: string = "message";
@@ -207,7 +197,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedStatus);
+                   await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
 
                    await expect(result.body).to.have.property(expectedPropertyData);
                    await expect(result.body.data).to.have.property(expectedPropertySuccess);
@@ -237,7 +227,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                roleId: roleIdToSend
            };
 
-           const expectedStatus: number = 400;
            const expectedSuccess: boolean = false;
            const expectedErrorsCount: number = 1;
 
@@ -246,7 +235,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedStatus);
+                   await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                    await expect(result.body.data.success).to.eql(expectedSuccess);
                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
                });
@@ -269,7 +258,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                roleId: roleIdToSend
            };
 
-           const expectedHttpStatus: number = 400;
            const expectedSuccess: boolean = false;
            const expectedErrorsCount: number = 1;
 
@@ -278,7 +266,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedHttpStatus);
+                   await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                    await expect(result.body.data.success).to.eql(expectedSuccess);
                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
                });
@@ -301,7 +289,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                roleId: roleIdToSend
            };
 
-           const expectedStatusCode: number = 400;
            const expectedSuccess: boolean = false;
            const expectedErrorsCount: number = 1;
 
@@ -310,7 +297,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedStatusCode);
+                   await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                    await expect(result.body.data.success).to.eql(expectedSuccess);
                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
                });
@@ -333,7 +320,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                roleId: roleIdToSend
            };
 
-           const expectedHttpStatusCode: number = 400;
            const expectedSuccess: boolean = false;
            const expectedErrorsCount: number = 1;
 
@@ -342,7 +328,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedHttpStatusCode);
+                   await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                    await expect(result.body.data.success).to.eql(expectedSuccess);
                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
                });
@@ -365,7 +351,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                roleId: roleIdToSend
            };
 
-           const expectedHttpStatusCode: number = 400;
            const expectedSuccess: boolean = false;
            const expectedErrorsCount: number = 1;
 
@@ -374,7 +359,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedHttpStatusCode);
+                   await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                    await expect(result.body.data.success).to.eql(expectedSuccess);
                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
                });
@@ -397,7 +382,6 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                roleId: roleIdToSend
            };
 
-           const expectedHttpStatusCode: number = 400;
            const expectedSuccess: boolean = false;
            const expectedErrorsCount: number = 1;
 
@@ -406,7 +390,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                .send(objectToSend)
                .then(async (result: any) => {
-                   await expect(result.status).to.eql(expectedHttpStatusCode);
+                   await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                    await expect(result.body.data.success).to.eql(expectedSuccess);
                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
                });

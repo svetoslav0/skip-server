@@ -6,8 +6,12 @@ const {
     CONTENT_TYPE_HEADING,
     DEFAULT_CONTENT_TYPE,
     TOKEN_HEADING,
-    token
+    adminToken,
+    employeeToken,
+    employeeReportId
 } = require("./base");
+
+import httpStatus from "http-status-codes";
 
 const {
     noTokenTest,
@@ -23,9 +27,7 @@ const CREATE_URL: string = `${REPORTS_CONTROLLERS_URL}`;
 const EDIT_URL = (id: number) => {
     return `${REPORTS_CONTROLLERS_URL}/${id}`;
 };
-const ARCHIVE_URL = (id: number) => {
-    return `${REPORTS_CONTROLLERS_URL}/${id}`;
-};
+const ARCHIVE_URL = EDIT_URL;
 
 describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     describe(`POST ${CREATE_URL} tests`, () => {
@@ -42,16 +44,15 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                  userId: userIdToSend
              };
 
-             const expectedHttpStatus: number = 201;
              const expectedIsReportDeleted: boolean = true;
 
              return Request(server)
                  .post(CREATE_URL)
                  .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                 .set(TOKEN_HEADING, token)
+                 .set(TOKEN_HEADING, employeeToken)
                  .send(objectToSend)
                  .then(async (result: any) => {
-                     await expect(result.status).to.eql(expectedHttpStatus);
+                     await expect(result.status).to.eql(httpStatus.CREATED);
 
                      return result.body.data.reportId;
                  })
@@ -68,7 +69,6 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 userId: userIdToSend
             };
 
-            const expectedHttpStatus: number = 400;
             const expectedSuccessProperty: string = "success";
             const expectedMessageProperty: string = "message";
             const expectedErrorsProperty: string = "errors";
@@ -79,10 +79,10 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, employeeToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedHttpStatus);
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body.data).to.have.property(expectedSuccessProperty);
                     await expect(result.body.data).to.have.property(expectedMessageProperty);
                     await expect(result.body.data).to.have.property(expectedErrorsProperty);
@@ -101,7 +101,6 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 name: nameToSend
             };
 
-            const expectedHttpStatus: number = 400;
             const expectedSuccessProperty: string = "success";
             const expectedMessageProperty: string = "message";
             const expectedErrorsProperty: string = "errors";
@@ -112,10 +111,10 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, employeeToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedHttpStatus);
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body.data).to.have.property(expectedSuccessProperty);
                     await expect(result.body.data).to.have.property(expectedMessageProperty);
                     await expect(result.body.data).to.have.property(expectedErrorsProperty);
@@ -128,7 +127,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
         });
 
         it("Should not add a new report. No fields are provided", () => {
-            const expectedHttpStatus: number = 400;
+            
             const expectedSuccessProperty: string = "success";
             const expectedMessageProperty: string = "message";
             const expectedErrorsProperty: string = "errors";
@@ -139,9 +138,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, employeeToken)
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedHttpStatus);
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body.data).to.have.property(expectedErrorsProperty);
                     await expect(result.body.data).to.have.property(expectedMessageProperty);
                     await expect(result.body.data).to.have.property(expectedSuccessProperty);
@@ -159,28 +158,74 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
         noTokenTest(REPORTS_CONTROLLERS_URL);
         wrongTokenTest(REPORTS_CONTROLLERS_URL);
 
-        it("Should update an report.",  () => {
+        it("Should update the report. Provided token and report ID are employee's",  () => {
             const nameToSend: string = "October 2020";
             const userIdToSend: number = 4;
-            const reportIdToUpdate: number = 15;
 
             const objectToSend = {
                 name: nameToSend,
                 userId: userIdToSend
             };
 
-            const expectedStatus: number = 200;
             const expectedSuccess: boolean = true;
 
             return Request(server)
-                .put(EDIT_URL(reportIdToUpdate))
+                .put(EDIT_URL(employeeReportId))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, employeeToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.status).to.eql(httpStatus.OK);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.reportId).to.eql(reportIdToUpdate);
+                    await expect(result.body.data.reportId).to.eql(employeeReportId);
+                });
+        });
+
+        it(`Should update the report. Provided report ID does not belong to this user
+            but the user role is ADMIN`, () => {
+            const nameToSend: string = "Sept 2020";
+            const userIdToSend: number = 137;
+
+            const objectToSend = {
+                name: nameToSend,
+                userId: userIdToSend
+            };
+
+            const expectedSuccess: boolean = true;
+
+            return Request(server)
+                .put(EDIT_URL(employeeReportId))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                    await expect(result.body.data.reportId).to.eql(employeeReportId);
+                });
+        });
+
+        it(`Should not update the report. 
+            Provided report ID does not belong to this user (employee).`, () => {
+            const nameToSend: string = "Dec 2020";
+            const userIdToSend: number = 5;
+            const reportId: number = 15;
+
+            const objectToSend = {
+                name: nameToSend,
+                userId: userIdToSend
+            };
+
+            const expectedSuccess: boolean = false;
+
+            return Request(server)
+                .put(EDIT_URL(reportId))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
                 });
         });
 
@@ -195,17 +240,16 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 userId: userIdToSend
             };
 
-            const expectedStatus: number = 400;
             const expectedSuccess: boolean = false;
             const expectedErrorsProperty: string = "errors";
 
             return Request(server)
                 .put(EDIT_URL(reportIdToUpdate))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, adminToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
                     await expect(result.body.data).to.have.property(expectedErrorsProperty);
                 });
@@ -218,21 +262,56 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
         noTokenTest(REPORTS_CONTROLLERS_URL);
         wrongTokenTest(REPORTS_CONTROLLERS_URL);
 
-        it(`Should archive the report`, () => {
-            const reportIdToSend: number = 14;
-
-            const expectedStatus: number = 200;
+        it(`Should archive the report. Provided token and report ID are employee's`, () => {
             const dataProperty: string = "data";
             const successProperty: string = "success";
             const expectedSuccess: boolean = true;
 
             return Request(server)
-                .delete(ARCHIVE_URL(reportIdToSend))
+                .delete(ARCHIVE_URL(employeeReportId))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, employeeToken)
                 .send()
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property(dataProperty);
+                    await expect(result.body.data).to.have.property(successProperty);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                });
+        });
+
+        it(`Should archive the report. Provide ID does not belong to this user
+            but user role is ADMIN`, () => {
+            const dataProperty: string = "data";
+            const successProperty: string = "success";
+            const expectedSuccess: boolean = true;
+
+            return Request(server)
+                .delete(ARCHIVE_URL(employeeReportId))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property(dataProperty);
+                    await expect(result.body.data).to.have.property(successProperty);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                });
+        });
+
+        it(`Should not archive the report. Provided ID does not belong to this user`, () => {
+            const dataProperty: string = "data";
+            const successProperty: string = "success";
+            const expectedSuccess: boolean = false;
+            const reportId: number = 15;
+
+            return Request(server)
+                .delete(ARCHIVE_URL(reportId))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
                     await expect(result.body).to.have.property(dataProperty);
                     await expect(result.body.data).to.have.property(successProperty);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
@@ -243,7 +322,6 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
         The given ID does not correspond to an existing report.`, () => {
             const reportIdToSend: number = 99999;
 
-            const expectedStatus: number = 400;
             const dataProperty: string = "data";
             const successProperty: string = "success";
             const expectedSuccess: boolean = false;
@@ -251,10 +329,10 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             return Request(server)
                 .delete(ARCHIVE_URL(reportIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, adminToken)
                 .send()
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body).to.have.property(dataProperty);
                     await expect(result.body.data).to.have.property(successProperty);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
