@@ -6,7 +6,7 @@ const {
     CONTENT_TYPE_HEADING,
     DEFAULT_CONTENT_TYPE,
     TOKEN_HEADING,
-    token
+    adminToken
 } = require("./base");
 
 const {
@@ -48,7 +48,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, adminToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedHttpStatus);
@@ -76,7 +76,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, adminToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedStatus);
@@ -104,7 +104,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, token)
+                .set(TOKEN_HEADING, adminToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(expectedStatus);

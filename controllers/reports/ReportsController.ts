@@ -125,7 +125,7 @@ export class ReportsController extends BaseController{
             return this.buildBadRequestResponse(responseBuilder, this.CONTROLLER_NAME, []);
         }
 
-        if (!this.hasUserAccess(reportId)) {
+        if (!await this.hasUserAccess(reportId)) {
             return this.buildForbiddenResponse(responseBuilder, this.CONTROLLER_NAME);
         }
 
