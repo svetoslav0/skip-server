@@ -19,7 +19,7 @@ const REGISTER_URL: string = `${USERS_CONTROLLER_URL}/register`;
 
 describe(`${USERS_CONTROLLER_URL} tests`, () => {
    describe(`POST ${LOGIN_URL} tests`, () => {
-       it("Should login successfully. Username and password are correct.", () => {
+       it("Should login successfully. Username and password are correct", () => {
            const usernameToSend: string = "hristofor";
            const passwordToSend: string = "hristofor";
            const expectedPropertyData: string = "data";
@@ -44,7 +44,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not login and return error. Username exists but the password is wrong.", () => {
+       it("Should not login and return error. Username exists but the password is wrong", () => {
            const usernameToSend: string = "hristofor";
            const passwordToSend: string = "kolumb";
            const expectedPropertyData: string = "data";
@@ -68,7 +68,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not login and return error. This user does not exist.",  () => {
+       it("Should not login and return error. This user does not exist",  () => {
            const usernameToSend: string = "nonExistingUsername";
            const passwordToSend: string = "someRandPassword";
            const expectedPropertyData: string = "data";
@@ -94,7 +94,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
    });
 
    describe(`POST ${REGISTER_URL} tests`, () => {
-       it("Should register a new user. After the test passes, the new user should be deleted.", () => {
+       it("Should register a new user. After the test passes, the new user should be deleted", () => {
            const usernameToSend: string = "trifon";
            const emailToSend: string = "trifon@tri.fon";
            const passwordToSend: string = "trifon";
@@ -125,7 +125,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not register a new user. The given username already exists in the database.", () => {
+       it("Should not register a new user. The given username already exists in the database", () => {
            const usernameToSend: string = "ivanivan";
            const emailToSend: string = "trifonivanov@tri.fon";
            const passwordToSend: string = "Ivan123";
@@ -169,7 +169,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not register a new user. Missing 'username' parameter.",  () => {
+       it("Should not register a new user. Missing 'username' parameter",  () => {
            const emailToSend: string = "dimitarkirov@abv.bg";
            const passwordToSend: string = "John123nhoj";
            const firstNameToSend: string = "John";
@@ -210,7 +210,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not register a new user. The given username is too short.", () => {
+       it("Should not register a new user. The given username is too short", () => {
            const usernameToSend: string = "sh";
            const emailToSend: string = "doesitmatteranyway@abv.bg";
            const passwordToSend: string = "John123as";
@@ -241,7 +241,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not register a new user. The given username is too long.", () => {
+       it("Should not register a new user. The given username is too long", () => {
            const usernameToSend: string = "ashrosenbergashrosenbergashrosenbergashrosenbergashrosenbergashrosenberg";
            const emailToSend: string = "doesthatmatteranyway@abv.bg";
            const passwordToSend: string = "john123john";
@@ -272,7 +272,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not register a new user. The given email is invalid.", () => {
+       it("Should not register a new user. The given email is invalid", () => {
            const usernameToSend: string = "ashrosenberg";
            const emailToSend: string = "bademail";
            const passwordToSend: string = "John123";
@@ -303,7 +303,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not register a new user. The given email already exists in the database.", () => {
+       it("Should not register a new user. The given email already exists in the database", () => {
            const usernameToSend: string = "johnwastetimer";
            const emailToSend: string = "hristofor@abv.bg";
            const passwordToSend: string = "John123";
@@ -334,7 +334,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not register a new user. The given password is too short.", () => {
+       it("Should not register a new user. The given password is too short", () => {
            const usernameToSend: string = "johnywastetimer";
            const emailToSend: string = "hristoforoff@abv.bg";
            const passwordToSend: string = "sh";
@@ -365,7 +365,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                });
        });
 
-       it("Should not register a new user. The given password is too long.", () => {
+       it("Should not register a new user. The given password is too long", () => {
            const usernameToSend: string = "johnywastetimer2";
            const emailToSend: string = "hristoforoff2@abv.bg";
            const passwordToSend: string = "dontaskmehowlongisthispassworditswaaaaaaaaaaaaaaaaaaaaaaaaaytooooooooooooooooooooooooloooooooooooooooooooooooooooongdaaaaaaaaaaaaaaaaaaaaaaaaaaamn";
