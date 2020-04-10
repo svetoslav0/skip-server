@@ -16,7 +16,9 @@ const {
     noTokenTestPost,
     wrongTokenTestPost,
     noTokenTestPut,
-    wrongTokenTestPut
+    wrongTokenTestPut,
+    noTokenTestDelete,
+    wrongTokenTestDelete
 } = require("./commonTests");
 
 import { ClassesModel } from "../models/ClassesModel";
@@ -134,7 +136,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 });
         });
     });
-    
+
     describe(`PUT ${CREATE_URL}/{id}`, () => {
         noTokenTestPut(EDIT_URL(14));
         wrongTokenTestPut(EDIT_URL(14));
@@ -202,5 +204,52 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                     expect(result.body.data).to.have.property(errorsPropHeading);
                 });
         });
-    })
+    });
+
+    describe(`DELETE ${CREATE_URL}/{id}`, () => {
+        noTokenTestDelete(ARCHIVE_URL(14));
+        wrongTokenTestDelete(ARCHIVE_URL(14));
+
+        it("Should not archive the class. Provided token belongs to employee", () => {
+            const idToSend: number = 14;
+
+            return Request(server)
+                .delete(ARCHIVE_URL(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send()
+                .then(async (result: any) => {
+                    expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                });
+        });
+
+        it("Should not archive the class. Provided class ID does not exist", () => {
+            const idToSend: number = 1499999999;
+
+            return Request(server)
+                .delete(ARCHIVE_URL(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send()
+                .then(async (result: any) => {
+                    expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                });
+        });
+
+        it("Should archive the class.", () => {
+            const idToSend: number = 14;
+
+            const expectedSuccess: boolean = true;
+
+            return Request(server)
+                .delete(ARCHIVE_URL(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send()
+                .then(async (result: any) => {
+                    expect(result.status).to.eql(httpStatus.OK);
+                    expect(result.body.data.success).to.eql(expectedSuccess);
+                });
+        });
+    });
 });

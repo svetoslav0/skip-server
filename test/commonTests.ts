@@ -58,12 +58,39 @@ const wrongTokenTestPut = (url: string) => {
                 await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
             });
     });
-}
+};
 
+const noTokenTestDelete = (url: string) => {
+    it("Should not archive row in the database. No 'auth-token' header is provided", () => {
+        return request(server)
+            .delete(url)
+            .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+            .send()
+            .then(async (result: any) => {
+                await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
+            });
+    });
+};
+
+const wrongTokenTestDelete = (url: string) => {
+    it("Should not archive row in the database. Header 'auth-token' is provided, but is invalid", () => {
+        const wrongTokenToSet: string = "WrongToken";
+
+        return request(server)
+            .delete(url)
+            .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+            .set(TOKEN_HEADING, wrongTokenToSet)
+            .then(async (result: any) => {
+                await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
+            });
+    });
+};
 
 module.exports = {
     noTokenTestPost,
     wrongTokenTestPost,
     noTokenTestPut,
-    wrongTokenTestPut
+    wrongTokenTestPut,
+    noTokenTestDelete,
+    wrongTokenTestDelete
 };
