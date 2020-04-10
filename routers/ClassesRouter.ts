@@ -27,6 +27,7 @@ export class ClassesRouter {
     public registerRoutes(): express.Router {
         this.signCreateRoute();
         this.signEditRoute();
+        this.signArchiveRoute();
 
         return this.router;
     }
@@ -60,6 +61,25 @@ export class ClassesRouter {
 
             this.controller
                 .edit(req)
+                .then((result: AbstractResponseBuilder) => {
+                    return res
+                        .status(result.httpStatus)
+                        .send(result.buildResponse());
+                })
+                .catch(next);
+        });
+    }
+
+    /**
+     * This method registers DELETE /classes/{id}
+     */
+    private signArchiveRoute() {
+        this.router.delete("/:id",
+            APIMiddleware.isUserAdministrator,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            this.controller
+                .archive(req)
                 .then((result: AbstractResponseBuilder) => {
                     return res
                         .status(result.httpStatus)

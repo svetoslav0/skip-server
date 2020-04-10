@@ -26,7 +26,7 @@ export class ReportsController extends BaseController{
      * This method handles the creation of a report and its validations
      *
      * @param {express.Request} request
-     * @returns {Promise<AbstractResponseBuilder>>}
+     * @returns {Promise<AbstractResponseBuilder>}
      */
     public async create(request: express.Request): Promise<AbstractResponseBuilder> {
         let responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
@@ -59,7 +59,7 @@ export class ReportsController extends BaseController{
      * This method handles the updating of a report and its validations
      *
      * @param {express.Request} request
-     * @returns {Promise<AbstractResponseBuilder>>}
+     * @returns {Promise<AbstractResponseBuilder>}
      */
     public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
         let responseBuilder = new ReportsResponseBuilder();

@@ -20,6 +20,12 @@ export class ClassesController extends BaseController {
         this.classesModel = classesModel;
     }
 
+    /**
+     * This method handles the creation of a class and its validations
+     *
+     * @param {express.Request} request
+     * @returns {Promise<AbstractResponseBuilder>}
+     */
     public async create(request: express.Request): Promise<AbstractResponseBuilder> {
         const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
 
@@ -45,6 +51,12 @@ export class ClassesController extends BaseController {
         }
     }
 
+    /**
+     * This method handles the updating of a class and its validations
+     *
+     * @param {express.Request} request
+     * @returns {Promise<AbstractResponseBuilder>}
+     */
     public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
         const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
 
@@ -84,5 +96,37 @@ export class ClassesController extends BaseController {
         }
 
         return this.buildInternalErrorResponse(responseBuilder, this.CONTROLLER_NAME);
+    }
+
+    /**
+     * This method handles the archiving of a class and its validations
+     *  The class is not actually deleted, its status is changed in the database.
+     *
+     * @param {express.Request} request
+     * @returns {Promise<AbstractResponseBuilder>}
+     */
+    public async archive(request: express.Request): Promise<AbstractResponseBuilder> {
+        const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
+
+        const classId: number = +request.params.id;
+
+        const currentClass = await this.classesModel.findById(classId);
+
+        if (!currentClass) {
+            return this.buildBadRequestResponse(responseBuilder, this.CONTROLLER_NAME, [])
+        }
+
+        const isArchived: boolean = await this.classesModel.archive(classId);
+
+        if (isArchived) {
+            return responseBuilder
+                .setHttpStatus(httpStatus.OK)
+                .setSuccess(true)
+                .setMessage(this.buildSuccessfullyArchivedMessage(this.CONTROLLER_NAME));
+        }
+
+        return this.buildInternalErrorResponse(
+            responseBuilder, this.CONTROLLER_NAME
+        );
     }
 }
