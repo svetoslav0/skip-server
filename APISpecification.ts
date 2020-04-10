@@ -51,7 +51,9 @@ export class APISpecification {
                     CreateClassResponseSchema: this.buildCreateClassResponseSchema(),
                     EditClassResponseSchema: this.buildEditClassResponseSchema(),
 
-                    BadRequestResponseSchema: this.buildBadRequestResponseSchema()
+                    BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
+                    UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
+                    ForbiddenResponseSchema: this.buildForbiddenResponseSchema()
                 }
             }
         };
@@ -126,7 +128,7 @@ export class APISpecification {
                         }
                     }
                 },
-                ...this.buildCommonResponses()
+                ...this.buildCommonResponses(false)
             }
         };
     }
@@ -167,7 +169,9 @@ export class APISpecification {
     private buildReportsEditPath() {
         return {
             summary: "Edit existing report",
-            description: "Edit existing report. Only the passed fields will be updated.",
+            description: `Edit existing report. Only the passed fields will be updated.
+                Administrators can execute this operation for every report,
+                while employees can update only their reports.`,
             tags: [
                 "Reports"
             ],
@@ -212,7 +216,9 @@ export class APISpecification {
     private buildReportsDeletePath() {
         return {
             summary: "Deletes a report",
-            description: "Deletes a report with the given ID.",
+            description: "Deletes a report with the given ID. " +
+                "Administrators can execute this operation for every report, " +
+                "while employees can archive only their reports.",
             tags: [
                 "Reports"
             ],
@@ -624,7 +630,8 @@ export class APISpecification {
                     type: "object",
                     properties: {
                         success: {
-                            type: "boolean"
+                            type: "boolean",
+                            example: "false"
                         },
                         message: {
                             type: "string"
@@ -641,8 +648,54 @@ export class APISpecification {
         };
     }
 
-    private buildCommonResponses() {
+    private buildUnauthorizedResponseSchema() {
         return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: false
+                        },
+                        message: {
+                            type: "string"
+                        },
+                        error: {
+                            type: "string"
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private buildForbiddenResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: false
+                        },
+                        message: {
+                            type: "string"
+                        },
+                        error: {
+                            type: "string"
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private buildCommonResponses(withAuth: boolean = true) {
+        let response: any = {
             400: {
                 description: "The given request cannot be proceeded from the server due to something that is perceived to be a client error.",
                 content: {
@@ -652,7 +705,34 @@ export class APISpecification {
                         }
                     }
                 }
-            }
+            },
+
         };
+
+        if (withAuth) {
+            response[401] = {
+                description: "Either no token was provided or the provided token is invalid",
+                content: {
+                    [this.JSON_CONTENT_TYPE]: {
+                        schema: {
+                            $ref: "#/components/schemas/UnauthorizedResponseSchema"
+                        }
+                    }
+                }
+            };
+
+            response[403] = {
+                description: "Provided token is valid, but the user does not have rights to execute this action",
+                content: {
+                    [this.JSON_CONTENT_TYPE]: {
+                        schema: {
+                            $ref: "#/components/schemas/ForbiddenResponseSchema"
+                        }
+                    }
+                }
+            };
+        }
+
+        return response;
     }
 }
