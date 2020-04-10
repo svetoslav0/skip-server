@@ -11,12 +11,14 @@ import { ClassesRouter } from "./routers/ClassesRouter"
 
 import { APISpecification } from "./APISpecification";
 import { handleError } from "./common/ErrorHandler";
+import { ClassRolesRouter } from "./routers/ClassRolesRouter";
 
 const database = new MysqlDatabase();
 
 const usersRouter = new UsersRouter(database);
 const reportsRouter = new ReportsRouter(database);
 const classesRouter = new ClassesRouter(database);
+const classRolesRouter = new ClassRolesRouter(database);
 
 const server = express();
 const port: number = +(process.env.SERVER_PORT || 8080);
@@ -29,6 +31,7 @@ server.use(bodyParser.urlencoded({
 server.use("/users", usersRouter.registerRoutes());
 server.use("/reports", reportsRouter.registerRoutes());
 server.use("/classes", classesRouter.registerRoutes());
+server.use("/classRoles", classRolesRouter.registerRoutes());
 
 server.get("/specification", (req, res) => {
     res.send(

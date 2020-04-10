@@ -1,6 +1,6 @@
-export interface IClassesResponseBuilder {
+export interface IClassRolesResponseBuilder {
     data: {
-        classId: number;
+        classRoleId: number;
         success: boolean;
         message: string;
         errors: string[];

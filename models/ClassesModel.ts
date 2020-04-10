@@ -1,6 +1,6 @@
 import { MysqlDatabase } from "../database/MysqlDatabase";
-import { ClassesEditDTO } from "../data/classes/ClassesEditDTO";
-import {ClassesDTO} from "../data/classes/ClassesDTO";
+import { ClassEditDTO } from "../data/classes/ClassEditDTO";
+import { ClassDTO } from "../data/classes/ClassDTO";
 
 export class ClassesModel {
     private db: MysqlDatabase;
@@ -13,17 +13,17 @@ export class ClassesModel {
      * This methods adds a class in the database
      *  and returns the ID of the created class
      *
-     * @param {ClassesDTO} currentClass
+     * @param {ClassDTO} currentClass
      * @returns {Promise<number>}
      */
-    public async add(currentClass: ClassesDTO) {
+    public async add(currentClass: ClassDTO): Promise<number> {
         const result = await this.db.query(`
             INSERT INTO
                 classes (
                     name,
                     age_group
                 )
-            VALUE (?, ?)
+            VALUES (?, ?)
         `, [
             currentClass.name,
             currentClass.ageGroup
@@ -39,7 +39,7 @@ export class ClassesModel {
      * @param {number} id
      * @returns {Promise<ReportEditDTO|null>}
      */
-    public async findById(id: number): Promise<ClassesEditDTO|null> {
+    public async findById(id: number): Promise<ClassEditDTO|null> {
         const result = await this.db.query(`
             SELECT
                 id,
@@ -55,7 +55,7 @@ export class ClassesModel {
             return null;
         }
 
-        return new ClassesEditDTO(result[0].id, result[0]);
+        return new ClassEditDTO(result[0].id, result[0]);
     }
 
     /**
@@ -64,7 +64,7 @@ export class ClassesModel {
      * @param {ReportEditDTO} currentClass
      * @returns {Promise<boolean>}
      */
-    public async update(currentClass: ClassesEditDTO): Promise<boolean> {
+    public async update(currentClass: ClassEditDTO): Promise<boolean> {
         const result = await this.db.query(`
             UPDATE
                 classes

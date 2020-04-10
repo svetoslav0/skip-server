@@ -3,8 +3,8 @@ import { validateOrReject } from "class-validator";
 import httpStatus from "http-status-codes";
 
 import { ClassesModel } from "../../models/ClassesModel";
-import { ClassesDTO } from "../../data/classes/ClassesDTO";
-import { ClassesEditDTO } from "../../data/classes/ClassesEditDTO";
+import { ClassDTO } from "../../data/classes/ClassDTO";
+import { ClassEditDTO } from "../../data/classes/ClassEditDTO";
 import { ClassesResponseBuilder } from "../../data/classes/ClassesResponseBuilder";
 import { BaseController } from "../BaseController";
 import { AbstractResponseBuilder } from "../../data/AbstractResponseBuilder";
@@ -30,7 +30,7 @@ export class ClassesController extends BaseController {
         const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
 
         try {
-            const currentClass: ClassesDTO = new ClassesDTO(request.body);
+            const currentClass: ClassDTO = new ClassDTO(request.body);
 
             await validateOrReject(currentClass);
 
@@ -62,10 +62,10 @@ export class ClassesController extends BaseController {
 
         const classId: number = +request.params.id;
 
-        let currentClass: ClassesEditDTO | null = await this.classesModel.findById(classId);
+        let currentClass: ClassEditDTO | null = await this.classesModel.findById(classId);
 
         if (!currentClass || !currentClass.id || currentClass.id !== classId) {
-            currentClass = new ClassesEditDTO(classId, {});
+            currentClass = new ClassEditDTO(classId, {});
         }
 
         let errors: string[] = [];

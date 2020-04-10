@@ -1,11 +1,11 @@
 import { IsDefined } from "class-validator";
 
-export class ClassesDTO {
+export class ClassDTO {
 
     public static readonly NAME_NOT_DEFINED_MESSAGE: string = "Field 'name' is not defined!";
 
     @IsDefined({
-        message: ClassesDTO.NAME_NOT_DEFINED_MESSAGE
+        message: ClassDTO.NAME_NOT_DEFINED_MESSAGE
     })
     private _name!: string;
 
