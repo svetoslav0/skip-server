@@ -129,7 +129,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
         });
 
         it("Should not add a new report. No fields are provided", () => {
-            
+
             const expectedSuccessProperty: string = "success";
             const expectedMessageProperty: string = "message";
             const expectedErrorsProperty: string = "errors";
@@ -206,8 +206,8 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
-        it(`Should not update the report. 
-            Provided report ID does not belong to this user (employee)`, () => {
+        it("Should not update the report. " +
+            "Provided report ID does not belong to this user (employee)", () => {
             const nameToSend: string = "Dec 2020";
             const userIdToSend: number = 5;
             const reportId: number = 15;
