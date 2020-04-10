@@ -6,12 +6,17 @@ const {
     CONTENT_TYPE_HEADING,
     DEFAULT_CONTENT_TYPE,
     TOKEN_HEADING,
-    adminToken
+    adminToken,
+    employeeToken
 } = require("./base");
 
+import httpStatus from "http-status-codes";
+
 const {
-    noTokenTest,
-    wrongTokenTest
+    noTokenTestPost,
+    wrongTokenTestPost,
+    noTokenTestPut,
+    wrongTokenTestPut
 } = require("./commonTests");
 
 import { ClassesModel } from "../models/ClassesModel";
@@ -29,10 +34,10 @@ const ARCHIVE_URL = (id: number) => {
 
 describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
     describe(`POST ${CREATE_URL} tests`, () => {
-        noTokenTest(CREATE_URL);
-        wrongTokenTest(CREATE_URL);
+        noTokenTestPost(CREATE_URL);
+        wrongTokenTestPost(CREATE_URL);
 
-        it(`Should add a new class. Should delete it after the test finishes.`, () => {
+        it(`Should add a new class. Should delete it after the test finishes`, () => {
             const nameToSend: string = "Scratch games";
             const ageGroupToSend: string = "2 - 3 grade";
 
@@ -41,7 +46,6 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 ageGroup: ageGroupToSend
             };
 
-            const expectedHttpStatus: number = 201;
             const expectedSuccess: boolean = true;
             const expectedIsReportDeleted: boolean = true;
 
@@ -51,7 +55,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(TOKEN_HEADING, adminToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedHttpStatus);
+                    await expect(result.status).to.eql(httpStatus.CREATED);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
 
                     return result.body.data.classId;
@@ -63,14 +67,13 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
         });
 
         it(`Should add a new classes. Field 'ageGroup' is not defined.
-            Should delete the record after the test finishes.`, () => {
+            Should delete the record after the test finishes`, () => {
             const nameToSend: string = "Micro:bit";
 
             const objectToSend = {
                 name: nameToSend
             };
 
-            const expectedStatus: number = 201;
             const expectedSuccess: boolean = true;
 
             return Request(server)
@@ -79,7 +82,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(TOKEN_HEADING, adminToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.status).to.eql(httpStatus.CREATED);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
 
                     return result.body.data.classId;
@@ -90,14 +93,13 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 });
         });
 
-        it(`Should not add a new class. Field 'name' is not defined.`, () => {
+        it(`Should not add a new class. Field 'name' is not defined`, () => {
             const ageGroupToSend: string = "4-6 Grade";
 
             const objectToSend = {
                 ageGroup: ageGroupToSend
             };
 
-            const expectedStatus: number = 400;
             const expectedSuccess: boolean = false;
             const expectedErrors: number = 1;
 
@@ -107,10 +109,79 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(TOKEN_HEADING, adminToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
-                    await expect(result.status).to.eql(expectedStatus);
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
                     await expect(result.body.data.errors.length).to.eql(expectedErrors);
                 });
         });
     });
+    
+    describe(`PUT ${CREATE_URL}/{id}`, () => {
+        noTokenTestPut(EDIT_URL(14));
+        wrongTokenTestPut(EDIT_URL(14));
+
+        it("Should not update. Provided token belongs to employee's account", () => {
+            const nameToSend: string = "HTML";
+            const classIdToSend: number = 14;
+
+            const objectToSend = {
+                name: nameToSend
+            };
+
+            return Request(server)
+                .put(EDIT_URL(classIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                });
+        });
+
+        it("Should update the class", () => {
+            const nameToSend: string = "HTML and CSS";
+            const classIdToSend: number = 14;
+
+            const objectToSend = {
+                name: nameToSend
+            };
+
+            const expectedSuccess: boolean = true;
+
+            return Request(server)
+                .put(EDIT_URL(classIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                });
+        });
+
+        it("Should not update the class. Provided class ID does not exist", () => {
+            const nameToSend: string = "JavaScript";
+            const ageGroupToSend: string = "1 - 101 age";
+            const classIdToSend: number = 98765432;
+
+            const objectToSend = {
+                name: nameToSend,
+                ageGroup: ageGroupToSend
+            };
+
+            const expectedSuccess: boolean = false;
+            const errorsPropHeading: string = "errors";
+
+            return Request(server)
+                .put(EDIT_URL(classIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    expect(result.body.data.success).to.eql(expectedSuccess);
+                    expect(result.body.data).to.have.property(errorsPropHeading);
+                });
+        });
+    })
 });

@@ -14,8 +14,10 @@ const {
 import httpStatus from "http-status-codes";
 
 const {
-    noTokenTest,
-    wrongTokenTest
+    noTokenTestPost,
+    wrongTokenTestPost,
+    noTokenTestPut,
+    wrongTokenTestPut
 } = require("./commonTests");
 
 import { ReportsModel } from "../models/ReportsModel";
@@ -32,10 +34,10 @@ const ARCHIVE_URL = EDIT_URL;
 describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     describe(`POST ${CREATE_URL} tests`, () => {
 
-        noTokenTest(CREATE_URL);
-        wrongTokenTest(CREATE_URL);
+        noTokenTestPost(CREATE_URL);
+        wrongTokenTestPost(CREATE_URL);
 
-        it("Should add a new report. After the test passes, the new report should be deleted.", () => {
+        it("Should add a new report. After the test passes, the new report should be deleted", () => {
              const nameToSend: string = "September 2019";
              const userIdToSend: number = 4;
 
@@ -62,7 +64,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                  });
         });
 
-        it("Should not add a new report. Field 'name' is not provided.", () => {
+        it("Should not add a new report. Field 'name' is not provided", () => {
             const userIdToSend: number = 4;
 
             const objectToSend = {
@@ -94,7 +96,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
-        it("Should not add a new report. Field 'userId' is not provided.", () => {
+        it("Should not add a new report. Field 'userId' is not provided", () => {
             const nameToSend: string = "September 2019";
 
             const objectToSend = {
@@ -154,9 +156,8 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     });
 
     describe(`PUT ${REPORTS_CONTROLLERS_URL}/{id} tests`, () => {
-
-        noTokenTest(REPORTS_CONTROLLERS_URL);
-        wrongTokenTest(REPORTS_CONTROLLERS_URL);
+        noTokenTestPut(EDIT_URL(14));
+        wrongTokenTestPut(EDIT_URL(14));
 
         it("Should update the report. Provided token and report ID are employee's",  () => {
             const nameToSend: string = "October 2020";
@@ -206,7 +207,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
         });
 
         it(`Should not update the report. 
-            Provided report ID does not belong to this user (employee).`, () => {
+            Provided report ID does not belong to this user (employee)`, () => {
             const nameToSend: string = "Dec 2020";
             const userIdToSend: number = 5;
             const reportId: number = 15;
@@ -259,8 +260,8 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
 
     describe(`DELETE ${REPORTS_CONTROLLERS_URL}/id tests`, () => {
 
-        noTokenTest(REPORTS_CONTROLLERS_URL);
-        wrongTokenTest(REPORTS_CONTROLLERS_URL);
+        noTokenTestPost(REPORTS_CONTROLLERS_URL);
+        wrongTokenTestPost(REPORTS_CONTROLLERS_URL);
 
         it(`Should archive the report. Provided token and report ID are employee's`, () => {
             const dataProperty: string = "data";
@@ -319,7 +320,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
         });
 
         it(`Should not archive the report.
-        The given ID does not correspond to an existing report.`, () => {
+        The given ID does not correspond to an existing report`, () => {
             const reportIdToSend: number = 99999;
 
             const dataProperty: string = "data";
