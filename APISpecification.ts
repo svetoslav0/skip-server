@@ -31,7 +31,8 @@ export class APISpecification {
                     post: this.buildClassesCreatePath()
                 },
                 "/classes/:id": {
-                    put: this.buildClassesEditPath()
+                    put: this.buildClassesEditPath(),
+                    delete: this.buildClassesDeletePath()
                 }
             },
             components: {
@@ -60,6 +61,7 @@ export class APISpecification {
                     DeleteReportResponseSchema: this.buildDeleteReportResponseSchema(),
                     CreateClassResponseSchema: this.buildCreateClassResponseSchema(),
                     EditClassResponseSchema: this.buildEditClassResponseSchema(),
+                    DeleteClassResponseSchema: this.buildDeleteClassResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -241,7 +243,8 @@ export class APISpecification {
             summary: "Deletes a report",
             description: "Deletes a report with the given ID. " +
                 "Administrators can execute this operation for every report, " +
-                "while employees can archive only their reports.",
+                "while employees can archive only their reports. " +
+                "The report is not actually deleted, its status is updated to 'Archived'",
             tags: [
                 "Reports"
             ],
@@ -353,6 +356,46 @@ export class APISpecification {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/EditClassResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        };
+    }
+
+    private buildClassesDeletePath() {
+        return {
+            summary: "Deletes a class",
+            description: "Deletes a class with given ID. " +
+                "This operation can be executed only by administrators. " +
+                "The class is not actually deleted, its status is updated to 'Archived'",
+            tags: [
+                "Classes"
+            ],
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    description: "The ID of the class.",
+                    schema: {
+                        type: "number",
+                        minimum: 1
+                    }
+                },
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                }
+            ],
+            responses: {
+                200: {
+                    description: "Class was successfully archived.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/DeleteClassResponseSchema"
                             }
                         }
                     }
@@ -606,8 +649,30 @@ export class APISpecification {
         };
     }
 
+    private buildDeleteClassResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: true
+                        },
+                        message: {
+                            type: "string",
+                            example: "Class was successfully archived."
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private buildCreateClassResponseSchema() {
         return {
+            type: "object",
             properties: {
                 data: {
                     type: "object",
@@ -633,6 +698,7 @@ export class APISpecification {
 
     private buildEditClassResponseSchema() {
         return {
+            type: "object",
             properties: {
                 data: {
                     type: "object",
