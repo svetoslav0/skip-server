@@ -29,6 +29,9 @@ export class APISpecification {
                 },
                 "/classes": {
                     post: this.buildClassesCreatePath()
+                },
+                "/classes/:id": {
+                    put: this.buildClassesEditPath()
                 }
             },
             components: {
@@ -38,6 +41,7 @@ export class APISpecification {
                     CreateReportRequestSchema: this.buildCreateReportRequestSchema(),
                     EditReportRequestSchema: this.buildEditReportRequestSchema(),
                     CreateClassRequestSchema: this.buildCreateClassRequestSchema(),
+                    EditClassRequestSchema: this.buildEditClassRequestSchema(),
 
                     LoginResponseSchema: this.buildLoginResponseSchema(),
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
@@ -45,11 +49,12 @@ export class APISpecification {
                     EditReportResponseSchema: this.buildEditReportResponseSchema(),
                     DeleteReportResponseSchema: this.buildDeleteReportResponseSchema(),
                     CreateClassResponseSchema: this.buildCreateClassResponseSchema(),
+                    EditClassResponseSchema: this.buildEditClassResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema()
                 }
             }
-        }
+        };
     }
 
     private buildUsersRegisterPath() {
@@ -82,7 +87,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildUsersLoginPath() {
@@ -123,7 +128,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildReportsCreatePath() {
@@ -156,7 +161,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildReportsEditPath() {
@@ -201,7 +206,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildReportsDeletePath() {
@@ -269,7 +274,52 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
+    }
+
+    private buildClassesEditPath() {
+        return {
+            summary: "Edit class",
+            description: "Edit existing class. Only the passed fields will be updated.",
+            tags: [
+                "Classes"
+            ],
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    description: "The ID of the class.",
+                    schema: {
+                        type: "number",
+                        minimum: 1
+                    }
+                }
+            ],
+            requestBody: {
+                required: true,
+                content: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
+                        schema: {
+                            $ref: "#/components/schemas/EditClassRequestSchema"
+                        }
+                    }
+                }
+            },
+            responses: {
+                200: {
+                    description: "Class was successfully updated.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/EditClassResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        };
     }
 
     private buildRegisterUserSchema() {
@@ -337,7 +387,7 @@ export class APISpecification {
                 "username",
                 "password"
             ]
-        }
+        };
     }
 
     private buildCreateReportRequestSchema() {
@@ -357,7 +407,7 @@ export class APISpecification {
                 "name",
                 "userId"
             ]
-        }
+        };
     }
 
     private buildEditReportRequestSchema() {
@@ -373,7 +423,7 @@ export class APISpecification {
                     example: 12
                 }
             }
-        }
+        };
     }
 
     private buildCreateClassRequestSchema() {
@@ -392,7 +442,23 @@ export class APISpecification {
             required: [
                 "name"
             ]
-        }
+        };
+    }
+
+    private buildEditClassRequestSchema() {
+        return {
+            type: "object",
+            properties: {
+                name: {
+                    type: "string",
+                    example: "HTML5 & CSS3"
+                },
+                ageGroup: {
+                    type: "string",
+                    example: "4 - 6 Grade"
+                }
+            }
+        };
     }
 
     private buildCreatedUserResponseSchema() {
@@ -430,7 +496,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateReportResponseSchema() {
@@ -453,7 +519,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildEditReportResponseSchema() {
@@ -476,7 +542,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildDeleteReportResponseSchema() {
@@ -487,10 +553,12 @@ export class APISpecification {
                     type: "object",
                     properties: {
                         success: {
-                            type: "boolean"
+                            type: "boolean",
+                            example: true
                         },
                         message: {
-                            type: "string"
+                            type: "string",
+                            example: "Report was successfully archived"
                         }
                     }
                 }
@@ -499,25 +567,53 @@ export class APISpecification {
     }
 
     private buildCreateClassResponseSchema() {
-        return  {
+        return {
             properties: {
                 data: {
                     type: "object",
                     properties: {
                         success: {
-                            type: "boolean"
+                            type: "boolean",
+                            example: true
                         },
                         classId: {
                             type: "number",
-                            description: "The ID of the new class"
+                            description: "The ID of the new class",
+                            example: 154
                         },
                         message: {
-                            type: "string"
+                            type: "string",
+                            example: "Class was successfully created"
                         }
                     }
                 }
             }
-        }
+        };
+    }
+
+    private buildEditClassResponseSchema() {
+        return {
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: true
+                        },
+                        classId: {
+                            type: "number",
+                            description: "The ID of the updated class",
+                            example: "14"
+                        },
+                        message: {
+                            type: "string",
+                            example: "Class was successfully updated"
+                        }
+                    }
+                }
+            }
+        };
     }
 
     private buildBadRequestResponseSchema() {
@@ -557,6 +653,6 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 }
