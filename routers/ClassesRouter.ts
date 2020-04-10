@@ -36,7 +36,7 @@ export class ClassesRouter {
      */
     private signCreateRoute() {
         this.router.post("/",
-            APIMiddleware.isUserEmployee,
+            APIMiddleware.isUserAdministrator,
             (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
             this.controller
@@ -55,7 +55,7 @@ export class ClassesRouter {
      */
     private signEditRoute() {
         this.router.put("/:id",
-            APIMiddleware.isUserEmployee,
+            APIMiddleware.isUserAdministrator,
             (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
             this.controller
