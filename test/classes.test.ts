@@ -66,6 +66,25 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 });
         });
 
+        it(`Should not add a new class. Provided token belongs to employee`, () => {
+            const nameToSend: string = "JavaScript games";
+            const ageGroupToSend: string = "4 - 6 grade";
+
+            const objectToSend = {
+                name: nameToSend,
+                ageGroup: ageGroupToSend
+            };
+
+            return Request(server)
+                .post(CREATE_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                });
+        });
+
         it(`Should add a new classes. Field 'ageGroup' is not defined.
             Should delete the record after the test finishes`, () => {
             const nameToSend: string = "Micro:bit";

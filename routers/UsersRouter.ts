@@ -46,6 +46,8 @@ export class UsersRouter {
         });
     }
 
+    // This method should not be used by "everyone".
+    // Currently is accessible for everyone for development purposes.
     private signRegisterRoute() {
         this.router.post("/register", (req: express.Request, res: express.Response, next: express.NextFunction) => {
             this.controller

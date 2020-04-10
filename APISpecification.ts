@@ -35,6 +35,16 @@ export class APISpecification {
                 }
             },
             components: {
+                parameters: {
+                    authHeaderParam: {
+                        in: "header",
+                        name: "auth-header",
+                        schema: {
+                            type: "string"
+                        },
+                        required: true
+                    }
+                },
                 schemas: {
                     RegisterUserSchema: this.buildRegisterUserSchema(),
                     LoginUserSchema: this.buildLoginUserSchema(),
@@ -65,6 +75,11 @@ export class APISpecification {
             description: "Register a new user and add it in the database",
             tags: [
                 "Users"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                }
             ],
             requestBody: {
                 required: true,
@@ -140,6 +155,11 @@ export class APISpecification {
             tags: [
                 "Reports"
             ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                }
+            ],
             requestBody: {
                 required: true,
                 content: {
@@ -185,6 +205,9 @@ export class APISpecification {
                         type: "number",
                         minimum: 1
                     }
+                },
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
                 }
             ],
             requestBody: {
@@ -232,6 +255,9 @@ export class APISpecification {
                         type: "number",
                         minimum: 1
                     }
+                },
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
                 }
             ],
             responses: {
@@ -256,6 +282,11 @@ export class APISpecification {
             description: "Create new class and give it a name",
             tags: [
                 "Classes"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                }
             ],
             requestBody: {
                 required: true,
@@ -300,6 +331,9 @@ export class APISpecification {
                         type: "number",
                         minimum: 1
                     }
+                },
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
                 }
             ],
             requestBody: {
