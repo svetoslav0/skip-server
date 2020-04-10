@@ -1,23 +1,23 @@
 import { IsDefined } from "class-validator";
-import { ClassesDTO } from "./ClassesDTO";
+import { ClassDTO } from "./ClassDTO";
 import {IsClassIdExisting} from "../validators/IsClassIdExisting";
 
 
-export class ClassesEditDTO {
+export class ClassEditDTO {
 
     private static readonly CLASS_ID_NOT_DEFINED: string = "Class ID is not provided!";
     private static readonly CLASS_ID_NOT_EXISTING: string = "The provided class ID does not exist!";
 
     @IsDefined({
-        message: ClassesEditDTO.CLASS_ID_NOT_DEFINED
+        message: ClassEditDTO.CLASS_ID_NOT_DEFINED
     })
     @IsClassIdExisting({
-        message: ClassesEditDTO.CLASS_ID_NOT_EXISTING
+        message: ClassEditDTO.CLASS_ID_NOT_EXISTING
     })
     private _id!: number;
 
     @IsDefined({
-        message: ClassesDTO.NAME_NOT_DEFINED_MESSAGE
+        message: ClassDTO.NAME_NOT_DEFINED_MESSAGE
     })
     private _name!: string;
 
