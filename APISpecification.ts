@@ -33,6 +33,9 @@ export class APISpecification {
                 "/classes/:id": {
                     put: this.buildClassesEditPath(),
                     delete: this.buildClassesDeletePath()
+                },
+                "/classRoles": {
+                    post: this.buildClassRolesCreatePath()
                 }
             },
             components: {
@@ -53,6 +56,7 @@ export class APISpecification {
                     EditReportRequestSchema: this.buildEditReportRequestSchema(),
                     CreateClassRequestSchema: this.buildCreateClassRequestSchema(),
                     EditClassRequestSchema: this.buildEditClassRequestSchema(),
+                    CreateClassRoleRequestSchema: this.buildCreateClassRoleRequestSchema(),
 
                     LoginResponseSchema: this.buildLoginResponseSchema(),
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
@@ -62,6 +66,7 @@ export class APISpecification {
                     CreateClassResponseSchema: this.buildCreateClassResponseSchema(),
                     EditClassResponseSchema: this.buildEditClassResponseSchema(),
                     DeleteClassResponseSchema: this.buildDeleteClassResponseSchema(),
+                    CreateClassRoleResponseSchema: this.buildCreateClassRoleResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -405,6 +410,46 @@ export class APISpecification {
         };
     }
 
+    private buildClassRolesCreatePath() {
+        return {
+            summary: "Create new Class Role",
+            description: "Create new Class Role. 'Class Role' is a role (activity) that one person can do. " +
+                "He/she can be a lecturer, co-lecture, assistant etc. Depending on his role, employee gets " +
+                "different value of payment. New Class Roles can be added only from administrators.",
+            tags: [
+                "Class Roles"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                }
+            ],
+            requestBody: {
+                required: true,
+                content: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
+                        schema: {
+                            $ref: "#/components/schemas/CreateClassRoleRequestSchema"
+                        }
+                    }
+                }
+            },
+            responses: {
+                201: {
+                    description: "Class Role was created successfully",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/CreateClassRoleResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        };
+    }
+
     private buildRegisterUserSchema() {
         return {
             type: "object",
@@ -544,6 +589,22 @@ export class APISpecification {
         };
     }
 
+    private buildCreateClassRoleRequestSchema() {
+        return {
+            type: "object",
+            properties: {
+                name: {
+                    type: "string",
+                    example: "Lecturer"
+                },
+                paymentPerHour: {
+                    type: "number",
+                    example: 15
+                }
+            }
+        }
+    }
+
     private buildCreatedUserResponseSchema() {
         return {
             type: "object",
@@ -663,6 +724,32 @@ export class APISpecification {
                         message: {
                             type: "string",
                             example: "Class was successfully archived."
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private buildCreateClassRoleResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: true
+                        },
+                        classRoleId: {
+                            type: "number",
+                            description: "The ID of the new Class Role",
+                            example: 14
+                        },
+                        message: {
+                            type: "string",
+                            example: "Class Role was successfully created."
                         }
                     }
                 }
