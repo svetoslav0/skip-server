@@ -1,22 +1,24 @@
 import { IsDefined } from "class-validator";
+import { IsClassRoleIdExisting } from "../validators/IsClassRoleIdExisting";
+import { ClassRoleDTO } from "./ClassRoleDTO";
 import { IsNumber } from "../validators/IsNumber";
 import { IsNumberPositiveOrZero } from "../validators/IsNumberPositiveOrZero";
 
-export class ClassRoleDTO {
+export class ClassRoleEditDTO {
 
-    public static readonly NAME_NOT_DEFINED_MESSAGE: string = "Field 'name' is not defined!";
-    public static readonly PAYMENT_NOT_DEFINED_MESSAGE: string = "Field 'paymentPerHour' is not defined!";
-    public static readonly PAYMENT_NOT_NUMBER_MESSAGE: string = "Field 'paymentPerHour' is not a number";
-    public static readonly PAYMENT_NOT_POSITIVE_OR_ZERO_MESSAGE: string = "Field 'paymentPerHour' is negative!";
+    private static readonly CLASS_ROLE_ID_NOT_DEFINED: string = "Class Role ID is not defined!";
+    private static readonly CLASS_ROLE_ID_NOT_EXISTING: string = "The provided Class Role ID does not exist!";
 
     @IsDefined({
-        message: ClassRoleDTO.NAME_NOT_DEFINED_MESSAGE
+        message: ClassRoleEditDTO.CLASS_ROLE_ID_NOT_DEFINED
     })
+    @IsClassRoleIdExisting({
+        message: ClassRoleEditDTO.CLASS_ROLE_ID_NOT_EXISTING
+    })
+    private _id!: number;
+
     private _name!: string;
 
-    @IsDefined({
-        message: ClassRoleDTO.PAYMENT_NOT_DEFINED_MESSAGE
-    })
     @IsNumber({
         message: ClassRoleDTO.PAYMENT_NOT_NUMBER_MESSAGE
     })
@@ -25,10 +27,15 @@ export class ClassRoleDTO {
     })
     private _paymentPerHour!: number;
 
-    constructor(reqBody: any) {
+    constructor(id: number, reqBody: any) {
         this
+            .setId(id)
             .setName(reqBody.name)
             .setPaymentPerHour(reqBody.paymentPerHour);
+    }
+
+    get id(): number {
+        return this._id;
     }
 
     get name(): string {
@@ -37,6 +44,11 @@ export class ClassRoleDTO {
 
     get paymentPerHour(): number {
         return this._paymentPerHour;
+    }
+
+    public setId(id: number): this {
+        this._id = id;
+        return this;
     }
 
     public setName(name: string): this {

@@ -68,8 +68,6 @@ export class ClassesController extends BaseController {
             currentClass = new ClassEditDTO(classId, {});
         }
 
-        let errors: string[] = [];
-
         try {
             currentClass
                 .setId(classId)
@@ -78,7 +76,7 @@ export class ClassesController extends BaseController {
 
             await validateOrReject(currentClass);
         } catch (validationError) {
-            errors = this.buildValidationErrors(validationError);
+            const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
                 responseBuilder, this.CONTROLLER_NAME, errors

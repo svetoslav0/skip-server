@@ -1,5 +1,6 @@
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { ClassRoleDTO } from "../data/classRoles/ClassRoleDTO";
+import {ClassRoleEditDTO} from "../data/classRoles/ClassRoleEditDTO";
 
 export class ClassRolesModel {
     private db: MysqlDatabase;
@@ -28,6 +29,52 @@ export class ClassRolesModel {
         ]);
 
         return result.insertId;
+    }
+
+    /**
+     * This method accepts Class Role ID, finds a Class Role object
+     *  and returns it
+     *
+     * @param {number} id
+     * @returns {Promise<ClassRoleEditDTO>}
+     */
+    public async findById(id: number): Promise<ClassRoleEditDTO | null> {
+        const result = await this.db.query(`
+            SELECT
+                id,
+                name,
+                payment_per_hour AS paymentPerHour
+            FROM
+                class_roles
+            WHERE
+                id = ?
+        `, [id]);
+
+        if (!result.length) {
+            return null;
+        }
+
+        return new ClassRoleEditDTO(result[0].id, result[0]);
+    }
+
+    /**
+     * This method updates class role and returns if it was successful or not
+     *
+     * @param {ClassRoleEditDTO} classRole
+     * @returns {Promise<boolean>}
+     */
+    public async update(classRole: ClassRoleEditDTO): Promise<boolean> {
+        const result = await this.db.query(`
+            UPDATE
+                class_roles
+            SET
+                name = ?,
+                payment_per_hour = ?
+            WHERE
+                id = ?
+        `, [classRole.name, classRole.paymentPerHour, classRole.id]);
+
+        return result.affectedRows;
     }
 
     /**
