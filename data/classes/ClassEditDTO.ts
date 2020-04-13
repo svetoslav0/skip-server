@@ -1,6 +1,6 @@
 import { IsDefined } from "class-validator";
 import { ClassDTO } from "./ClassDTO";
-import {IsClassIdExisting} from "../validators/IsClassIdExisting";
+import { IsClassIdExisting } from "../validators/IsClassIdExisting";
 
 
 export class ClassEditDTO {
@@ -16,9 +16,6 @@ export class ClassEditDTO {
     })
     private _id!: number;
 
-    @IsDefined({
-        message: ClassDTO.NAME_NOT_DEFINED_MESSAGE
-    })
     private _name!: string;
 
     private _ageGroup!: string;

@@ -25,6 +25,7 @@ export class ClassRolesRouter {
      */
     public registerRoutes(): express.Router {
         this.signCreateRoute();
+        this.signEditRoute();
 
         return this.router;
     }
@@ -43,6 +44,25 @@ export class ClassRolesRouter {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
+                })
+                .catch(next);
+        });
+    }
+
+    /**
+     * Ths method registers PUT /classRoles
+     */
+    private signEditRoute() {
+        this.router.put("/:id",
+            APIMiddleware.isUserAdministrator,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            this.controller
+                .edit(req)
+                .then((result: AbstractResponseBuilder) => {
+                    return res
+                        .status(result.httpStatus)
+                        .send(result.buildResponse())
                 })
                 .catch(next);
         });
