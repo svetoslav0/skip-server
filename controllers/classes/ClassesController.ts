@@ -14,10 +14,12 @@ export class ClassesController extends BaseController {
     private readonly CONTROLLER_NAME: string = "Class";
 
     private classesModel: ClassesModel;
+    private readonly responseBuilder: ClassesResponseBuilder;
 
     constructor(classesModel: ClassesModel) {
         super();
         this.classesModel = classesModel;
+        this.responseBuilder = new ClassesResponseBuilder();
     }
 
     /**
@@ -27,16 +29,14 @@ export class ClassesController extends BaseController {
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async create(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
+        const currentClass: ClassDTO = new ClassDTO(request.body);
 
         try {
-            const currentClass: ClassDTO = new ClassDTO(request.body);
-
             await validateOrReject(currentClass);
 
             const classId: number = await this.classesModel.add(currentClass);
 
-            return responseBuilder
+            return this.responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
                 .setClassId(classId)
                 .setSuccess(true)
@@ -46,7 +46,7 @@ export class ClassesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
+                this.responseBuilder, this.CONTROLLER_NAME, errors
             );
         }
     }
@@ -58,12 +58,19 @@ export class ClassesController extends BaseController {
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            return this.responseBuilder
+                .setHttpStatus(httpStatus.BAD_REQUEST)
+                .setSuccess(false)
+                .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
+                .setErrors([error.message]);
+        }
 
         const classId: number = +request.params.id;
 
         let currentClass: ClassEditDTO | null = await this.classesModel.findById(classId);
-
         if (!currentClass || !currentClass.id || currentClass.id !== classId) {
             currentClass = new ClassEditDTO(classId, {});
         }
@@ -79,21 +86,21 @@ export class ClassesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
+                this.responseBuilder, this.CONTROLLER_NAME, errors
             );
         }
 
         const isUpdated: boolean = await this.classesModel.update(currentClass);
 
         if (isUpdated) {
-            return responseBuilder
+            return this.responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setClassId(classId)
                 .setSuccess(true)
                 .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME))
         }
 
-        return this.buildInternalErrorResponse(responseBuilder, this.CONTROLLER_NAME);
+        return this.buildInternalErrorResponse(this.responseBuilder, this.CONTROLLER_NAME);
     }
 
     /**
@@ -104,27 +111,35 @@ export class ClassesController extends BaseController {
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async archive(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            return this.responseBuilder
+                .setHttpStatus(httpStatus.BAD_REQUEST)
+                .setSuccess(false)
+                .setMessage(this.buildFailedArchivingMessage(this.CONTROLLER_NAME))
+                .setErrors([error.message]);
+        }
 
         const classId: number = +request.params.id;
 
         const currentClass = await this.classesModel.findById(classId);
 
         if (!currentClass) {
-            return this.buildBadRequestResponse(responseBuilder, this.CONTROLLER_NAME, [])
+            return this.buildBadRequestResponse(this.responseBuilder, this.CONTROLLER_NAME, [])
         }
 
         const isArchived: boolean = await this.classesModel.archive(classId);
 
         if (isArchived) {
-            return responseBuilder
+            return this.responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setSuccess(true)
                 .setMessage(this.buildSuccessfullyArchivedMessage(this.CONTROLLER_NAME));
         }
 
         return this.buildInternalErrorResponse(
-            responseBuilder, this.CONTROLLER_NAME
+            this.responseBuilder, this.CONTROLLER_NAME
         );
     }
 }

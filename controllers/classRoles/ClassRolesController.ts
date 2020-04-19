@@ -7,17 +7,19 @@ import { ClassRolesModel } from "../../models/ClassRolesModel";
 import { AbstractResponseBuilder } from "../../data/AbstractResponseBuilder";
 import { ClassRolesResponseBuilder } from "../../data/classRoles/ClassRolesResponseBuilder";
 import { ClassRoleDTO } from "../../data/classRoles/ClassRoleDTO";
-import {ClassRoleEditDTO} from "../../data/classRoles/ClassRoleEditDTO";
+import { ClassRoleEditDTO } from "../../data/classRoles/ClassRoleEditDTO";
 
 export class ClassRolesController extends BaseController {
 
     private readonly CONTROLLER_NAME: string = "Class role";
 
     private classRoleModel: ClassRolesModel;
+    private readonly responseBuilder: ClassRolesResponseBuilder;
 
     constructor(classRolesModel: ClassRolesModel) {
         super();
         this.classRoleModel = classRolesModel;
+        this.responseBuilder = new ClassRolesResponseBuilder();
     }
 
     /**
@@ -27,16 +29,14 @@ export class ClassRolesController extends BaseController {
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async create(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+        const classRole: ClassRoleDTO = new ClassRoleDTO(request.body);
 
         try {
-            const classRole: ClassRoleDTO = new ClassRoleDTO(request.body);
-
             await validateOrReject(classRole);
 
             const classRoleId: number = await this.classRoleModel.add(classRole);
 
-            return responseBuilder
+            return this.responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
                 .setClassRoleId(classRoleId)
                 .setSuccess(true)
@@ -46,7 +46,7 @@ export class ClassRolesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
+                this.responseBuilder, this.CONTROLLER_NAME, errors
             );
         }
     }
@@ -58,7 +58,16 @@ export class ClassRolesController extends BaseController {
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (errorMessage) {
+            return this.responseBuilder
+                .setHttpStatus(httpStatus.BAD_REQUEST)
+                .setSuccess(false)
+                .setMessage(errorMessage)
+                .setErrors([this.BAD_ID_MESSAGE]);
+        }
+
 
         const classRoleId: number = +request.params.id;
         
@@ -79,20 +88,20 @@ export class ClassRolesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
+                this.responseBuilder, this.CONTROLLER_NAME, errors
             );
         }
 
         const isUpdated: boolean = await this.classRoleModel.update(classRole);
 
         if (isUpdated) {
-            return responseBuilder
+            return this.responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setClassRoleId(classRoleId)
                 .setSuccess(true)
                 .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME));
         }
 
-        return this.buildInternalErrorResponse(responseBuilder, this.CONTROLLER_NAME);
+        return this.buildInternalErrorResponse(this.responseBuilder, this.CONTROLLER_NAME);
     }
 }
