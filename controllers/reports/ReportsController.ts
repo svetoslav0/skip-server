@@ -7,19 +7,20 @@ import { ReportDTO } from "../../data/reports/ReportDTO";
 import { ReportEditDTO } from "../../data/reports/ReportEditDTO";
 import { ReportsResponseBuilder } from "../../data/reports/ReportsResponseBuilder";
 import { BaseController } from "../BaseController";
+import { AbstractResponseBuilder } from "../../data/AbstractResponseBuilder";
 import { ROLES } from "../../common/ROLES";
-import {AbstractResponseBuilder} from "../../data/AbstractResponseBuilder";
 
 export class ReportsController extends BaseController{
 
     private readonly CONTROLLER_NAME: string = "Report";
 
     private reportsModel: ReportsModel;
-    private request!: express.Request;
+    private readonly responseBuilder: ReportsResponseBuilder;
 
     constructor(reportsModel: ReportsModel) {
         super();
         this.reportsModel = reportsModel;
+        this.responseBuilder = new ReportsResponseBuilder();
     }
 
     /**
@@ -29,7 +30,6 @@ export class ReportsController extends BaseController{
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async create(request: express.Request): Promise<AbstractResponseBuilder> {
-        let responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
 
         try {
             const report: ReportDTO = new ReportDTO({
@@ -41,7 +41,7 @@ export class ReportsController extends BaseController{
 
             const reportId: number = await this.reportsModel.add(report);
 
-            return responseBuilder
+            return this.responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
                 .setReportId(reportId)
                 .setSuccess(true)
@@ -50,7 +50,7 @@ export class ReportsController extends BaseController{
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
+                this.responseBuilder, this.CONTROLLER_NAME, errors
             );
         }
     }
@@ -62,8 +62,17 @@ export class ReportsController extends BaseController{
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
-        let responseBuilder = new ReportsResponseBuilder();
-        this.request = request;
+        this._request = request;
+
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            return this.responseBuilder
+                .setHttpStatus(httpStatus.BAD_REQUEST)
+                .setSuccess(false)
+                .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
+                .setErrors([error.message]);
+        }
 
         const reportId: number = +request.params.id;
 
@@ -74,7 +83,7 @@ export class ReportsController extends BaseController{
         }
 
         if (!await this.hasUserAccess(reportId)) {
-            return this.buildForbiddenResponse(responseBuilder, this.CONTROLLER_NAME);
+            return this.buildForbiddenResponse(this.responseBuilder, this.CONTROLLER_NAME);
         }
 
         let errors: string[] = [];
@@ -88,13 +97,13 @@ export class ReportsController extends BaseController{
         } catch (validationError) {
             errors = this.buildValidationErrors(validationError);
 
-            return this.buildBadRequestResponse(responseBuilder, this.CONTROLLER_NAME, errors);
+            return this.buildBadRequestResponse(this.responseBuilder, this.CONTROLLER_NAME, errors);
         }
 
         const isUpdated: boolean = await this.reportsModel.update(report);
 
         if (isUpdated) {
-            return responseBuilder
+            return this.responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setReportId(reportId)
                 .setSuccess(true)
@@ -102,7 +111,7 @@ export class ReportsController extends BaseController{
         }
 
         return this.buildInternalErrorResponse(
-            responseBuilder, this.CONTROLLER_NAME
+            this.responseBuilder, this.CONTROLLER_NAME
         );
     }
 
@@ -114,32 +123,41 @@ export class ReportsController extends BaseController{
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async archive(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
-        this.request = request;
+        this._request = request;
+
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            return this.responseBuilder
+                .setHttpStatus(httpStatus.BAD_REQUEST)
+                .setSuccess(false)
+                .setMessage(this.buildFailedArchivingMessage(this.CONTROLLER_NAME))
+                .setErrors([error.message]);
+        }
 
         const reportId: number = +request.params.id;
 
         const report = await this.reportsModel.findById(reportId);
 
         if (!report) {
-            return this.buildBadRequestResponse(responseBuilder, this.CONTROLLER_NAME, []);
+            return this.buildBadRequestResponse(this.responseBuilder, this.CONTROLLER_NAME, []);
         }
 
         if (!await this.hasUserAccess(reportId)) {
-            return this.buildForbiddenResponse(responseBuilder, this.CONTROLLER_NAME);
+            return this.buildForbiddenResponse(this.responseBuilder, this.CONTROLLER_NAME);
         }
 
         const isArchived: boolean = await this.reportsModel.archive(reportId);
 
         if (isArchived) {
-            return responseBuilder
+            return this.responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setSuccess(true)
                 .setMessage(this.buildSuccessfullyArchivedMessage(this.CONTROLLER_NAME));
         }
 
         return this.buildInternalErrorResponse(
-            responseBuilder, this.CONTROLLER_NAME
+            this.responseBuilder, this.CONTROLLER_NAME
         );
     }
 
@@ -152,12 +170,12 @@ export class ReportsController extends BaseController{
      * @returns {Promise<boolean>}
      */
     private async hasUserAccess(reportId: number): Promise<boolean> {
-        if (this.request.roleId === ROLES.ADMIN) {
+        if (this._request.roleId === ROLES.ADMIN) {
             return true;
         }
 
         const ownerId: number = await this.reportsModel.findUserIdById(reportId);
 
-        return ownerId == this.request.userId;
+        return ownerId == this._request.userId;
     }
 }

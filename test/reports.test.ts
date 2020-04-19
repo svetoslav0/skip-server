@@ -26,7 +26,7 @@ const reportsModel: ReportsModel = new ReportsModel(database);
 
 const REPORTS_CONTROLLERS_URL: string = "/reports";
 const CREATE_URL: string = `${REPORTS_CONTROLLERS_URL}`;
-const EDIT_URL = (id: number) => {
+const EDIT_URL = (id: number | string) => {
     return `${REPORTS_CONTROLLERS_URL}/${id}`;
 };
 const ARCHIVE_URL = EDIT_URL;
@@ -256,6 +256,29 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
+        // TODO: Finish!
+        it("Should not update. Provided ID is not numeric", () => {
+            const reportIdToSend: string = "15a";
+
+            return Request(server)
+                .put(EDIT_URL(reportIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
     });
 
     describe(`DELETE ${REPORTS_CONTROLLERS_URL}/id tests`, () => {
@@ -337,6 +360,31 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                     await expect(result.body).to.have.property(dataProperty);
                     await expect(result.body.data).to.have.property(successProperty);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
+                });
+        });
+
+        // TODO: Finish!
+        it("Should not archive. Provided ID is not numeric", () => {
+            const reportIdToSend: string = "15a";
+
+            const expectedSuccess: boolean = false;
+
+            return Request(server)
+                .put(EDIT_URL(reportIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
                 });
         });
     });

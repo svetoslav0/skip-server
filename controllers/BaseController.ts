@@ -1,10 +1,14 @@
-import {AbstractResponseBuilder} from "../data/AbstractResponseBuilder";
-
+import express from "express";
 import httpStatus from "http-status-codes";
+
+import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
 
 export abstract class BaseController {
 
     protected readonly MAIN_ERROR_MESSAGE: string = "Something went wrong...";
+    protected readonly BAD_ID_MESSAGE: string = "The given ID parameter is not numeric";
+
+    protected _request!: express.Request;
 
     protected buildSuccessfullyCreatedMessage(controllerName: string): string {
         return `${controllerName} was successfully created!`;
@@ -100,5 +104,16 @@ export abstract class BaseController {
             .map((error: any) => error.constraints)
             .map((error: any) => Object.values(error))
             .flat();
+    }
+
+    /**
+     * This method throws an exception if provided ID is not numeric
+     *
+     * @param id
+     */
+    protected validateIdParam(id: any): void {
+        if(isNaN(id)) {
+            throw new Error(this.BAD_ID_MESSAGE);
+        }
     }
 }

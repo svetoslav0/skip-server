@@ -2,7 +2,6 @@ import { IsDefined } from "class-validator";
 import { ClassDTO } from "./ClassDTO";
 import { IsClassIdExisting } from "../validators/IsClassIdExisting";
 
-
 export class ClassEditDTO {
 
     private static readonly CLASS_ID_NOT_DEFINED: string = "Class ID is not provided!";

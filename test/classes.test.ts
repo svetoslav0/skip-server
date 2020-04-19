@@ -27,7 +27,7 @@ const classesModel: ClassesModel = new ClassesModel(database);
 
 const CLASSES_CONTROLLER_URL: string = "/classes";
 const CREATE_URL: string = `${CLASSES_CONTROLLER_URL}`;
-const EDIT_URL = (id: number) => {
+const EDIT_URL = (id: number | string) => {
     return `${CLASSES_CONTROLLER_URL}/${id}`;
 };
 const ARCHIVE_URL = (id: number) => {
@@ -180,6 +180,34 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 });
         });
 
+        it("Should not update. Provided ID is not numeric", () => {
+            const nameToSend: string = "Scratch";
+            const classIdToSend: string = "14a";
+
+            const objectToSend = {
+                name: nameToSend
+            };
+
+            return Request(server)
+                .put(EDIT_URL(classIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
         it("Should not update the class. Provided class ID does not exist", () => {
             const nameToSend: string = "JavaScript";
             const ageGroupToSend: string = "1 - 101 age";
@@ -233,6 +261,30 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .send()
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                });
+        });
+
+        it("Should not archive. Provided ID is not numeric", () => {
+            const classIdToSend: string = "15a";
+
+            const expectedSuccess: boolean = false;
+
+            return Request(server)
+                .put(EDIT_URL(classIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
                 });
         });
 
