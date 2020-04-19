@@ -36,6 +36,9 @@ export class APISpecification {
                 },
                 "/classRoles": {
                     post: this.buildClassRolesCreatePath()
+                },
+                "/classRoles/:id": {
+                    put: this.buildClassRolesEditPath()
                 }
             },
             components: {
@@ -57,6 +60,7 @@ export class APISpecification {
                     CreateClassRequestSchema: this.buildCreateClassRequestSchema(),
                     EditClassRequestSchema: this.buildEditClassRequestSchema(),
                     CreateClassRoleRequestSchema: this.buildCreateClassRoleRequestSchema(),
+                    EditClassRoleRequestSchema: this.buildEditClassRoleRequestSchema(),
 
                     LoginResponseSchema: this.buildLoginResponseSchema(),
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
@@ -67,6 +71,7 @@ export class APISpecification {
                     EditClassResponseSchema: this.buildEditClassResponseSchema(),
                     DeleteClassResponseSchema: this.buildDeleteClassResponseSchema(),
                     CreateClassRoleResponseSchema: this.buildCreateClassRoleResponseSchema(),
+                    EditClassRoleResponseSchema: this.buildEditClassRoleResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -450,6 +455,55 @@ export class APISpecification {
         };
     }
 
+    private buildClassRolesEditPath() {
+        return {
+            summary: "Update existing Class Role",
+            description: "Update an existing Class Role. Only provided fields will be validated " +
+                "and eventually updated.",
+            tags: [
+                "Class Roles"
+            ],
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    description: "The ID of the class role",
+                    schema: {
+                        type: "number",
+                        minimum: 1
+                    }
+                },
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                }
+            ],
+            requestBody: {
+                required: true,
+                content: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
+                        schema: {
+                            $ref: "#/components/schemas/EditClassRoleRequestSchema"
+                        }
+                    }
+                }
+            },
+            responses: {
+                200: {
+                    description: "Class Role was successfully updated.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/EditClassRoleResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        }
+    }
+
     private buildRegisterUserSchema() {
         return {
             type: "object",
@@ -599,7 +653,25 @@ export class APISpecification {
                 },
                 paymentPerHour: {
                     type: "number",
-                    example: 15
+                    example: 15,
+                    minimum: 0
+                }
+            }
+        }
+    }
+
+    private buildEditClassRoleRequestSchema() {
+        return {
+            type: "object",
+            properties: {
+                name: {
+                    type: "string",
+                    example: "Co-Lecturer"
+                },
+                paymentPerHour: {
+                    type: "number",
+                    example: 12,
+                    minimum: 0
                 }
             }
         }
@@ -750,6 +822,31 @@ export class APISpecification {
                         message: {
                             type: "string",
                             example: "Class Role was successfully created."
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private buildEditClassRoleResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: true
+                        },
+                        classRoleId: {
+                            type: "number",
+                            example: 15
+                        },
+                        message: {
+                            type: "string",
+                            example: "Class Role was updated successfully."
                         }
                     }
                 }
