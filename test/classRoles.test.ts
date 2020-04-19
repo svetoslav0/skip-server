@@ -27,7 +27,7 @@ const classRolesModel: ClassRolesModel = new ClassRolesModel(database);
 
 const CLASS_ROLES_CONTROLLER_URL: string = "/classRoles";
 const CREATE_URL: string = `${CLASS_ROLES_CONTROLLER_URL}`;
-const EDIT_URL = (id: number) => {
+const EDIT_URL = (id: number | string) => {
     return `${CLASS_ROLES_CONTROLLER_URL}/${id}`;
 };
 const ARCHIVE_URL = (id: number) => {
@@ -351,6 +351,172 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                     expect(result.body.data.errors).to.be.an("array");
 
                     expect(result.body.data.success).to.eql(expectedSuccess);
+                });
+        });
+    });
+
+    describe(`PUT ${CLASS_ROLES_CONTROLLER_URL}/{id} tests`, () => {
+        noTokenTestPut(EDIT_URL(24));
+        wrongTokenTestPut(EDIT_URL(24));
+
+        it("Should update the class role", () => {
+            const nameToSend: string = "Lecturer";
+            const paymentToSend: number = 15;
+            const classRoleIdToSend: number = 3;
+
+            const objectToSend = {
+                name: nameToSend,
+                paymentToSend: paymentToSend
+            };
+
+            return Request(server)
+                .put(EDIT_URL(classRoleIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("classRoleId");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.success).to.eql(true);
+                    await expect(result.body.data.classRoleId).to.eql(classRoleIdToSend);
+                });
+        });
+
+        it("Should not update the class role. Provided token belongs to employee", () => {
+            const nameToSend = "Co-Lecturer";
+            const classRoleIdToSend: number = 3;
+
+            const objectToSend = {
+                name: nameToSend
+            };
+
+            return Request(server)
+                .put(EDIT_URL(classRoleIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("error");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.error).to.be.a("string");
+                    await expect(result.body.data.message).to.be.a("string");
+                });
+        });
+
+        it("Should not update the class role. Provided ID is not numeric", () => {
+            const nameToSend: string = "Observer";
+            const classRoleIdToSend: string = "3a";
+
+            const objectToSend = {
+                name: nameToSend
+            };
+
+            return Request(server)
+                .put(EDIT_URL(classRoleIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+                });
+        });
+
+        it("Should not update the class role. Provided ID does not exist", () => {
+            const paymentToSend: number = 21;
+            const classRoleIdToSend: number = 9999999999;
+
+            const objectToSend = {
+                paymentPerHour: paymentToSend
+            };
+
+            return Request(server)
+                .put(EDIT_URL(classRoleIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the class role. Field 'paymentPerHour' is not numeric", () => {
+            const paymentToSend: string = "150aa";
+            const classRoleIdToSend: number = 3;
+
+            const objectToSend = {
+                paymentPerHour: paymentToSend
+            };
+
+            return Request(server)
+                .put(EDIT_URL(classRoleIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the class role. Field 'paymentPerHour' is negative number", () => {
+            const paymentToSend: number = -15;
+            const classRoleIdToSend: number = 3;
+
+            const objectToSend = {
+                paymentPerHour: paymentToSend
+            };
+
+            return Request(server)
+                .put(EDIT_URL(classRoleIdToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
                 });
         });
     });

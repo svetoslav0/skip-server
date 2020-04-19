@@ -256,7 +256,6 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
-        // TODO: Finish!
         it("Should not update. Provided ID is not numeric", () => {
             const reportIdToSend: string = "15a";
 
@@ -363,7 +362,6 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
-        // TODO: Finish!
         it("Should not archive. Provided ID is not numeric", () => {
             const reportIdToSend: string = "15a";
 

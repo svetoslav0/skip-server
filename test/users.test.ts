@@ -205,8 +205,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                    await expect(result.body.data).to.have.property(expectedPropertyErrors);
 
                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                   // TODO: Will not work properly until GH-2 is resolved
-                   // await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                   await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
                });
        });
 
