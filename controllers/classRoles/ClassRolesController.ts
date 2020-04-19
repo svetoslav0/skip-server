@@ -60,12 +60,12 @@ export class ClassRolesController extends BaseController {
     public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
         try {
             this.validateIdParam(request.params.id);
-        } catch (errorMessage) {
+        } catch (error) {
             return this.responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(errorMessage)
-                .setErrors([this.BAD_ID_MESSAGE]);
+                .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
+                .setErrors([error.message]);
         }
 
 
