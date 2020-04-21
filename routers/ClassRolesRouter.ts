@@ -26,12 +26,13 @@ export class ClassRolesRouter {
     public registerRoutes(): express.Router {
         this.signCreateRoute();
         this.signEditRoute();
+        this.signArchiveRoute();
 
         return this.router;
     }
 
     /**
-     * This method registers POST /classRoles
+     * This method registers POST /classRoles endpoint
      */
     private signCreateRoute() {
         this.router.post("/",
@@ -50,7 +51,7 @@ export class ClassRolesRouter {
     }
 
     /**
-     * Ths method registers PUT /classRoles
+     * This method registers PUT /classRoles/{id} endpoint
      */
     private signEditRoute() {
         this.router.put("/:id",
@@ -63,6 +64,25 @@ export class ClassRolesRouter {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse())
+                })
+                .catch(next);
+        });
+    }
+
+    /**
+     * This method registers DELETE /classRoles/{id} endpoint
+     */
+    private signArchiveRoute() {
+        this.router.delete("/:id",
+            APIMiddleware.isUserAdministrator,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            this.controller
+                .archive(req)
+                .then((result: AbstractResponseBuilder) => {
+                    return res
+                        .status(result.httpStatus)
+                        .send(result.buildResponse());
                 })
                 .catch(next);
         });

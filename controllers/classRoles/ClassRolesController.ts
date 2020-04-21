@@ -8,6 +8,7 @@ import { AbstractResponseBuilder } from "../../data/AbstractResponseBuilder";
 import { ClassRolesResponseBuilder } from "../../data/classRoles/ClassRolesResponseBuilder";
 import { ClassRoleDTO } from "../../data/classRoles/ClassRoleDTO";
 import { ClassRoleEditDTO } from "../../data/classRoles/ClassRoleEditDTO";
+import { MESSAGES } from "../../common/consts/MESSAGES";
 
 export class ClassRolesController extends BaseController {
 
@@ -40,7 +41,7 @@ export class ClassRolesController extends BaseController {
                 .setHttpStatus(httpStatus.CREATED)
                 .setClassRoleId(classRoleId)
                 .setSuccess(true)
-                .setMessage(this.buildSuccessfullyCreatedMessage(this.CONTROLLER_NAME));
+                .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_CREATION_MESSAGE);
 
         } catch (validationError) {
             const errors: string[] = this.buildValidationErrors(validationError);
@@ -64,7 +65,7 @@ export class ClassRolesController extends BaseController {
             return this.responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
+                .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
                 .setErrors([error.message]);
         }
 
@@ -99,9 +100,46 @@ export class ClassRolesController extends BaseController {
                 .setHttpStatus(httpStatus.OK)
                 .setClassRoleId(classRoleId)
                 .setSuccess(true)
-                .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME));
+                .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_UPDATED_MESSAGE);
         }
 
         return this.buildInternalErrorResponse(this.responseBuilder, this.CONTROLLER_NAME);
+    }
+
+    public async archive(request: express.Request): Promise<AbstractResponseBuilder> {
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            return this.responseBuilder
+                .setHttpStatus(httpStatus.BAD_REQUEST)
+                .setSuccess(false)
+                .setMessage(MESSAGES.ERRORS.CLASS_ROLES.ARCHIVE_GENERAL_FAILED_MESSAGE)
+                .setErrors([error.message]);
+        }
+
+        const classRoleId: number = +request.params.id;
+
+        const classRole: ClassRoleEditDTO | null = await this.classRoleModel.findById(classRoleId);
+
+        if (!classRole) {
+            return this.buildBadRequestResponse(
+                this.responseBuilder,
+                this.CONTROLLER_NAME,
+                [MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_EXISTING_MESSAGE]
+            );
+        }
+
+        const isArchived: boolean = await this.classRoleModel.archive(classRoleId);
+
+        if (isArchived) {
+            return this.responseBuilder
+                .setHttpStatus(httpStatus.OK)
+                .setSuccess(true)
+                .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_ARCHIVED_MESSAGE);
+        }
+
+        return this.buildInternalErrorResponse(
+            this.responseBuilder, this.CONTROLLER_NAME
+        );
     }
 }

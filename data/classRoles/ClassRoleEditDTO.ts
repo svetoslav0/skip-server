@@ -1,29 +1,26 @@
 import { IsDefined } from "class-validator";
 import { IsClassRoleIdExisting } from "../validators/IsClassRoleIdExisting";
-import { ClassRoleDTO } from "./ClassRoleDTO";
 import { IsNumber } from "../validators/IsNumber";
 import { IsNumberPositiveOrZero } from "../validators/IsNumberPositiveOrZero";
+import { MESSAGES } from "../../common/consts/MESSAGES";
 
 export class ClassRoleEditDTO {
 
-    private static readonly CLASS_ROLE_ID_NOT_DEFINED: string = "Class Role ID is not defined!";
-    private static readonly CLASS_ROLE_ID_NOT_EXISTING: string = "The provided Class Role ID does not exist!";
-
     @IsDefined({
-        message: ClassRoleEditDTO.CLASS_ROLE_ID_NOT_DEFINED
+        message: MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_DEFINED_MESSAGE
     })
     @IsClassRoleIdExisting({
-        message: ClassRoleEditDTO.CLASS_ROLE_ID_NOT_EXISTING
+        message: MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _id!: number;
 
     private _name!: string;
 
     @IsNumber({
-        message: ClassRoleDTO.PAYMENT_NOT_NUMBER_MESSAGE
+        message: MESSAGES.ERRORS.CLASS_ROLES.PAYMENT_FIELD_NOT_NUMERIC_MESSAGE
     })
     @IsNumberPositiveOrZero({
-        message: ClassRoleDTO.PAYMENT_NOT_POSITIVE_OR_ZERO_MESSAGE
+        message: MESSAGES.ERRORS.CLASS_ROLES.PAYMENT_FIELD_IS_NEGATIVE_MESSAGE
     })
     private _paymentPerHour!: number;
 

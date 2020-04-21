@@ -8,6 +8,7 @@ import { ClassEditDTO } from "../../data/classes/ClassEditDTO";
 import { ClassesResponseBuilder } from "../../data/classes/ClassesResponseBuilder";
 import { BaseController } from "../BaseController";
 import { AbstractResponseBuilder } from "../../data/AbstractResponseBuilder";
+import { MESSAGES } from "../../common/consts/MESSAGES";
 
 export class ClassesController extends BaseController {
 
@@ -40,7 +41,7 @@ export class ClassesController extends BaseController {
                 .setHttpStatus(httpStatus.CREATED)
                 .setClassId(classId)
                 .setSuccess(true)
-                .setMessage(this.buildSuccessfullyCreatedMessage(this.CONTROLLER_NAME));
+                .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_CREATION_MESSAGE);
 
         } catch (validationError) {
             const errors: string[] = this.buildValidationErrors(validationError);
@@ -64,7 +65,7 @@ export class ClassesController extends BaseController {
             return this.responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(this.buildFailedUpdatingMessage(this.CONTROLLER_NAME))
+                .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
                 .setErrors([error.message]);
         }
 
@@ -97,7 +98,7 @@ export class ClassesController extends BaseController {
                 .setHttpStatus(httpStatus.OK)
                 .setClassId(classId)
                 .setSuccess(true)
-                .setMessage(this.buildSuccessfullyUpdatedMessage(this.CONTROLLER_NAME))
+                .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_UPDATED_MESSAGE)
         }
 
         return this.buildInternalErrorResponse(this.responseBuilder, this.CONTROLLER_NAME);
@@ -117,7 +118,7 @@ export class ClassesController extends BaseController {
             return this.responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(this.buildFailedArchivingMessage(this.CONTROLLER_NAME))
+                .setMessage(MESSAGES.ERRORS.CLASSES.ARCHIVE_GENERAL_FAILED_MESSAGE)
                 .setErrors([error.message]);
         }
 
@@ -126,7 +127,10 @@ export class ClassesController extends BaseController {
         const currentClass = await this.classesModel.findById(classId);
 
         if (!currentClass) {
-            return this.buildBadRequestResponse(this.responseBuilder, this.CONTROLLER_NAME, [])
+            return this.buildBadRequestResponse(
+                this.responseBuilder,
+                this.CONTROLLER_NAME,
+                [MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_EXISTING_MESSAGE]);
         }
 
         const isArchived: boolean = await this.classesModel.archive(classId);
@@ -135,7 +139,7 @@ export class ClassesController extends BaseController {
             return this.responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setSuccess(true)
-                .setMessage(this.buildSuccessfullyArchivedMessage(this.CONTROLLER_NAME));
+                .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_ARCHIVED_MESSAGE);
         }
 
         return this.buildInternalErrorResponse(

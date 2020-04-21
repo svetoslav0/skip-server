@@ -2,41 +2,10 @@ import express from "express";
 import httpStatus from "http-status-codes";
 
 import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
+import { MESSAGES } from "../common/consts/MESSAGES";
 
 export abstract class BaseController {
-
-    protected readonly MAIN_ERROR_MESSAGE: string = "Something went wrong...";
-    protected readonly BAD_ID_MESSAGE: string = "The given ID parameter is not numeric";
-
     protected _request!: express.Request;
-
-    protected buildSuccessfullyCreatedMessage(controllerName: string): string {
-        return `${controllerName} was successfully created!`;
-    }
-
-    protected buildSuccessfullyUpdatedMessage(controllerName: string): string {
-        return `${controllerName} was successfully updated!`;
-    }
-
-    protected buildSuccessfullyArchivedMessage(controllerName: string): string {
-        return `${controllerName} was successfully archived`;
-    }
-
-    protected buildFailedCreationMessage(controllerName: string): string {
-        return `${controllerName} with the given parameters cannot be created!`;
-    }
-
-    protected buildFailedUpdatingMessage(controllerName: string): string {
-        return `${controllerName} with the given parameters cannot be update!`;
-    }
-
-    protected buildFailedArchivingMessage(controllerName: string): string {
-        return `${controllerName} with the given ID cannot be archived!`;
-    }
-
-    protected buildAccessDeniedErrorMessage(): string {
-        return "Access denied. You do not have rights to make changes on this resource!";
-    }
 
     /**
      * This methods builds response when status is FORBIDDEN
@@ -52,8 +21,8 @@ export abstract class BaseController {
         return responseBuilder
             .setHttpStatus(httpStatus.FORBIDDEN)
             .setSuccess(false)
-            .setMessage(this.buildFailedUpdatingMessage(controllerName))
-            .setErrors([this.buildAccessDeniedErrorMessage()]);
+            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
+            .setErrors([MESSAGES.ERRORS.AUTH.FORBIDDEN_RESOURCE_MESSAGE]);
     }
 
     /**
@@ -71,7 +40,7 @@ export abstract class BaseController {
         return responseBuilder
             .setHttpStatus(httpStatus.BAD_REQUEST)
             .setSuccess(false)
-            .setMessage(this.buildFailedUpdatingMessage(controllerName))
+            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
             .setErrors(errors);
     }
 
@@ -89,8 +58,8 @@ export abstract class BaseController {
         return responseBuilder
             .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)
             .setSuccess(false)
-            .setMessage(this.MAIN_ERROR_MESSAGE)
-            .setErrors([this.buildFailedUpdatingMessage(controllerName)]);
+            .setMessage(MESSAGES.ERRORS.COMMON.GENERAL_ERROR_MESSAGE)
+            .setErrors([]);
     }
 
     /**
@@ -113,7 +82,7 @@ export abstract class BaseController {
      */
     protected validateIdParam(id: any): void {
         if(isNaN(id)) {
-            throw new Error(this.BAD_ID_MESSAGE);
+            throw new Error(MESSAGES.ERRORS.COMMON.NON_NUMERIC_ID_PARAM_MESSAGE);
         }
     }
 }

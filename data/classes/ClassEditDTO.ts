@@ -1,17 +1,15 @@
 import { IsDefined } from "class-validator";
 import { ClassDTO } from "./ClassDTO";
 import { IsClassIdExisting } from "../validators/IsClassIdExisting";
+import { MESSAGES } from "../../common/consts/MESSAGES";
 
 export class ClassEditDTO {
 
-    private static readonly CLASS_ID_NOT_DEFINED: string = "Class ID is not provided!";
-    private static readonly CLASS_ID_NOT_EXISTING: string = "The provided class ID does not exist!";
-
     @IsDefined({
-        message: ClassEditDTO.CLASS_ID_NOT_DEFINED
+        message: MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_DEFINED_MESSAGE
     })
     @IsClassIdExisting({
-        message: ClassEditDTO.CLASS_ID_NOT_EXISTING
+        message: MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _id!: number;
 

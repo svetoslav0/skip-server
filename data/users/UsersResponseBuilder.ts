@@ -1,6 +1,6 @@
 import { AbstractResponseBuilder } from "../AbstractResponseBuilder";
 import { IResponseBuilder } from "../IResponseBuilder";
-import {IUsersResponseBuilder} from "./IUsersResponseBuilder";
+import  {IUsersResponseBuilder } from "./IUsersResponseBuilder";
 
 export class UsersResponseBuilder extends AbstractResponseBuilder implements IResponseBuilder {
 

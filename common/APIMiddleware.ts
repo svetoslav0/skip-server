@@ -2,16 +2,11 @@ import jwt from "jsonwebtoken";
 import express from "express";
 import httpStatus from "http-status-codes";
 
-import { ROLES } from "./ROLES";
 import { IAuthResult } from "./IAuthResult";
+import { ROLES } from "./consts/ROLES";
+import { MESSAGES } from "./consts/MESSAGES";
 
 export class APIMiddleware {
-
-    private static readonly AUTHORIZATION_ERROR_MESSAGE: string = "Authorization error";
-    private static readonly NO_TOKEN_MESSAGE: string = "Access denied. No token was provided.";
-    private static readonly INVALID_TOKEN_MESSAGE: string = "Access denied. Provided token is invalid.";
-    private static readonly FORBIDDEN_RESOURCE_MESSAGE: string = "Access denied. You do not have rights to do this action!";
-
     public static authorize(req: express.Request, res: express.Response, next: express.NextFunction): IAuthResult {
         const token: string = req.header("auth-token") || "";
 
@@ -19,7 +14,7 @@ export class APIMiddleware {
             return {
                 isAuthorized: false,
                 status: httpStatus.UNAUTHORIZED,
-                response: APIMiddleware.buildResponse(APIMiddleware.NO_TOKEN_MESSAGE)
+                response: APIMiddleware.buildResponse(MESSAGES.ERRORS.AUTH.NO_TOKEN_MESSAGE)
             };
         }
 
@@ -38,7 +33,7 @@ export class APIMiddleware {
             return {
                 isAuthorized: false,
                 status: httpStatus.UNAUTHORIZED,
-                response: APIMiddleware.buildResponse(APIMiddleware.INVALID_TOKEN_MESSAGE)
+                response: APIMiddleware.buildResponse(MESSAGES.ERRORS.AUTH.INVALID_TOKEN_MESSAGE)
             };
         }
     }
@@ -56,7 +51,7 @@ export class APIMiddleware {
 
         return res
             .status(httpStatus.FORBIDDEN)
-            .send(APIMiddleware.buildResponse(APIMiddleware.FORBIDDEN_RESOURCE_MESSAGE));
+            .send(APIMiddleware.buildResponse(MESSAGES.ERRORS.AUTH.FORBIDDEN_RESOURCE_MESSAGE));
     }
 
     public static isUserAdministrator(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -72,7 +67,7 @@ export class APIMiddleware {
 
         return res
             .status(httpStatus.FORBIDDEN)
-            .send(APIMiddleware.buildResponse(APIMiddleware.FORBIDDEN_RESOURCE_MESSAGE));
+            .send(APIMiddleware.buildResponse(MESSAGES.ERRORS.AUTH.FORBIDDEN_RESOURCE_MESSAGE));
     }
 
     public static async isUserOwner(getResourceUserIdByResourceId: (id: number) => Promise<number>) {
@@ -90,14 +85,14 @@ export class APIMiddleware {
 
             return res
                 .status(httpStatus.FORBIDDEN)
-                .send(APIMiddleware.buildResponse(APIMiddleware.FORBIDDEN_RESOURCE_MESSAGE));
+                .send(APIMiddleware.buildResponse(MESSAGES.ERRORS.AUTH.FORBIDDEN_RESOURCE_MESSAGE));
         };
     }
 
     private static buildResponse(message: string) {
         return {
             data: {
-                error: APIMiddleware.AUTHORIZATION_ERROR_MESSAGE,
+                error: MESSAGES.ERRORS.AUTH.AUTHORIZATION_MAIN_ERROR_MESSAGE,
                 message
             }
         };

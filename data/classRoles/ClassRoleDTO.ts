@@ -1,27 +1,23 @@
 import { IsDefined } from "class-validator";
 import { IsNumber } from "../validators/IsNumber";
 import { IsNumberPositiveOrZero } from "../validators/IsNumberPositiveOrZero";
+import { MESSAGES } from "../../common/consts/MESSAGES";
 
 export class ClassRoleDTO {
 
-    public static readonly NAME_NOT_DEFINED_MESSAGE: string = "Field 'name' is not defined!";
-    public static readonly PAYMENT_NOT_DEFINED_MESSAGE: string = "Field 'paymentPerHour' is not defined!";
-    public static readonly PAYMENT_NOT_NUMBER_MESSAGE: string = "Field 'paymentPerHour' is not a number";
-    public static readonly PAYMENT_NOT_POSITIVE_OR_ZERO_MESSAGE: string = "Field 'paymentPerHour' is negative!";
-
     @IsDefined({
-        message: ClassRoleDTO.NAME_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.CLASS_ROLES.NAME_FIELD_NOT_DEFINED_MESSAGE
     })
     private _name!: string;
 
     @IsDefined({
-        message: ClassRoleDTO.PAYMENT_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.CLASS_ROLES.PAYMENT_FIELD_NOT_DEFINED_MESSAGE
     })
     @IsNumber({
-        message: ClassRoleDTO.PAYMENT_NOT_NUMBER_MESSAGE
+        message: MESSAGES.ERRORS.CLASS_ROLES.PAYMENT_FIELD_NOT_NUMERIC_MESSAGE
     })
     @IsNumberPositiveOrZero({
-        message: ClassRoleDTO.PAYMENT_NOT_POSITIVE_OR_ZERO_MESSAGE
+        message: MESSAGES.ERRORS.CLASS_ROLES.PAYMENT_FIELD_IS_NEGATIVE_MESSAGE
     })
     private _paymentPerHour!: number;
 
