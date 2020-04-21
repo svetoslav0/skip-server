@@ -3,80 +3,59 @@ import { IsUsernameUnique } from "../validators/IsUsernameUnique";
 import { IsEmailUnique } from "../validators/IsEmailUnique";
 import { MinimumLength } from "../validators/MinimumLength";
 import { MaximumLength } from "../validators/MaximumLength";
+import { MESSAGES } from "../../common/consts/MESSAGES";
+import { CONSTRAINTS } from "../../common/consts/CONSTRAINTS";
+import { DEFAULT_ROLE } from "../../common/consts/ROLES";
 
 export class UserDTO {
-    private static readonly USERNAME_NOT_DEFINED_MESSAGE: string = "Field 'username' is required!";
-    private static readonly EMAIL_NOT_DEFINED_MESSAGE: string = "Field 'email' is required!";
-    private static readonly PASSWORD_NOT_DEFINED_MESSAGE: string = "Field 'password' is not defined!";
-    private static readonly FIRST_NAME_NOT_DEFINED_MESSAGE: string = "Field 'firstName' is not defined!";
-    private static readonly LAST_NAME_NOT_DEFINED_MESSAGE: string = "Field 'lastName' is not defined!";
-
-    public static readonly MIN_USERNAME_LENGTH: number = 6;
-    public static readonly MAX_USERNAME_LENGTH: number = 64;
-
-    public static readonly MIN_PASSWORD_LENGTH: number = 6;
-    public static readonly MAX_PASSWORD_LENGTH: number = 128;
-
-    private static readonly MIN_LENGTH_USERNAME_MESSAGE: string = `Username is too short. Must be at least ${UserDTO.MIN_USERNAME_LENGTH} characters long.`;
-    private static readonly MAX_LENGTH_USERNAME_MESSAGE: string = `Username is too long. Must be not more than ${UserDTO.MAX_USERNAME_LENGTH} characters long.`;
-
-    private static readonly MIN_LENGTH_PASSWORD_MESSAGE: string = `Password is too short. Must be at least ${UserDTO.MIN_PASSWORD_LENGTH} characters long.`;
-    private static readonly MAX_LENGTH_PASSWORD_MESSAGE: string = `The password seems to be too long. Must be not more than ${UserDTO.MAX_PASSWORD_LENGTH} characters long.`;
-
-    private static readonly INVALID_EMAIL_MESSAGE: string = "Email seems to be invalid.";
-
-    private static readonly USERNAME_EXISTS_MESSAGE: string = "An user has already been registered with this username. Please choose another one.";
-    private static readonly EMAIL_EXISTS_MESSAGE: string = "An user has already been registered with this email. Please choose another one.";
-
-    private static readonly DEFAULT_ROLE_ID: number = 1;
 
     @IsDefined({
-        message: UserDTO.USERNAME_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.USERS.USERNAME_FIELD_NOT_DEFINED_MESSAGE
     })
-    @Validate(MinimumLength, [UserDTO.MIN_USERNAME_LENGTH], {
-        message: UserDTO.MIN_LENGTH_USERNAME_MESSAGE
+    @Validate(MinimumLength, [CONSTRAINTS.USERS.MIN_USERNAME_LENGTH], {
+        message: MESSAGES.ERRORS.USERS.USERNAME_FIELD_TOO_SHORT_MESSAGE
     })
-    @Validate(MaximumLength, [UserDTO.MAX_USERNAME_LENGTH], {
-        message: UserDTO.MAX_LENGTH_USERNAME_MESSAGE
+    @Validate(MaximumLength, [CONSTRAINTS.USERS.MAX_USERNAME_LENGTH], {
+        message: MESSAGES.ERRORS.USERS.USERNAME_FIELD_TOO_LONG_MESSAGE
     })
     @IsUsernameUnique({
-        message: UserDTO.USERNAME_EXISTS_MESSAGE,
+        message: MESSAGES.ERRORS.USERS.USERNAME_EXISTS_MESSAGE,
     })
     private readonly _username: string;
 
     private readonly _id!: number;
 
     @IsDefined({
-        message: UserDTO.EMAIL_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.USERS.EMAIL_FIELD_NOT_DEFINED_MESSAGE
     })
     @IsEmail({}, {
-        message: UserDTO.INVALID_EMAIL_MESSAGE,
+        message: MESSAGES.ERRORS.USERS.EMAIL_FIELD_IS_INVALID_MESSAGE,
     })
     @IsEmailUnique({
-        message: UserDTO.EMAIL_EXISTS_MESSAGE,
+        message: MESSAGES.ERRORS.USERS.EMAIL_EXISTS_MESSAGE,
     })
     private readonly _email: string | undefined;
 
     @IsDefined({
-        message: UserDTO.PASSWORD_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.USERS.PASSWORD_FIELD_NOT_DEFINED_MESSAGE
     })
-    @Validate(MinimumLength, [UserDTO.MIN_PASSWORD_LENGTH], {
-        message: UserDTO.MIN_LENGTH_PASSWORD_MESSAGE
+    @Validate(MinimumLength, [CONSTRAINTS.USERS.MIN_PASSWORD_LENGTH], {
+        message: MESSAGES.ERRORS.USERS.PASSWORD_FIELD_TOO_SHORT
     })
-    @Validate(MaximumLength, [UserDTO.MAX_PASSWORD_LENGTH], {
-        message: UserDTO.MAX_LENGTH_PASSWORD_MESSAGE
+    @Validate(MaximumLength, [CONSTRAINTS.USERS.MAX_PASSWORD_LENGTH], {
+        message: MESSAGES.ERRORS.USERS.PASSWORD_FIELD_TOO_LONG
     })
     private _password: string;
 
     @IsDefined({
-        message: UserDTO.FIRST_NAME_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.USERS.FIRST_NAME_FIELD_NOT_DEFINED_MESSAGE
     })
     private readonly _firstName: string;
 
     private readonly _middleName: string | undefined;
 
     @IsDefined({
-        message: UserDTO.LAST_NAME_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.USERS.LAST_NAME_FIELD_NOT_DEFINED_MESSAGE
     })
     private readonly _lastName: string;
 
@@ -89,7 +68,7 @@ export class UserDTO {
         this._firstName = reqBody.firstName;
         this._middleName = reqBody.middleName;
         this._lastName = reqBody.lastName;
-        this._roleId = +reqBody.roleId || UserDTO.DEFAULT_ROLE_ID;
+        this._roleId = +reqBody.roleId || DEFAULT_ROLE;
     }
 
     get id(): number {

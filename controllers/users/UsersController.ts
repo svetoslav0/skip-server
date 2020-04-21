@@ -7,16 +7,11 @@ import { UsersModel } from "../../models/UsersModel";
 import { UserDTO } from "../../data/users/UserDTO";
 import { UsersResponseBuilder } from "../../data/users/UsersResponseBuilder";
 import { BaseController } from "../BaseController";
+import { MESSAGES } from "../../common/consts/MESSAGES";
 
 export class UsersController extends BaseController {
 
     private readonly SALT_DIFFICULTY: number = 10;
-
-    private readonly REGISTER_SUCCESS_MESSAGE: string = "User registered successfully.";
-    private readonly REGISTER_FAILED_MESSAGE: string = "The given request is invalid. Some errors have appeared.";
-
-    private readonly UNSUCCESSFUL_LOGIN_MESSAGE: string = "Wrong username or password.";
-    private readonly SUCCESS_LOGIN_MESSAGE: string = "Logged in successfully";
 
     private usersModel: UsersModel;
 
@@ -43,7 +38,7 @@ export class UsersController extends BaseController {
                 .setHttpStatus(httpStatus.CREATED)
                 .setUserId(userId)
                 .setSuccess(true)
-                .setMessage(this.REGISTER_SUCCESS_MESSAGE);
+                .setMessage(MESSAGES.SUCCESSES.USERS.REGISTER_SUCCESS_MESSAGE);
 
         } catch (validationError) {
             const errors: string[] = this.buildValidationErrors(validationError);
@@ -51,7 +46,7 @@ export class UsersController extends BaseController {
             return responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(this.REGISTER_FAILED_MESSAGE)
+                .setMessage(MESSAGES.ERRORS.USERS.REGISTER_FAILED_MESSAGE)
                 .setErrors(errors);
         }
     }
@@ -70,7 +65,7 @@ export class UsersController extends BaseController {
             return responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(this.UNSUCCESSFUL_LOGIN_MESSAGE);
+                .setMessage(MESSAGES.ERRORS.USERS.LOGIN_FAILED_MESSAGE);
         }
 
         const payload = {
@@ -83,7 +78,7 @@ export class UsersController extends BaseController {
         return responseBuilder
             .setHttpStatus(httpStatus.OK)
             .setSuccess(true)
-            .setMessage(this.SUCCESS_LOGIN_MESSAGE)
+            .setMessage(MESSAGES.SUCCESSES.USERS.LOGIN_SUCCESS_MESSAGE)
             .setAuthToken(token);
     }
 

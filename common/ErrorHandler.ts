@@ -1,16 +1,14 @@
 import express from "express";
+import httpStatus from "http-status-codes";
+import { MESSAGES } from "./consts/MESSAGES";
 
 export const handleError = (err: any, res: express.Response) => {
-    console.log("=".repeat(45));
-    console.error(err);
-    console.log("=".repeat(45));
-
-    const statusCode: number = 500;
-    const message: string = "Something went wrong...";
-
-    res.status(statusCode).json({
-        status: "error",
-        statusCode,
-        message
-    });
+    res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({
+            status: "error",
+            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            message: MESSAGES.ERRORS.COMMON.GENERAL_ERROR_MESSAGE
+        }
+    );
 };

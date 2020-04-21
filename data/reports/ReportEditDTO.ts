@@ -2,22 +2,20 @@ import { IsDefined } from "class-validator";
 import { IsUserIdExisting } from "../validators/IsUserIdExisting";
 import { ReportDTO } from "./ReportDTO";
 import { IsReportIdExisting } from "../validators/IsReportIdExisting";
+import { MESSAGES } from "../../common/consts/MESSAGES";
 
 export class ReportEditDTO {
 
-    private static readonly ID_NOT_DEFINED_MESSAGE: string = "Report ID is not defined!";
-    private static readonly ID_NOT_EXISTING_MESSAGE: string = "Report ID is not existing!";
-
     @IsDefined({
-        message: ReportEditDTO.ID_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_DEFINED_MESSAGE
     })
     @IsReportIdExisting({
-        message: ReportEditDTO.ID_NOT_EXISTING_MESSAGE
+        message: MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _id: number;
 
     @IsUserIdExisting({
-        message: ReportDTO.USER_ID_NOT_EXISTING_MESSAGE
+        message: MESSAGES.ERRORS.REPORTS.USER_ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _userId: number;
 

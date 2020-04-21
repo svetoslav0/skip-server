@@ -1,23 +1,18 @@
 import { IsDefined } from "class-validator";
 import { IsUserIdExisting } from "../validators/IsUserIdExisting";
+import { MESSAGES } from "../../common/consts/MESSAGES";
 
 export class ReportDTO {
-
-    private static readonly USER_ID_NOT_DEFINED_MESSAGE: string = "Field 'userId' is required!";
-    private static readonly NAME_NOT_DEFINED_MESSAGE: string = "Field 'name' is required!";
-
-    public static readonly USER_ID_NOT_EXISTING_MESSAGE: string = "The given 'userId' does not exist!";
-
     @IsDefined({
-        message: ReportDTO.USER_ID_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.REPORTS.USER_ID_FIELD_NOT_DEFINED_MESSAGE
     })
     @IsUserIdExisting({
-        message: ReportDTO.USER_ID_NOT_EXISTING_MESSAGE
+        message: MESSAGES.ERRORS.REPORTS.USER_ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _userId: number;
 
     @IsDefined({
-        message: ReportDTO.NAME_NOT_DEFINED_MESSAGE
+        message: MESSAGES.ERRORS.REPORTS.NAME_FIELD_NOT_DEFINED_MESSAGE
     })
     private _name: string;
 

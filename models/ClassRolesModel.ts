@@ -78,6 +78,27 @@ export class ClassRolesModel {
     }
 
     /**
+     * This method updates 'is_archived' field of a class role
+     *
+     * @param {number} id
+     * @returns {Promise<boolean>}
+     */
+    public async archive(id: number): Promise<boolean> {
+        const archived: number = 1;
+
+        const result = await this.db.query(`
+            UPDATE
+                class_roles
+            SET
+                is_archived = ?
+            WHERE
+                id = ?
+        `, [archived, id]);
+
+        return result.affectedRows === 1;
+    }
+
+    /**
      * !!! USED FOR TESTING PURPOSES !!!
      *
      * This method deletes a class role by given ID

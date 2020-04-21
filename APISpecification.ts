@@ -1,4 +1,4 @@
-import { UserDTO } from "./data/users/UserDTO";
+import { CONSTRAINTS } from "./common/consts/CONSTRAINTS";
 
 export class APISpecification {
 
@@ -510,14 +510,14 @@ export class APISpecification {
             properties: {
                 username: {
                     type: "string",
-                    minLength: UserDTO.MIN_USERNAME_LENGTH,
-                    maxLength: UserDTO.MAX_USERNAME_LENGTH,
+                    minLength: CONSTRAINTS.USERS.MIN_USERNAME_LENGTH,
+                    maxLength: CONSTRAINTS.USERS.MAX_USERNAME_LENGTH,
                     example: "johnny"
                 },
                 password: {
                     type: "string",
-                    minLength: UserDTO.MIN_PASSWORD_LENGTH,
-                    maxLength: UserDTO.MAX_PASSWORD_LENGTH,
+                    minLength: CONSTRAINTS.USERS.MIN_PASSWORD_LENGTH,
+                    maxLength: CONSTRAINTS.USERS.MAX_PASSWORD_LENGTH,
                     example: "3x@mPl3_p@$$w0rD"
                 },
                 email: {

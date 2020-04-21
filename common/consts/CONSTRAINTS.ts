@@ -1,0 +1,8 @@
+export const CONSTRAINTS = {
+    USERS: {
+        MIN_USERNAME_LENGTH: 6,
+        MAX_USERNAME_LENGTH: 64,
+        MIN_PASSWORD_LENGTH: 6,
+        MAX_PASSWORD_LENGTH: 128
+    }
+};
