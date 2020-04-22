@@ -30,6 +30,9 @@ const CREATE_URL: string = `${CLASS_ROLES_CONTROLLER_URL}`;
 const EDIT_URL = (id: number | string) => {
     return `${CLASS_ROLES_CONTROLLER_URL}/${id}`;
 };
+const DELETE_URL = (id: number | string) => {
+    return `${CLASS_ROLES_CONTROLLER_URL}/${id}`;
+};
 const ARCHIVE_URL = (id: number) => {
     return `${CLASS_ROLES_CONTROLLER_URL}/${id}`;
 };
@@ -517,6 +520,100 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                     await expect(result.body.data.errors).to.be.an("array");
 
                     await expect(result.body.data.success).to.eql(false);
+                });
+        });
+    });
+
+    describe(`DELETE ${CLASS_ROLES_CONTROLLER_URL}/{id} tests`, () => {
+
+        noTokenTestDelete(EDIT_URL(24));
+        wrongTokenTestDelete(EDIT_URL(24));
+
+        it("Should archive the class role", () => {
+            const idToSend: number = 3;
+
+            return Request(server)
+                .delete(DELETE_URL(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+
+                    await expect(result.body.data.success).to.eql(true);
+                });
+        });
+
+        it("Should not archive. Provided ID is not numeric", () => {
+            const idToSend: string = "3A";
+
+            return Request(server)
+                .delete(DELETE_URL(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not archive. Provided ID does not exist", () => {
+            const idToSend: number = 91231341923;
+
+            return Request(server)
+                .delete(DELETE_URL(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not archive. Provided token belongs to employee", () => {
+            const idToSend: number = 3;
+
+            return Request(server)
+                .delete(DELETE_URL(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("error");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.error).to.be.an("string");
+                    await expect(result.body.data.message).to.be.a("string");
                 });
         });
     });
