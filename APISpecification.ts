@@ -38,7 +38,8 @@ export class APISpecification {
                     post: this.buildClassRolesCreatePath()
                 },
                 "/classRoles/:id": {
-                    put: this.buildClassRolesEditPath()
+                    put: this.buildClassRolesEditPath(),
+                    delete: this.buildClassRolesDeletePath()
                 }
             },
             components: {
@@ -48,6 +49,15 @@ export class APISpecification {
                         name: "auth-header",
                         schema: {
                             type: "string"
+                        },
+                        required: true
+                    },
+                    idParam: {
+                        in: "path",
+                        name: "id",
+                        description: "The ID of the resource",
+                        schema: {
+                            type: "number"
                         },
                         required: true
                     }
@@ -72,6 +82,7 @@ export class APISpecification {
                     DeleteClassResponseSchema: this.buildDeleteClassResponseSchema(),
                     CreateClassRoleResponseSchema: this.buildCreateClassRoleResponseSchema(),
                     EditClassRoleResponseSchema: this.buildEditClassRoleResponseSchema(),
+                    DeleteClassRolesResponseSchema: this.buildDeleteClassRolesResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -209,17 +220,10 @@ export class APISpecification {
             ],
             parameters: [
                 {
-                    name: "id",
-                    in: "path",
-                    required: true,
-                    description: "The ID of the report.",
-                    schema: {
-                        type: "number",
-                        minimum: 1
-                    }
+                    $ref: "#/components/parameters/authHeaderParam"
                 },
                 {
-                    $ref: "#/components/parameters/authHeaderParam"
+                    $ref: "#/components/parameters/idParam"
                 }
             ],
             requestBody: {
@@ -260,17 +264,10 @@ export class APISpecification {
             ],
             parameters: [
                 {
-                    name: "id",
-                    in: "path",
-                    required: true,
-                    description: "The ID of the report.",
-                    schema: {
-                        type: "number",
-                        minimum: 1
-                    }
+                    $ref: "#/components/parameters/authHeaderParam"
                 },
                 {
-                    $ref: "#/components/parameters/authHeaderParam"
+                    $ref: "#/components/parameters/idParam"
                 }
             ],
             responses: {
@@ -336,17 +333,10 @@ export class APISpecification {
             ],
             parameters: [
                 {
-                    name: "id",
-                    in: "path",
-                    required: true,
-                    description: "The ID of the class.",
-                    schema: {
-                        type: "number",
-                        minimum: 1
-                    }
+                    $ref: "#/components/parameters/authHeaderParam"
                 },
                 {
-                    $ref: "#/components/parameters/authHeaderParam"
+                    $ref: "#/components/parameters/idParam"
                 }
             ],
             requestBody: {
@@ -386,17 +376,10 @@ export class APISpecification {
             ],
             parameters: [
                 {
-                    name: "id",
-                    in: "path",
-                    required: true,
-                    description: "The ID of the class.",
-                    schema: {
-                        type: "number",
-                        minimum: 1
-                    }
+                    $ref: "#/components/parameters/authHeaderParam"
                 },
                 {
-                    $ref: "#/components/parameters/authHeaderParam"
+                    $ref: "#/components/parameters/idParam"
                 }
             ],
             responses: {
@@ -465,17 +448,10 @@ export class APISpecification {
             ],
             parameters: [
                 {
-                    name: "id",
-                    in: "path",
-                    required: true,
-                    description: "The ID of the class role",
-                    schema: {
-                        type: "number",
-                        minimum: 1
-                    }
+                    $ref: "#/components/parameters/authHeaderParam"
                 },
                 {
-                    $ref: "#/components/parameters/authHeaderParam"
+                    $ref: "#/components/parameters/idParam"
                 }
             ],
             requestBody: {
@@ -495,6 +471,38 @@ export class APISpecification {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/EditClassRoleResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        }
+    }
+
+    private buildClassRolesDeletePath() {
+        return {
+            summary: "Archives existing Class Role",
+            description: "Archives a Class Role without actually deleting it from the database. " +
+                "This action can be executed only by users with role ADMIN.",
+            tags: [
+                "Class Roles"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                },
+                {
+                    $ref: "#/components/parameters/idParam"
+                }
+            ],
+            responses: {
+                200: {
+                    description: "Class Role was successfully archived.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/DeleteClassRolesResponseSchema"
                             }
                         }
                     }
@@ -847,6 +855,27 @@ export class APISpecification {
                         message: {
                             type: "string",
                             example: "Class Role was updated successfully."
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private buildDeleteClassRolesResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: true
+                        },
+                        message: {
+                            type: "string",
+                            example: "Class Role was successfully archived."
                         }
                     }
                 }
