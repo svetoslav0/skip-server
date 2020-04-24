@@ -3,8 +3,8 @@ import { MysqlDatabase } from "../database/MysqlDatabase";
 import { APIMiddleware } from "../common/APIMiddleware";
 import { ReportsModel } from "../models/ReportsModel";
 import { ReportsController } from "../controllers/reports/ReportsController";
-import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
 import { IRoutable } from "./IRoutable";
+import { ResponseBuilder } from "../data/ResponseBuilder";
 
 export class ReportsRouter implements IRoutable {
 
@@ -43,7 +43,7 @@ export class ReportsRouter implements IRoutable {
 
             this.controller
                 .create(req)
-                .then((result: AbstractResponseBuilder) => {
+                .then((result: ResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -62,7 +62,7 @@ export class ReportsRouter implements IRoutable {
 
             this.controller
                 .edit(req)
-                .then((result: AbstractResponseBuilder) => {
+                .then((result: ResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -81,7 +81,7 @@ export class ReportsRouter implements IRoutable {
 
             this.controller
                 .archive(req)
-                .then((result: AbstractResponseBuilder) => {
+                .then((result: ResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());

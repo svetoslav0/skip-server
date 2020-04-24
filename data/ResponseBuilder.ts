@@ -1,11 +1,20 @@
-import { IResponseBuilder } from "./IResponseBuilder";
-
-export abstract class AbstractResponseBuilder implements IResponseBuilder {
-
+export class ResponseBuilder {
     protected _httpStatus!: number;
+    protected _resourceId!: number;
     protected _success!: boolean;
     protected _message!: string;
     protected _errors!: string[];
+
+    public buildResponse() {
+        return {
+            data: {
+                resourceId: this._resourceId,
+                success: this._success,
+                message: this._message,
+                errors: this._errors
+            }
+        };
+    }
 
     get httpStatus(): number {
         return this._httpStatus;
@@ -13,6 +22,11 @@ export abstract class AbstractResponseBuilder implements IResponseBuilder {
 
     public setHttpStatus(httpStatus: number): this {
         this._httpStatus = httpStatus;
+        return this;
+    }
+
+    public setResourceId(id: number): this {
+        this._resourceId = id;
         return this;
     }
 
@@ -29,25 +43,5 @@ export abstract class AbstractResponseBuilder implements IResponseBuilder {
     public setErrors(errors: string[]): this {
         this._errors = errors;
         return this;
-    }
-
-    public fillErrors(error: string): this {
-        this._errors.push(error);
-        return this;
-    }
-
-    protected buildData(data: any) {
-        return {
-            data: {
-                ...data,
-                success: this._success,
-                message: this._message,
-                errors: this._errors
-            }
-        };
-    }
-
-    public buildResponse() {
-        return this.buildData({});
     }
 }

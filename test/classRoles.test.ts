@@ -61,18 +61,18 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
 
                     await expect(result).to.have.property("body");
                     await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("classRoleId");
+                    await expect(result.body.data).to.have.property("resourceId");
                     await expect(result.body.data).to.have.property("success");
                     await expect(result.body.data).to.have.property("message");
                     await expect(result.body.data).not.to.have.property("error");
                     await expect(result.body.data).not.to.have.property("errors");
 
-                    await expect(result.body.data.classRoleId).to.be.a("number");
+                    await expect(result.body.data.resourceId).to.be.a("number");
                     await expect(result.body.data.success).to.be.a("boolean");
                     await expect(result.body.data.message).to.be.a("string");
 
                     await expect(result.body.data.success).to.eql(expectedSuccess);
-                    return result.body.data.classRoleId;
+                    return result.body.data.resourceId;
                 })
                 .then(async (classRoleId: number) => {
                     const result: boolean = await classRolesModel.deleteById(classRoleId);
@@ -101,19 +101,19 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
 
                     await expect(result).to.have.property("body");
                     await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("classRoleId");
+                    await expect(result.body.data).to.have.property("resourceId");
                     await expect(result.body.data).to.have.property("success");
                     await expect(result.body.data).to.have.property("message");
                     await expect(result.body.data).not.to.have.property("error");
                     await expect(result.body.data).not.to.have.property("errors");
 
-                    await expect(result.body.data.classRoleId).to.be.a("number");
+                    await expect(result.body.data.resourceId).to.be.a("number");
                     await expect(result.body.data.success).to.be.a("boolean");
                     await expect(result.body.data.message).to.be.a("string");
 
                     await expect(result.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.classRoleId;
+                    return result.body.data.resourceId;
                 })
                 .then(async (classRoleId: number) => {
                     const result: boolean = await classRolesModel.deleteById(classRoleId);
@@ -142,19 +142,19 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
 
                     await expect(result).to.have.property("body");
                     await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("classRoleId");
+                    await expect(result.body.data).to.have.property("resourceId");
                     await expect(result.body.data).to.have.property("success");
                     await expect(result.body.data).to.have.property("message");
                     await expect(result.body.data).not.to.have.property("error");
                     await expect(result.body.data).not.to.have.property("errors");
 
-                    await expect(result.body.data.classRoleId).to.be.a("number");
+                    await expect(result.body.data.resourceId).to.be.a("number");
                     await expect(result.body.data.success).to.be.a("boolean");
                     await expect(result.body.data.message).to.be.a("string");
 
                     await expect(result.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.classRoleId;
+                    return result.body.data.resourceId;
                 })
                 .then(async (classRoleId: any) => {
                     const result: boolean = await classRolesModel.deleteById(classRoleId);
@@ -183,19 +183,19 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
 
                     await expect(result).to.have.property("body");
                     await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("classRoleId");
+                    await expect(result.body.data).to.have.property("resourceId");
                     await expect(result.body.data).to.have.property("success");
                     await expect(result.body.data).to.have.property("message");
                     await expect(result.body.data).not.to.have.property("error");
                     await expect(result.body.data).not.to.have.property("errors");
 
-                    await expect(result.body.data.classRoleId).to.be.a("number");
+                    await expect(result.body.data.resourceId).to.be.a("number");
                     await expect(result.body.data.success).to.be.a("boolean");
                     await expect(result.body.data.message).to.be.a("string");
 
                     await expect(result.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.classRoleId;
+                    return result.body.data.resourceId;
                 })
                 .then(async (classRoleId: any) => {
                     const result: boolean = await classRolesModel.deleteById(classRoleId);
@@ -380,12 +380,12 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
                     await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("classRoleId");
+                    await expect(result.body.data).to.have.property("resourceId");
                     await expect(result.body.data).to.have.property("success");
                     await expect(result.body.data).to.have.property("message");
 
                     await expect(result.body.data.success).to.eql(true);
-                    await expect(result.body.data.classRoleId).to.eql(classRoleIdToSend);
+                    await expect(result.body.data.resourceId).to.eql(classRoleIdToSend);
                 });
         });
 

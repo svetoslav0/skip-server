@@ -60,7 +60,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.classId;
+                    return result.body.data.resourceId;
                 })
                 .then(async (id: number) => {
                     const result = await classesModel.deleteById(id);
@@ -106,7 +106,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.classId;
+                    return result.body.data.resourceId;
                 })
                 .then(async (classId: number) => {
                     const result = await classesModel.deleteById(classId);

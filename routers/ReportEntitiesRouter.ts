@@ -2,9 +2,9 @@ import express from "express";
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { IRoutable } from "./IRoutable";
 import { APIMiddleware } from "../common/APIMiddleware";
-import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
 import { ReportEntitiesModel } from "../models/ReportEntitiesModel";
 import { ReportEntitiesController } from "../controllers/reportEntities/ReportEntitiesController";
+import { ResponseBuilder } from "../data/ResponseBuilder";
 
 export class ReportEntitiesRouter implements IRoutable {
 
@@ -33,7 +33,7 @@ export class ReportEntitiesRouter implements IRoutable {
 
             this.controller
                 .create(req)
-                .then((result: AbstractResponseBuilder) => {
+                .then((result: ResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
