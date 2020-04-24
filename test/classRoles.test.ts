@@ -369,7 +369,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
 
             const objectToSend = {
                 name: nameToSend,
-                paymentToSend: paymentToSend
+                paymentPerHour: paymentToSend
             };
 
             return Request(server)

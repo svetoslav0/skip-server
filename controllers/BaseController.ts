@@ -73,7 +73,7 @@ export abstract class BaseController {
      * @param id
      */
     protected validateIdParam(id: any): void {
-        if(isNaN(id)) {
+        if (isNaN(id)) {
             throw new Error(MESSAGES.ERRORS.COMMON.NON_NUMERIC_ID_PARAM_MESSAGE);
         }
     }
