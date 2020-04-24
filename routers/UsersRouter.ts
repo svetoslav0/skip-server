@@ -3,8 +3,9 @@ import { UsersController } from "../controllers/users/UsersController";
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { UsersModel } from "../models/UsersModel";
 import { UsersResponseBuilder } from "../data/users/UsersResponseBuilder";
+import { IRoutable } from "./IRoutable";
 
-export class UsersRouter {
+export class UsersRouter implements IRoutable {
 
     private readonly db: MysqlDatabase;
     private readonly router: express.Router;

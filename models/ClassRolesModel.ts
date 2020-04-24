@@ -1,6 +1,6 @@
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { ClassRoleDTO } from "../data/classRoles/ClassRoleDTO";
-import {ClassRoleEditDTO} from "../data/classRoles/ClassRoleEditDTO";
+import { ClassRoleEditDTO } from "../data/classRoles/ClassRoleEditDTO";
 
 export class ClassRolesModel {
     private db: MysqlDatabase;

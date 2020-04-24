@@ -4,8 +4,9 @@ import { APIMiddleware } from "../common/APIMiddleware";
 import { ClassesModel } from "../models/ClassesModel";
 import { ClassesController } from "../controllers/classes/ClassesController";
 import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
+import { IRoutable } from "./IRoutable";
 
-export class ClassesRouter {
+export class ClassesRouter implements IRoutable {
 
     private readonly db: MysqlDatabase;
     private readonly router: express.Router;
