@@ -28,6 +28,12 @@ export const MESSAGES = {
             GENERAL_ERROR_MESSAGE: "Something went wrong...",
             NON_NUMERIC_ID_PARAM_MESSAGE: "The given ID parameter is not numeric"
         },
+        REPORT_ENTITIES: {
+            DATE_FIELD_NOT_DEFINED: "Field 'date' is not defined!",
+            DATE_FIELD_NOT_VALID_DATE: "Provided field 'date' is in invalid format!",
+            HOURS_SPEND_FIELD_NOT_DEFINED: "Field 'hoursSpend' is not defined!",
+            HOURS_SPEND_FIELD_NOT_POSITIVE: "Field 'hoursSpend' is not positive!"
+        },
         REPORTS: {
             ARCHIVE_GENERAL_FAILED_MESSAGE: "Report with given parameters cannot be archived.",
             ID_FIELD_NOT_DEFINED_MESSAGE: "Report ID is not defined!",
@@ -63,6 +69,11 @@ export const MESSAGES = {
             SUCCESSFUL_CREATION_MESSAGE: "Class was successfully created.",
             SUCCESSFUL_UPDATED_MESSAGE: "Class was successfully updated.",
             SUCCESSFUL_ARCHIVED_MESSAGE: "Class was successfully archived."
+        },
+        REPORT_ENTITIES: {
+            SUCCESSFUL_CREATION_MESSAGE: "Report entity was successfully created.",
+            SUCCESSFUL_UPDATED_MESSAGE: "Report entity was successfully updated.",
+            SUCCESSFUL_ARCHIVED_MESSAGE: "Report entity was successfully archived."
         },
         REPORTS: {
             SUCCESSFUL_CREATION_MESSAGE: "Report was successfully created.",

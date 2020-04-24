@@ -2,10 +2,11 @@ import express from "express";
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { ClassRolesController } from "../controllers/classRoles/ClassRolesController";
 import { ClassRolesModel } from "../models/ClassRolesModel";
-import {APIMiddleware} from "../common/APIMiddleware";
-import {AbstractResponseBuilder} from "../data/AbstractResponseBuilder";
+import { APIMiddleware } from "../common/APIMiddleware";
+import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
+import { IRoutable } from "./IRoutable";
 
-export class ClassRolesRouter {
+export class ClassRolesRouter implements IRoutable {
     private readonly db: MysqlDatabase;
     private readonly router: express.Router;
     private readonly model: ClassRolesModel;
