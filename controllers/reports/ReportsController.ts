@@ -16,12 +16,10 @@ export class ReportsController extends BaseController{
     private readonly CONTROLLER_NAME: string = "Report";
 
     private reportsModel: ReportsModel;
-    private readonly responseBuilder: ReportsResponseBuilder;
 
     constructor(reportsModel: ReportsModel) {
         super();
         this.reportsModel = reportsModel;
-        this.responseBuilder = new ReportsResponseBuilder();
     }
 
     /**
@@ -31,6 +29,7 @@ export class ReportsController extends BaseController{
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async create(request: express.Request): Promise<AbstractResponseBuilder> {
+        const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
 
         try {
             const report: ReportDTO = new ReportDTO({
@@ -42,7 +41,7 @@ export class ReportsController extends BaseController{
 
             const reportId: number = await this.reportsModel.add(report);
 
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
                 .setReportId(reportId)
                 .setSuccess(true)
@@ -51,7 +50,7 @@ export class ReportsController extends BaseController{
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                this.responseBuilder, this.CONTROLLER_NAME, errors
+                responseBuilder, this.CONTROLLER_NAME, errors
             );
         }
     }
@@ -63,12 +62,13 @@ export class ReportsController extends BaseController{
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
+        const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
         this._request = request;
 
         try {
             this.validateIdParam(request.params.id);
         } catch (error) {
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
@@ -84,7 +84,7 @@ export class ReportsController extends BaseController{
         }
 
         if (!await this.hasUserAccess(reportId)) {
-            return this.buildForbiddenResponse(this.responseBuilder, this.CONTROLLER_NAME);
+            return this.buildForbiddenResponse(responseBuilder, this.CONTROLLER_NAME);
         }
 
         let errors: string[] = [];
@@ -98,13 +98,13 @@ export class ReportsController extends BaseController{
         } catch (validationError) {
             errors = this.buildValidationErrors(validationError);
 
-            return this.buildBadRequestResponse(this.responseBuilder, this.CONTROLLER_NAME, errors);
+            return this.buildBadRequestResponse(responseBuilder, this.CONTROLLER_NAME, errors);
         }
 
         const isUpdated: boolean = await this.reportsModel.update(report);
 
         if (isUpdated) {
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setReportId(reportId)
                 .setSuccess(true)
@@ -112,7 +112,7 @@ export class ReportsController extends BaseController{
         }
 
         return this.buildInternalErrorResponse(
-            this.responseBuilder, this.CONTROLLER_NAME
+            responseBuilder, this.CONTROLLER_NAME
         );
     }
 
@@ -124,12 +124,13 @@ export class ReportsController extends BaseController{
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async archive(request: express.Request): Promise<AbstractResponseBuilder> {
+        const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
         this._request = request;
 
         try {
             this.validateIdParam(request.params.id);
         } catch (error) {
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(MESSAGES.ERRORS.REPORTS.ARCHIVE_GENERAL_FAILED_MESSAGE)
@@ -142,26 +143,26 @@ export class ReportsController extends BaseController{
 
         if (!report) {
             return this.buildBadRequestResponse(
-                this.responseBuilder,
+                responseBuilder,
                 this.CONTROLLER_NAME,
                 [MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE]);
         }
 
         if (!await this.hasUserAccess(reportId)) {
-            return this.buildForbiddenResponse(this.responseBuilder, this.CONTROLLER_NAME);
+            return this.buildForbiddenResponse(responseBuilder, this.CONTROLLER_NAME);
         }
 
         const isArchived: boolean = await this.reportsModel.archive(reportId);
 
         if (isArchived) {
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setSuccess(true)
                 .setMessage(MESSAGES.SUCCESSES.REPORTS.SUCCESSFUL_ARCHIVED_MESSAGE);
         }
 
         return this.buildInternalErrorResponse(
-            this.responseBuilder, this.CONTROLLER_NAME
+            responseBuilder, this.CONTROLLER_NAME
         );
     }
 
