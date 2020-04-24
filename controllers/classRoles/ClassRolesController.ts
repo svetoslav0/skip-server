@@ -15,12 +15,10 @@ export class ClassRolesController extends BaseController {
     private readonly CONTROLLER_NAME: string = "Class role";
 
     private classRoleModel: ClassRolesModel;
-    private readonly responseBuilder: ClassRolesResponseBuilder;
 
     constructor(classRolesModel: ClassRolesModel) {
         super();
         this.classRoleModel = classRolesModel;
-        this.responseBuilder = new ClassRolesResponseBuilder();
     }
 
     /**
@@ -30,6 +28,7 @@ export class ClassRolesController extends BaseController {
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async create(request: express.Request): Promise<AbstractResponseBuilder> {
+        const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
         const classRole: ClassRoleDTO = new ClassRoleDTO(request.body);
 
         try {
@@ -37,7 +36,7 @@ export class ClassRolesController extends BaseController {
 
             const classRoleId: number = await this.classRoleModel.add(classRole);
 
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
                 .setClassRoleId(classRoleId)
                 .setSuccess(true)
@@ -47,7 +46,7 @@ export class ClassRolesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                this.responseBuilder, this.CONTROLLER_NAME, errors
+                responseBuilder, this.CONTROLLER_NAME, errors
             );
         }
     }
@@ -59,10 +58,12 @@ export class ClassRolesController extends BaseController {
      * @returns {Promise<AbstractResponseBuilder>}
      */
     public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
+        const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+
         try {
             this.validateIdParam(request.params.id);
         } catch (error) {
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
@@ -89,28 +90,30 @@ export class ClassRolesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                this.responseBuilder, this.CONTROLLER_NAME, errors
+                responseBuilder, this.CONTROLLER_NAME, errors
             );
         }
 
         const isUpdated: boolean = await this.classRoleModel.update(classRole);
 
         if (isUpdated) {
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setClassRoleId(classRoleId)
                 .setSuccess(true)
                 .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_UPDATED_MESSAGE);
         }
 
-        return this.buildInternalErrorResponse(this.responseBuilder, this.CONTROLLER_NAME);
+        return this.buildInternalErrorResponse(responseBuilder, this.CONTROLLER_NAME);
     }
 
     public async archive(request: express.Request): Promise<AbstractResponseBuilder> {
+        const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+
         try {
             this.validateIdParam(request.params.id);
         } catch (error) {
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
                 .setMessage(MESSAGES.ERRORS.CLASS_ROLES.ARCHIVE_GENERAL_FAILED_MESSAGE)
@@ -123,7 +126,7 @@ export class ClassRolesController extends BaseController {
 
         if (!classRole) {
             return this.buildBadRequestResponse(
-                this.responseBuilder,
+                responseBuilder,
                 this.CONTROLLER_NAME,
                 [MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_EXISTING_MESSAGE]
             );
@@ -132,14 +135,14 @@ export class ClassRolesController extends BaseController {
         const isArchived: boolean = await this.classRoleModel.archive(classRoleId);
 
         if (isArchived) {
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.OK)
                 .setSuccess(true)
                 .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_ARCHIVED_MESSAGE);
         }
 
         return this.buildInternalErrorResponse(
-            this.responseBuilder, this.CONTROLLER_NAME
+            responseBuilder, this.CONTROLLER_NAME
         );
     }
 }

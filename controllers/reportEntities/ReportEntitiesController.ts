@@ -14,16 +14,14 @@ export class ReportEntitiesController extends BaseController {
     private readonly CONTROLLER_NAME: string = "Report Entity";
 
     private model: ReportEntitiesModel;
-    private responseBuilder: ReportEntitiesResponseBuilder;
 
     constructor(model: ReportEntitiesModel) {
         super();
         this.model = model;
-        this.responseBuilder = new ReportEntitiesResponseBuilder();
     }
 
     public async create(request: express.Request): Promise<AbstractResponseBuilder> {
-        this.responseBuilder = new ReportEntitiesResponseBuilder();
+        const responseBuilder = new ReportEntitiesResponseBuilder();
         const reportEntity = new ReportEntityDTO(request.body);
 
         try {
@@ -31,7 +29,7 @@ export class ReportEntitiesController extends BaseController {
 
             const reportEntityId: number = await this.model.add(reportEntity);
 
-            return this.responseBuilder
+            return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
                 .setSuccess(true)
                 .setReportEntityId(reportEntityId)
@@ -40,7 +38,7 @@ export class ReportEntitiesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationErrors);
 
             return this.buildBadRequestResponse(
-                this.responseBuilder, this.CONTROLLER_NAME, errors
+                responseBuilder, this.CONTROLLER_NAME, errors
             );
         }
     }
