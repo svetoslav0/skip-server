@@ -56,7 +56,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                  .then(async (result: any) => {
                      await expect(result.status).to.eql(httpStatus.CREATED);
 
-                     return result.body.data.reportId;
+                     return result.body.data.resourceId;
                  })
                  .then(async (reportId: number) => {
                      const result = await reportsModel.deleteById(reportId);
@@ -178,7 +178,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.reportId).to.eql(employeeReportId);
+                    await expect(result.body.data.resourceId).to.eql(employeeReportId);
                 });
         });
 
@@ -202,7 +202,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.reportId).to.eql(employeeReportId);
+                    await expect(result.body.data.resourceId).to.eql(employeeReportId);
                 });
         });
 

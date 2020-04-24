@@ -5,14 +5,11 @@ import httpStatus from "http-status-codes";
 import { ClassesModel } from "../../models/ClassesModel";
 import { ClassDTO } from "../../data/classes/ClassDTO";
 import { ClassEditDTO } from "../../data/classes/ClassEditDTO";
-import { ClassesResponseBuilder } from "../../data/classes/ClassesResponseBuilder";
 import { BaseController } from "../BaseController";
-import { AbstractResponseBuilder } from "../../data/AbstractResponseBuilder";
 import { MESSAGES } from "../../common/consts/MESSAGES";
+import { ResponseBuilder } from "../../data/ResponseBuilder";
 
 export class ClassesController extends BaseController {
-
-    private readonly CONTROLLER_NAME: string = "Class";
 
     private classesModel: ClassesModel;
 
@@ -25,10 +22,10 @@ export class ClassesController extends BaseController {
      * This method handles the creation of a class and its validations
      *
      * @param {express.Request} request
-     * @returns {Promise<AbstractResponseBuilder>}
+     * @returns {Promise<ResponseBuilder>}
      */
-    public async create(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
+    public async create(request: express.Request): Promise<ResponseBuilder> {
+        const responseBuilder: ResponseBuilder = new ResponseBuilder();
         const currentClass: ClassDTO = new ClassDTO(request.body);
 
         try {
@@ -38,16 +35,14 @@ export class ClassesController extends BaseController {
 
             return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
-                .setClassId(classId)
+                .setResourceId(classId)
                 .setSuccess(true)
                 .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_CREATION_MESSAGE);
 
         } catch (validationError) {
             const errors: string[] = this.buildValidationErrors(validationError);
 
-            return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
-            );
+            return this.buildBadRequestResponse(responseBuilder, errors);
         }
     }
 
@@ -55,10 +50,10 @@ export class ClassesController extends BaseController {
      * This method handles the updating of a class and its validations
      *
      * @param {express.Request} request
-     * @returns {Promise<AbstractResponseBuilder>}
+     * @returns {Promise<ResponseBuilder>}
      */
-    public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
+    public async edit(request: express.Request): Promise<ResponseBuilder> {
+        const responseBuilder: ResponseBuilder = new ResponseBuilder();
 
         try {
             this.validateIdParam(request.params.id);
@@ -87,9 +82,7 @@ export class ClassesController extends BaseController {
         } catch (validationError) {
             const errors: string[] = this.buildValidationErrors(validationError);
 
-            return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
-            );
+            return this.buildBadRequestResponse(responseBuilder, errors);
         }
 
         const isUpdated: boolean = await this.classesModel.update(currentClass);
@@ -97,12 +90,12 @@ export class ClassesController extends BaseController {
         if (isUpdated) {
             return responseBuilder
                 .setHttpStatus(httpStatus.OK)
-                .setClassId(classId)
+                .setResourceId(classId)
                 .setSuccess(true)
                 .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_UPDATED_MESSAGE)
         }
 
-        return this.buildInternalErrorResponse(responseBuilder, this.CONTROLLER_NAME);
+        return this.buildInternalErrorResponse(responseBuilder);
     }
 
     /**
@@ -110,10 +103,10 @@ export class ClassesController extends BaseController {
      *  The class is not actually deleted, its status is changed in the database.
      *
      * @param {express.Request} request
-     * @returns {Promise<AbstractResponseBuilder>}
+     * @returns {Promise<ResponseBuilder>}
      */
-    public async archive(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassesResponseBuilder = new ClassesResponseBuilder();
+    public async archive(request: express.Request): Promise<ResponseBuilder> {
+        const responseBuilder: ResponseBuilder = new ResponseBuilder();
 
         try {
             this.validateIdParam(request.params.id);
@@ -132,7 +125,6 @@ export class ClassesController extends BaseController {
         if (!currentClass) {
             return this.buildBadRequestResponse(
                 responseBuilder,
-                this.CONTROLLER_NAME,
                 [MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_EXISTING_MESSAGE]);
         }
 
@@ -145,8 +137,6 @@ export class ClassesController extends BaseController {
                 .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_ARCHIVED_MESSAGE);
         }
 
-        return this.buildInternalErrorResponse(
-            responseBuilder, this.CONTROLLER_NAME
-        );
+        return this.buildInternalErrorResponse(responseBuilder);
     }
 }

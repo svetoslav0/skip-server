@@ -1,8 +1,8 @@
 import express from "express";
 import httpStatus from "http-status-codes";
 
-import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
 import { MESSAGES } from "../common/consts/MESSAGES";
+import { ResponseBuilder } from "../data/ResponseBuilder";
 
 export abstract class BaseController {
     protected _request!: express.Request;
@@ -10,13 +10,10 @@ export abstract class BaseController {
     /**
      * This methods builds response when status is FORBIDDEN
      *
-     * @param {AbstractResponseBuilder} responseBuilder
-     * @param {string}                  controllerName
-     * @returns AbstractResponseBuilder
+     * @param {ResponseBuilder} responseBuilder
+     * @returns ResponseBuilder
      */
-    protected buildForbiddenResponse(
-        responseBuilder: AbstractResponseBuilder, controllerName: string
-    ): AbstractResponseBuilder {
+    protected buildForbiddenResponse(responseBuilder: ResponseBuilder): ResponseBuilder {
 
         return responseBuilder
             .setHttpStatus(httpStatus.FORBIDDEN)
@@ -28,14 +25,13 @@ export abstract class BaseController {
     /**
      * This methods builds response when status is BAD_REQUEST
      *
-     * @param {AbstractResponseBuilder} responseBuilder
-     * @param {string}                  controllerName
-     * @param {[string]}                errors
-     * @returns {AbstractResponseBuilder}
+     * @param {ResponseBuilder} responseBuilder
+     * @param {[string]}        errors
+     * @returns {ResponseBuilder}
      */
     protected buildBadRequestResponse(
-        responseBuilder: AbstractResponseBuilder, controllerName: string, errors: string[]
-    ): AbstractResponseBuilder {
+        responseBuilder: ResponseBuilder, errors: string[]
+    ): ResponseBuilder {
 
         return responseBuilder
             .setHttpStatus(httpStatus.BAD_REQUEST)
@@ -47,19 +43,15 @@ export abstract class BaseController {
     /**
      * This methods builds response when status is INTERNAL_SERVER_ERROR
      *
-     * @param {AbstractResponseBuilder} responseBuilder
-     * @param {string}                  controllerName
-     * @returns {AbstractResponseBuilder}
+     * @param {ResponseBuilder} responseBuilder
+     * @returns {ResponseBuilder}
      */
-    protected buildInternalErrorResponse(
-        responseBuilder: AbstractResponseBuilder, controllerName: string
-    ): AbstractResponseBuilder {
+    protected buildInternalErrorResponse(responseBuilder: ResponseBuilder): ResponseBuilder {
 
         return responseBuilder
             .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)
             .setSuccess(false)
-            .setMessage(MESSAGES.ERRORS.COMMON.GENERAL_ERROR_MESSAGE)
-            .setErrors([]);
+            .setMessage(MESSAGES.ERRORS.COMMON.GENERAL_ERROR_MESSAGE);
     }
 
     /**

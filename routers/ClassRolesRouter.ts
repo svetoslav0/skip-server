@@ -3,8 +3,8 @@ import { MysqlDatabase } from "../database/MysqlDatabase";
 import { ClassRolesController } from "../controllers/classRoles/ClassRolesController";
 import { ClassRolesModel } from "../models/ClassRolesModel";
 import { APIMiddleware } from "../common/APIMiddleware";
-import { AbstractResponseBuilder } from "../data/AbstractResponseBuilder";
 import { IRoutable } from "./IRoutable";
+import { ResponseBuilder } from "../data/ResponseBuilder";
 
 export class ClassRolesRouter implements IRoutable {
     private readonly db: MysqlDatabase;
@@ -42,7 +42,7 @@ export class ClassRolesRouter implements IRoutable {
 
             this.controller
                 .create(req)
-                .then((result: AbstractResponseBuilder) => {
+                .then((result: ResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -61,7 +61,7 @@ export class ClassRolesRouter implements IRoutable {
 
             this.controller
                 .edit(req)
-                .then((result: AbstractResponseBuilder) => {
+                .then((result: ResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse())
@@ -80,7 +80,7 @@ export class ClassRolesRouter implements IRoutable {
 
             this.controller
                 .archive(req)
-                .then((result: AbstractResponseBuilder) => {
+                .then((result: ResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());

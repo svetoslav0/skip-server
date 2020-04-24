@@ -4,15 +4,12 @@ import httpStatus from "http-status-codes";
 
 import { BaseController } from "../BaseController";
 import { ClassRolesModel } from "../../models/ClassRolesModel";
-import { AbstractResponseBuilder } from "../../data/AbstractResponseBuilder";
-import { ClassRolesResponseBuilder } from "../../data/classRoles/ClassRolesResponseBuilder";
 import { ClassRoleDTO } from "../../data/classRoles/ClassRoleDTO";
 import { ClassRoleEditDTO } from "../../data/classRoles/ClassRoleEditDTO";
 import { MESSAGES } from "../../common/consts/MESSAGES";
+import { ResponseBuilder } from "../../data/ResponseBuilder";
 
 export class ClassRolesController extends BaseController {
-
-    private readonly CONTROLLER_NAME: string = "Class role";
 
     private classRoleModel: ClassRolesModel;
 
@@ -25,10 +22,11 @@ export class ClassRolesController extends BaseController {
      * This method handles the creation of a class role an its validation
      *
      * @param {express.Request} request
-     * @returns {Promise<AbstractResponseBuilder>}
+     * @returns {Promise<ResponseBuilder>}
      */
-    public async create(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+    public async create(request: express.Request): Promise<ResponseBuilder> {
+        // const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+        const responseBuilder: ResponseBuilder = new ResponseBuilder();
         const classRole: ClassRoleDTO = new ClassRoleDTO(request.body);
 
         try {
@@ -38,7 +36,8 @@ export class ClassRolesController extends BaseController {
 
             return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
-                .setClassRoleId(classRoleId)
+                .setResourceId(classRoleId)
+                // .setClassRoleId(classRoleId)
                 .setSuccess(true)
                 .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_CREATION_MESSAGE);
 
@@ -46,7 +45,7 @@ export class ClassRolesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
+                responseBuilder, errors
             );
         }
     }
@@ -55,10 +54,11 @@ export class ClassRolesController extends BaseController {
      * This method handles updating of a class role and its validations
      *
      * @param {express.Request} request
-     * @returns {Promise<AbstractResponseBuilder>}
+     * @returns {Promise<ResponseBuilder>}
      */
-    public async edit(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+    public async edit(request: express.Request): Promise<ResponseBuilder> {
+        // const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+        const responseBuilder: ResponseBuilder = new ResponseBuilder();
 
         try {
             this.validateIdParam(request.params.id);
@@ -90,7 +90,7 @@ export class ClassRolesController extends BaseController {
             const errors: string[] = this.buildValidationErrors(validationError);
 
             return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
+                responseBuilder, errors
             );
         }
 
@@ -99,16 +99,18 @@ export class ClassRolesController extends BaseController {
         if (isUpdated) {
             return responseBuilder
                 .setHttpStatus(httpStatus.OK)
-                .setClassRoleId(classRoleId)
+                // .setClassRoleId(classRoleId)
+                .setResourceId(classRoleId)
                 .setSuccess(true)
                 .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_UPDATED_MESSAGE);
         }
 
-        return this.buildInternalErrorResponse(responseBuilder, this.CONTROLLER_NAME);
+        return this.buildInternalErrorResponse(responseBuilder);
     }
 
-    public async archive(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+    public async archive(request: express.Request): Promise<ResponseBuilder> {
+        // const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
+        const responseBuilder: ResponseBuilder = new ResponseBuilder();
 
         try {
             this.validateIdParam(request.params.id);
@@ -127,7 +129,6 @@ export class ClassRolesController extends BaseController {
         if (!classRole) {
             return this.buildBadRequestResponse(
                 responseBuilder,
-                this.CONTROLLER_NAME,
                 [MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_EXISTING_MESSAGE]
             );
         }
@@ -141,8 +142,6 @@ export class ClassRolesController extends BaseController {
                 .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_ARCHIVED_MESSAGE);
         }
 
-        return this.buildInternalErrorResponse(
-            responseBuilder, this.CONTROLLER_NAME
-        );
+        return this.buildInternalErrorResponse(responseBuilder);
     }
 }

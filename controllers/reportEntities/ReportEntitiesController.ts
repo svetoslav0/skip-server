@@ -4,14 +4,11 @@ import httpStatus from "http-status-codes";
 
 import { BaseController } from "../BaseController";
 import { ReportEntitiesModel } from "../../models/ReportEntitiesModel";
-import { AbstractResponseBuilder } from "../../data/AbstractResponseBuilder";
-import { ReportEntitiesResponseBuilder } from "../../data/reportEntities/ReportEntitiesResponseBuilder";
 import { ReportEntityDTO } from "../../data/reportEntities/ReportEntityDTO";
 import { MESSAGES } from "../../common/consts/MESSAGES";
+import { ResponseBuilder } from "../../data/ResponseBuilder";
 
 export class ReportEntitiesController extends BaseController {
-
-    private readonly CONTROLLER_NAME: string = "Report Entity";
 
     private model: ReportEntitiesModel;
 
@@ -20,8 +17,15 @@ export class ReportEntitiesController extends BaseController {
         this.model = model;
     }
 
-    public async create(request: express.Request): Promise<AbstractResponseBuilder> {
-        const responseBuilder = new ReportEntitiesResponseBuilder();
+    /**
+     * This method handles the creation of a Report Entity and its validations
+     *
+     * @param {express.Request} request
+     * @returns {Promise<ResponseBuilder>}
+     */
+    public async create(request: express.Request): Promise<ResponseBuilder> {
+        const responseBuilder = new ResponseBuilder();
+
         const reportEntity = new ReportEntityDTO(request.body);
 
         try {
@@ -32,14 +36,12 @@ export class ReportEntitiesController extends BaseController {
             return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
                 .setSuccess(true)
-                .setReportEntityId(reportEntityId)
+                .setResourceId(reportEntityId)
                 .setMessage(MESSAGES.SUCCESSES.REPORT_ENTITIES.SUCCESSFUL_CREATION_MESSAGE);
         } catch (validationErrors) {
             const errors: string[] = this.buildValidationErrors(validationErrors);
 
-            return this.buildBadRequestResponse(
-                responseBuilder, this.CONTROLLER_NAME, errors
-            );
+            return this.buildBadRequestResponse(responseBuilder, errors);
         }
     }
 }
