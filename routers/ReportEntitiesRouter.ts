@@ -8,16 +8,12 @@ import { ResponseBuilder } from "../data/ResponseBuilder";
 
 export class ReportEntitiesRouter implements IRoutable {
 
-    private readonly db: MysqlDatabase;
     private readonly router: express.Router;
     private readonly controller: ReportEntitiesController;
 
-    constructor(database: MysqlDatabase) {
-        this.db = database;
+    constructor(controller: ReportEntitiesController) {
         this.router = express.Router();
-        this.controller = new ReportEntitiesController(
-            new ReportEntitiesModel(database)
-        );
+        this.controller = controller;
     }
 
     public registerRoutes(): express.Router {

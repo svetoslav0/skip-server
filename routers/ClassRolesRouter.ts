@@ -1,22 +1,16 @@
 import express from "express";
-import { MysqlDatabase } from "../database/MysqlDatabase";
 import { ClassRolesController } from "../controllers/classRoles/ClassRolesController";
-import { ClassRolesModel } from "../models/ClassRolesModel";
 import { APIMiddleware } from "../common/APIMiddleware";
 import { IRoutable } from "./IRoutable";
 import { ResponseBuilder } from "../data/ResponseBuilder";
 
 export class ClassRolesRouter implements IRoutable {
-    private readonly db: MysqlDatabase;
     private readonly router: express.Router;
-    private readonly model: ClassRolesModel;
-    private controller: ClassRolesController;
+    private readonly controller: ClassRolesController;
 
-    constructor(database: MysqlDatabase) {
-        this.db = database;
+    constructor(controller: ClassRolesController) {
         this.router = express.Router();
-        this.model = new ClassRolesModel(this.db);
-        this.controller = new ClassRolesController(this.model);
+        this.controller = controller;
     }
 
     /**
@@ -64,7 +58,7 @@ export class ClassRolesRouter implements IRoutable {
                 .then((result: ResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
-                        .send(result.buildResponse())
+                        .send(result.buildResponse());
                 })
                 .catch(next);
         });

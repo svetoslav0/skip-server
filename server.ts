@@ -5,6 +5,18 @@ import "./config/env";
 import express from "express";
 import cors from "cors";
 
+import { UsersModel } from "./models/UsersModel";
+import { ReportsModel } from "./models/ReportsModel";
+import { ClassesModel } from "./models/ClassesModel";
+import { ClassRolesModel } from "./models/ClassRolesModel";
+import { ReportEntitiesModel } from "./models/ReportEntitiesModel";
+
+import { UsersController } from "./controllers/users/UsersController";
+import { ReportsController } from "./controllers/reports/ReportsController";
+import { ClassesController } from "./controllers/classes/ClassesController";
+import { ClassRolesController } from "./controllers/classRoles/ClassRolesController";
+import { ReportEntitiesController } from "./controllers/reportEntities/ReportEntitiesController";
+
 import { UsersRouter } from "./routers/UsersRouter";
 import { MysqlDatabase } from "./database/MysqlDatabase";
 import { ReportsRouter } from "./routers/ReportsRouter";
@@ -17,11 +29,23 @@ import { handleError } from "./common/ErrorHandler";
 
 const database = new MysqlDatabase();
 
-const usersRouter = new UsersRouter(database);
-const reportsRouter = new ReportsRouter(database);
-const classesRouter = new ClassesRouter(database);
-const classRolesRouter = new ClassRolesRouter(database);
-const reportEntitiesRouter = new ReportEntitiesRouter(database);
+const usersModel = new UsersModel(database);
+const reportsModel = new ReportsModel(database);
+const classesModel = new ClassesModel(database);
+const classRolesModel = new ClassRolesModel(database);
+const reportEntitiesModel = new ReportEntitiesModel(database);
+
+const usersController = new UsersController(usersModel);
+const reportsController = new ReportsController(reportsModel);
+const classesController = new ClassesController(classesModel);
+const classRolesController = new ClassRolesController(classRolesModel);
+const reportEntitiesController = new ReportEntitiesController(reportEntitiesModel);
+
+const usersRouter = new UsersRouter(usersController);
+const reportsRouter = new ReportsRouter(reportsController);
+const classesRouter = new ClassesRouter(classesController);
+const classRolesRouter = new ClassRolesRouter(classRolesController);
+const reportEntitiesRouter = new ReportEntitiesRouter(reportEntitiesController);
 
 const server = express();
 const port: number = +(process.env.SERVER_PORT || 8080);

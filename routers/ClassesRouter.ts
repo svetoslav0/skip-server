@@ -1,23 +1,17 @@
 import express from "express";
-import { MysqlDatabase } from "../database/MysqlDatabase";
 import { APIMiddleware } from "../common/APIMiddleware";
-import { ClassesModel } from "../models/ClassesModel";
 import { ClassesController } from "../controllers/classes/ClassesController";
 import { IRoutable } from "./IRoutable";
 import { ResponseBuilder } from "../data/ResponseBuilder";
 
 export class ClassesRouter implements IRoutable {
 
-    private readonly db: MysqlDatabase;
     private readonly router: express.Router;
-    private readonly model: ClassesModel;
-    private controller: ClassesController;
+    private readonly controller: ClassesController;
 
-    constructor(database: MysqlDatabase) {
-        this.db = database;
+    constructor(controller: ClassesController) {
         this.router = express.Router();
-        this.model = new ClassesModel(this.db);
-        this.controller = new ClassesController(this.model);
+        this.controller = controller;
     }
 
     /**
