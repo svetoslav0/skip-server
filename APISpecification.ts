@@ -40,6 +40,9 @@ export class APISpecification {
                 "/classRoles/:id": {
                     put: this.buildClassRolesEditPath(),
                     delete: this.buildClassRolesDeletePath()
+                },
+                "/reportEntities": {
+                    post: this.buildReportEntitiesCreatePath()
                 }
             },
             components: {
@@ -71,6 +74,7 @@ export class APISpecification {
                     EditClassRequestSchema: this.buildEditClassRequestSchema(),
                     CreateClassRoleRequestSchema: this.buildCreateClassRoleRequestSchema(),
                     EditClassRoleRequestSchema: this.buildEditClassRoleRequestSchema(),
+                    CreateReportEntityRequestSchema: this.buildCreateReportEntityRequestSchema(),
 
                     LoginResponseSchema: this.buildLoginResponseSchema(),
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
@@ -83,6 +87,7 @@ export class APISpecification {
                     CreateClassRoleResponseSchema: this.buildCreateClassRoleResponseSchema(),
                     EditClassRoleResponseSchema: this.buildEditClassRoleResponseSchema(),
                     DeleteClassRolesResponseSchema: this.buildDeleteClassRolesResponseSchema(),
+                    CreateReportEntityResponseSchema: this.buildCreateReportEntityResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -512,6 +517,49 @@ export class APISpecification {
         }
     }
 
+    private buildReportEntitiesCreatePath() {
+        return {
+            summary: "Create new Report Entity",
+            description: "Create new Report Entity. It represents a single record of a report " +
+                "and contains information about a single given lesson with one group. An entity can " +
+                "be created in two different ways with this method. The first way is to provide an existing " +
+                "Report ID and this entity will be attached to this report. The second way is to created " +
+                "an entity and NOT to provide Report ID. Thus providing an option to create a report " +
+                "at a later stage and then to use PUT /reportEntities/{id} to associate the entity with the report.",
+            tags: [
+                "Report Entities"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                }
+            ],
+            requestBody: {
+                required: true,
+                content: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
+                        schema: {
+                            $ref: "#/components/schemas/CreateReportEntityRequestSchema"
+                        }
+                    }
+                }
+            },
+            responses: {
+                201: {
+                    description: "Report Entity was successfully created.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/CreateReportEntityResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        }
+    }
+
     private buildRegisterUserSchema() {
         return {
             type: "object",
@@ -664,7 +712,11 @@ export class APISpecification {
                     example: 15,
                     minimum: 0
                 }
-            }
+            },
+            required: [
+                "name",
+                "paymentPerHour"
+            ]
         }
     }
 
@@ -682,6 +734,45 @@ export class APISpecification {
                     minimum: 0
                 }
             }
+        }
+    }
+
+    private buildCreateReportEntityRequestSchema() {
+        return {
+            type: "object",
+            properties: {
+                reportId: {
+                    type: "number",
+                    description: "ID of an existing report",
+                    example: 15
+                },
+                classId: {
+                    type: "number",
+                    description: "ID of an existing class",
+                    example: 3
+                },
+                classRoleId: {
+                    type: "number",
+                    description: "ID of an existing class role",
+                    example: 2
+                },
+                date: {
+                    type: "string",
+                    description: "The date of the given lesson in format 'YYYY/MM/DD'",
+                    example: "2020/01/13"
+                },
+                hoursSpend: {
+                    type: "number",
+                    description: "The length of the lesson in hours",
+                    example: 2
+                }
+            },
+            required: [
+                "classId",
+                "classRoleId",
+                "date",
+                "hoursSpend"
+            ]
         }
     }
 
@@ -876,6 +967,32 @@ export class APISpecification {
                         message: {
                             type: "string",
                             example: "Class Role was successfully archived."
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private buildCreateReportEntityResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: true
+                        },
+                        resourceId: {
+                            type: "number",
+                            description: "The ID of the new Report Entity",
+                            example: 15
+                        },
+                        message: {
+                            type: "string",
+                            example: "Class Role was successfully created."
                         }
                     }
                 }
