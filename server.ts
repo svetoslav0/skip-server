@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import "./config/env";
 import express from "express";
 import cors from "cors";
+import morgan from "morgan";
 
 import { UsersModel } from "./models/UsersModel";
 import { ReportsModel } from "./models/ReportsModel";
@@ -54,6 +55,7 @@ server.use(cors());
 server.use(bodyParser.urlencoded({
     extended: true
 }));
+server.use(morgan("dev"));
 
 server.use("/users", usersRouter.registerRoutes());
 server.use("/reports", reportsRouter.registerRoutes());

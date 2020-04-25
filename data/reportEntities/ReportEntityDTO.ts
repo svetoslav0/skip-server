@@ -4,9 +4,13 @@ import { IsReportIdExisting } from "../validators/IsReportIdExisting";
 import { MESSAGES } from "../../common/consts/MESSAGES";
 import { IsClassIdExisting } from "../validators/IsClassIdExisting";
 import {IsClassRoleIdExisting, IsClassRoleIdExistingConstraint} from "../validators/IsClassRoleIdExisting";
+import {IsNumber} from "../validators/IsNumber";
 
 export class ReportEntityDTO {
 
+    @IsNumber({
+        message: MESSAGES.ERRORS.REPORT_ENTITIES.REPORT_ID_FIELD_NOT_NUMERIC
+    })
     @IsReportIdExisting({
         message: MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE
     })
@@ -15,6 +19,9 @@ export class ReportEntityDTO {
     @IsDefined({
         message: MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_DEFINED_MESSAGE
     })
+    @IsNumber({
+        message: MESSAGES.ERRORS.REPORT_ENTITIES.CLASS_ID_FIELD_NOT_NUMERIC
+    })
     @IsClassIdExisting({
         message: MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_EXISTING_MESSAGE
     })
@@ -22,6 +29,9 @@ export class ReportEntityDTO {
 
     @IsDefined({
         message: MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_DEFINED_MESSAGE
+    })
+    @IsNumber({
+        message: MESSAGES.ERRORS.REPORT_ENTITIES.CLASS_ROLE_ID_FIELD_NOT_NUMERIC
     })
     @IsClassRoleIdExisting({
         message: MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_EXISTING_MESSAGE

@@ -29,10 +29,13 @@ export const MESSAGES = {
             NON_NUMERIC_ID_PARAM_MESSAGE: "The given ID parameter is not numeric"
         },
         REPORT_ENTITIES: {
+            CLASS_ID_FIELD_NOT_NUMERIC: "Field 'classId' is not numeric!",
+            CLASS_ROLE_ID_FIELD_NOT_NUMERIC: "Field 'classRoleId' is not numeric!",
             DATE_FIELD_NOT_DEFINED: "Field 'date' is not defined!",
             DATE_FIELD_NOT_VALID_DATE: "Provided field 'date' is in invalid format!",
             HOURS_SPEND_FIELD_NOT_DEFINED: "Field 'hoursSpend' is not defined!",
-            HOURS_SPEND_FIELD_NOT_POSITIVE: "Field 'hoursSpend' is not positive!"
+            HOURS_SPEND_FIELD_NOT_POSITIVE: "Field 'hoursSpend' is not positive!",
+            REPORT_ID_FIELD_NOT_NUMERIC: "Field 'reportId' is not numeric!"
         },
         REPORTS: {
             ARCHIVE_GENERAL_FAILED_MESSAGE: "Report with given parameters cannot be archived.",

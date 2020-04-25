@@ -15,7 +15,7 @@ export class ReportEntitiesModel {
      * @returns {Promise<number>}
      */
     public async add(reportEntity: ReportEntityDTO): Promise<number> {
-        const result: any = this.db.query(`
+        const result: any = await this.db.query(`
             INSERT INTO
                 report_entities (
                     report_id,
@@ -34,5 +34,24 @@ export class ReportEntitiesModel {
         ]);
 
         return result.insertId;
+    }
+
+    /**
+     * !!! USED FOR TESTING PURPOSES !!!
+     *
+     * This method deletes a report entity by given ID
+     *
+     * @param {number} id
+     * @returns {Promise<number>}
+     */
+    public async deleteById(id: number): Promise<boolean> {
+        const result = await this.db.query(`
+            DELETE FROM
+                report_entities
+            WHERE
+                id = ?
+        `, [id]);
+
+        return result.affectedRows === 1;
     }
 }
