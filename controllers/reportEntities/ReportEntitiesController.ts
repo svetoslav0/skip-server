@@ -38,6 +38,7 @@ export class ReportEntitiesController extends BaseController {
                 .setSuccess(true)
                 .setResourceId(reportEntityId)
                 .setMessage(MESSAGES.SUCCESSES.REPORT_ENTITIES.SUCCESSFUL_CREATION_MESSAGE);
+
         } catch (validationErrors) {
             const errors: string[] = this.buildValidationErrors(validationErrors);
 
