@@ -824,7 +824,7 @@ export class APISpecification {
                         success: {
                             type: "boolean"
                         },
-                        reportId: {
+                        resourceId: {
                             type: "number",
                             description: "The ID of the new report"
                         },
@@ -847,7 +847,7 @@ export class APISpecification {
                         success: {
                             type: "boolean"
                         },
-                        reportId: {
+                        resourceId: {
                             type: "number",
                             description: "The ID of the new report"
                         },
@@ -913,7 +913,7 @@ export class APISpecification {
                             type: "boolean",
                             example: true
                         },
-                        classRoleId: {
+                        resourceId: {
                             type: "number",
                             description: "The ID of the new Class Role",
                             example: 14
@@ -939,7 +939,7 @@ export class APISpecification {
                             type: "boolean",
                             example: true
                         },
-                        classRoleId: {
+                        resourceId: {
                             type: "number",
                             example: 15
                         },
@@ -1011,7 +1011,7 @@ export class APISpecification {
                             type: "boolean",
                             example: true
                         },
-                        classId: {
+                        resourceId: {
                             type: "number",
                             description: "The ID of the new class",
                             example: 154
@@ -1037,7 +1037,7 @@ export class APISpecification {
                             type: "boolean",
                             example: true
                         },
-                        classId: {
+                        resourceId: {
                             type: "number",
                             description: "The ID of the updated class",
                             example: "14"
