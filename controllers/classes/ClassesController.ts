@@ -61,7 +61,7 @@ export class ClassesController extends BaseController {
             return responseBuilder
                 .setHttpStatus(httpStatus.BAD_REQUEST)
                 .setSuccess(false)
-                .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
+                .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE_MESSAGE)
                 .setErrors([error.message]);
         }
 

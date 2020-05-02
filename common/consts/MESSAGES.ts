@@ -24,23 +24,28 @@ export const MESSAGES = {
             NAME_FIELD_NOT_DEFINED_MESSAGE: "Field 'name' is not defined!"
         },
         COMMON: {
-            FAILED_UPDATING_RESOURCE: "Resource with the given parameters cannot be updated!",
+            FAILED_UPDATING_RESOURCE_MESSAGE: "Resource with the given parameters cannot be updated!",
             GENERAL_ERROR_MESSAGE: "Something went wrong...",
-            NON_NUMERIC_ID_PARAM_MESSAGE: "The given ID parameter is not numeric"
+            NON_NUMERIC_ID_PARAM_MESSAGE: "The given ID parameter is not numeric",
+            FAILED_UPDATE_NO_ROWS_AFFECTED_MESSAGE: "Failed updating the resource. No rows were affected..."
         },
         REPORT_ENTITIES: {
-            CLASS_ID_FIELD_NOT_NUMERIC: "Field 'classId' is not numeric!",
-            CLASS_ROLE_ID_FIELD_NOT_NUMERIC: "Field 'classRoleId' is not numeric!",
-            DATE_FIELD_NOT_DEFINED: "Field 'date' is not defined!",
-            DATE_FIELD_NOT_VALID_DATE: "Provided field 'date' is in invalid format!",
-            HOURS_SPEND_FIELD_NOT_DEFINED: "Field 'hoursSpend' is not defined!",
-            HOURS_SPEND_FIELD_NOT_POSITIVE: "Field 'hoursSpend' is not positive!",
-            REPORT_ID_FIELD_NOT_NUMERIC: "Field 'reportId' is not numeric!"
+            CLASS_ID_FIELD_NOT_NUMERIC_MESSAGE: "Field 'classId' is not numeric!",
+            CLASS_ROLE_ID_FIELD_NOT_NUMERIC_MESSAGE: "Field 'classRoleId' is not numeric!",
+            DATE_FIELD_NOT_DEFINED_MESSAGE: "Field 'date' is not defined!",
+            DATE_FIELD_NOT_VALID_DATE_MESSAGE: "Provided field 'date' is in invalid format!",
+            HOURS_SPEND_FIELD_NOT_DEFINED_MESSAGE: "Field 'hoursSpend' is not defined!",
+            HOURS_SPEND_FIELD_NOT_POSITIVE_MESSAGE: "Field 'hoursSpend' is not positive!",
+            ID_FIELD_NOT_DEFINED_MESSAGE: "Role Entity ID is not defined!",
+            ID_FIELD_NOT_EXISTING_MESSAGE: "Report Entity does not exist!",
+            REPORT_ID_FIELD_NOT_NUMERIC_MESSAGE: "Field 'reportId' is not numeric!",
+            USER_ID_FIELD_NOT_DEFINED_MESSAGE: "Field 'userId' is not defined!",
+            USER_ID_FIELD_NOT_NUMERIC_MESSAGE: "Field 'userId' is not numeric"
         },
         REPORTS: {
             ARCHIVE_GENERAL_FAILED_MESSAGE: "Report with given parameters cannot be archived.",
             ID_FIELD_NOT_DEFINED_MESSAGE: "Report ID is not defined!",
-            ID_FIELD_NOT_EXISTING_MESSAGE: "Report ID does not existing!",
+            ID_FIELD_NOT_EXISTING_MESSAGE: "Report ID does not exist!",
             NAME_FIELD_NOT_DEFINED_MESSAGE: "Field 'name' is required!",
             USER_ID_FIELD_NOT_DEFINED_MESSAGE: "Field 'userId' is required!",
             USER_ID_FIELD_NOT_EXISTING_MESSAGE: "The given 'userId' does not exist!"
@@ -50,11 +55,12 @@ export const MESSAGES = {
             EMAIL_FIELD_NOT_DEFINED_MESSAGE: "Field 'email' is required!",
             EMAIL_FIELD_IS_INVALID_MESSAGE: "Email seems to be invalid.",
             FIRST_NAME_FIELD_NOT_DEFINED_MESSAGE: "Field 'firstName' is not defined!",
+            ID_FIELD_NOT_EXISTING_MESSAGE: "Provided User ID does not exist!",
             LAST_NAME_FIELD_NOT_DEFINED_MESSAGE: "Field 'lastName' is not defined!",
             LOGIN_FAILED_MESSAGE: "Wrong username or password.",
             PASSWORD_FIELD_NOT_DEFINED_MESSAGE: "Field 'password' is not defined!",
-            PASSWORD_FIELD_TOO_LONG: `The password seems to be too long. Must be not more than ${CONSTRAINTS.USERS.MAX_PASSWORD_LENGTH} characters long.`,
-            PASSWORD_FIELD_TOO_SHORT: `Password is too short. Must be at least ${CONSTRAINTS.USERS.MIN_PASSWORD_LENGTH} characters long.`,
+            PASSWORD_FIELD_TOO_LONG_MESSAGE: `The password seems to be too long. Must be not more than ${CONSTRAINTS.USERS.MAX_PASSWORD_LENGTH} characters long.`,
+            PASSWORD_FIELD_TOO_SHORT_MESSAGE: `Password is too short. Must be at least ${CONSTRAINTS.USERS.MIN_PASSWORD_LENGTH} characters long.`,
             REGISTER_FAILED_MESSAGE: "The given request is invalid. Some errors have appeared.",
             USERNAME_EXISTS_MESSAGE: "An user has already been registered with this username. Please choose another one.",
             USERNAME_FIELD_NOT_DEFINED_MESSAGE: "Field 'username' is required!",

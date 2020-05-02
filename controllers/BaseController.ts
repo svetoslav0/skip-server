@@ -18,7 +18,7 @@ export abstract class BaseController {
         return responseBuilder
             .setHttpStatus(httpStatus.FORBIDDEN)
             .setSuccess(false)
-            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
+            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE_MESSAGE)
             .setErrors([MESSAGES.ERRORS.AUTH.FORBIDDEN_RESOURCE_MESSAGE]);
     }
 
@@ -36,7 +36,7 @@ export abstract class BaseController {
         return responseBuilder
             .setHttpStatus(httpStatus.BAD_REQUEST)
             .setSuccess(false)
-            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
+            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE_MESSAGE)
             .setErrors(errors);
     }
 
@@ -76,5 +76,9 @@ export abstract class BaseController {
         if (isNaN(id)) {
             throw new Error(MESSAGES.ERRORS.COMMON.NON_NUMERIC_ID_PARAM_MESSAGE);
         }
+    }
+
+    protected isValidDate(date: any) {
+        return !isNaN(date) && date instanceof Date;
     }
 }

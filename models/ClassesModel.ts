@@ -1,8 +1,9 @@
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { ClassEditDTO } from "../data/classes/ClassEditDTO";
 import { ClassDTO } from "../data/classes/ClassDTO";
+import { IModel } from "./IModel";
 
-export class ClassesModel {
+export class ClassesModel implements IModel {
     private db: MysqlDatabase;
 
     constructor(db: MysqlDatabase) {

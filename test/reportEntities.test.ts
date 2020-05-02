@@ -48,10 +48,12 @@ const existingClassRoleIdTwo: number = 74;
 const existingClassIdOne: number = 14;
 const existingClassIdTwo: number = 19;
 const existingReportIdOne: number = 13;
+const existingUserId: number = 6;
 
 const nonExistingClassRoleId: number = 99999999;
 const nonExistingClassId: number = 99999998;
 const nonExistingReportId: number = 99999997;
+const nonExistingUserId: number = 7;
 
 describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
     describe(`POST ${CREATE_URL}`, () => {
@@ -67,7 +69,8 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
                 classRoleId: existingClassRoleIdOne,
                 classId: existingClassIdOne,
                 hoursSpend: hoursSpendToSend,
-                date: dateToSend
+                date: dateToSend,
+                userId: existingUserId
             };
 
             return request(server)
@@ -106,7 +109,8 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
                 classId: existingClassIdTwo,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
-                reportId: existingReportIdOne
+                reportId: existingReportIdOne,
+                userId: existingUserId
             };
 
             return request(server)
@@ -142,6 +146,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
 
             const objectToSend = {
                 classId: existingClassIdTwo,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -177,6 +182,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: "15a",
                 classId: existingClassIdTwo,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -212,6 +218,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: nonExistingClassRoleId,
                 classId: existingClassIdTwo,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -245,6 +252,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
 
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -280,6 +288,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: nonExistingClassId,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -316,6 +325,113 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: classIdToSend,
+                userId: existingUserId,
+                hoursSpend: hoursSpendToSend,
+                date: dateToSend,
+                reportId: existingReportIdOne
+            };
+
+            return request(server)
+                .post(CREATE_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not add report entity. User ID is not provided.", () => {
+            const hoursSpendToSend: number = 2;
+            const dateToSend: string = "2020/05/18";
+
+            const objectToSend = {
+                classRoleId: existingClassRoleIdTwo,
+                classId: existingClassIdTwo,
+                hoursSpend: hoursSpendToSend,
+                date: dateToSend,
+                reportId: existingReportIdOne
+            };
+
+            return request(server)
+                .post(CREATE_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not add report entity. User ID is provided, " +
+            "but does not correspond to an existing record on the database", () => {
+
+            const hoursSpendToSend: number = 2;
+            const dateToSend: string = "2020/05/18";
+
+            const objectToSend = {
+                classRoleId: existingClassRoleIdTwo,
+                classId: existingClassIdTwo,
+                userId: nonExistingUserId,
+                hoursSpend: hoursSpendToSend,
+                date: dateToSend,
+                reportId: existingReportIdOne
+            };
+
+            return request(server)
+                .post(CREATE_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not add report entity. User ID is provided, " +
+            "but is not numeric", () => {
+
+            const hoursSpendToSend: number = 2;
+            const dateToSend: string = "2020/05/18";
+            const userIdToSend: string = "15a";
+
+            const objectToSend = {
+                classRoleId: existingClassRoleIdTwo,
+                classId: existingClassIdOne,
+                userId: userIdToSend,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -348,6 +464,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdOne,
                 classId: existingClassIdTwo,
+                userId: existingUserId,
                 date: dateToSend,
                 reportId: existingReportIdOne
             };
@@ -382,6 +499,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: existingClassIdTwo,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -417,6 +535,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: existingClassIdTwo,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -450,6 +569,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: existingClassIdOne,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 reportId: existingReportIdOne
             };
@@ -483,6 +603,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdOne,
                 classId: existingClassIdTwo,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -517,6 +638,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdOne,
                 classId: existingClassIdTwo,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: nonExistingReportId
@@ -552,6 +674,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdOne,
                 classId: existingClassIdTwo,
+                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: reportIdToSend

@@ -7,6 +7,7 @@ import { ReportEntitiesModel } from "../../models/ReportEntitiesModel";
 import { ReportEntityDTO } from "../../data/reportEntities/ReportEntityDTO";
 import { MESSAGES } from "../../common/consts/MESSAGES";
 import { ResponseBuilder } from "../../data/ResponseBuilder";
+import { ReportEntityEditDTO } from "../../data/reportEntities/ReportEntityEditDTO";
 
 export class ReportEntitiesController extends BaseController {
 
@@ -44,5 +45,63 @@ export class ReportEntitiesController extends BaseController {
 
             return this.buildBadRequestResponse(responseBuilder, errors);
         }
+    }
+
+    /**
+     * @param {express.Request} request
+     * @returns {Promise<ResponseBuilder>}
+     */
+    public async edit(request: express.Request): Promise<ResponseBuilder> {
+        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+
+        this._request = request;
+
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            return responseBuilder
+                .setHttpStatus(httpStatus.BAD_REQUEST)
+                .setSuccess(false)
+                .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE_MESSAGE)
+                .setErrors([error.message]);
+        }
+
+        const reportEntityId: number = +request.params.id;
+
+        let entity: ReportEntityEditDTO | null = await this.model.findById(reportEntityId);
+
+        if (!entity || !entity.id) {
+            entity = new ReportEntityEditDTO(reportEntityId, {});
+        }
+
+        // TODO: check if user has access to this resource
+
+        try {
+            entity.id = reportEntityId;
+            entity.classId = request.body.classId || entity.classId;
+            entity.classRoleId = request.body.classRoleId || entity.classRoleId;
+            entity.reportId = request.body.reportId || entity.reportId;
+            entity.hoursSpend = +request.body.hoursSpend || entity.hoursSpend;
+            entity.date = this.isValidDate(new Date(request.body.date)) ? new Date(request.body.date) : entity.date;
+            entity.userId = request.body.userId || entity.userId;
+
+            await validateOrReject(entity);
+        } catch (validationError) {
+            const errors: string[] = this.buildValidationErrors(validationError);
+
+            return this.buildBadRequestResponse(responseBuilder, errors);
+        }
+
+        const isUpdated: boolean = await this.model.update(entity);
+
+        if (isUpdated) {
+            return responseBuilder
+                .setHttpStatus(httpStatus.OK)
+                .setResourceId(reportEntityId)
+                .setSuccess(true)
+                .setMessage(MESSAGES.SUCCESSES.REPORT_ENTITIES.SUCCESSFUL_UPDATED_MESSAGE);
+        }
+
+        throw new Error(MESSAGES.ERRORS.COMMON.FAILED_UPDATE_NO_ROWS_AFFECTED_MESSAGE);
     }
 }
