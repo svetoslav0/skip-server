@@ -18,6 +18,7 @@ export class ReportEntitiesRouter implements IRoutable {
 
     public registerRoutes(): express.Router {
         this.signCreateRoute();
+        this.signEditRoute();
 
         return this.router;
     }
@@ -29,6 +30,22 @@ export class ReportEntitiesRouter implements IRoutable {
 
             this.controller
                 .create(req)
+                .then((result: ResponseBuilder) => {
+                    return res
+                        .status(result.httpStatus)
+                        .send(result.buildResponse());
+                })
+                .catch(next);
+        });
+    }
+
+    private signEditRoute() {
+        this.router.put("/:id",
+            APIMiddleware.isUserEmployee,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            this.controller
+                .edit(req)
                 .then((result: ResponseBuilder) => {
                     return res
                         .status(result.httpStatus)

@@ -13,7 +13,6 @@ export class IsUserIdExistingConstraint implements ValidatorConstraintInterface 
     validate(id: number, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
         return new Promise(async resolve => {
             if (!id) {
-
                 resolve(true);
             }
 

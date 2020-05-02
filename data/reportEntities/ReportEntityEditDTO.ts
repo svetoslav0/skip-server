@@ -1,50 +1,45 @@
 import { IsDefined, Validate } from "class-validator";
-
-import { IsReportIdExisting } from "../validators/IsReportIdExisting";
-import { MESSAGES } from "../../common/consts/MESSAGES";
-import { IsClassIdExisting } from "../validators/IsClassIdExisting";
-import { IsClassRoleIdExisting } from "../validators/IsClassRoleIdExisting";
-import { IsNumber } from "../validators/IsNumber";
-import { MODELS } from "../../common/consts/MODELS";
 import { IsResourceIdExisting } from "../validators/IsResourceIdExisting";
+import { MESSAGES } from "../../common/consts/MESSAGES";
+import { MODELS } from "../../common/consts/MODELS";
+import { IsNumber } from "../validators/IsNumber";
 import { IsPositive } from "../validators/IsPositive";
 import { IsDate } from "../validators/IsDate";
 
-export class ReportEntityDTO {
+export class ReportEntityEditDTO {
+
+    @IsDefined({
+        message: MESSAGES.ERRORS.REPORT_ENTITIES.ID_FIELD_NOT_DEFINED_MESSAGE
+    })
+    @Validate(IsResourceIdExisting, [MODELS.REPORT_ENTITIES_MODEL], {
+        message: MESSAGES.ERRORS.REPORT_ENTITIES.ID_FIELD_NOT_EXISTING_MESSAGE
+    })
+    private _id: number;
 
     @IsNumber({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.REPORT_ID_FIELD_NOT_NUMERIC_MESSAGE
     })
-    @IsReportIdExisting({
+    @Validate(IsResourceIdExisting, [MODELS.REPORTS_MODEL], {
         message: MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _reportId: number;
 
-    @IsDefined({
-        message: MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_DEFINED_MESSAGE
-    })
     @IsNumber({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.CLASS_ID_FIELD_NOT_NUMERIC_MESSAGE
     })
-    @IsClassIdExisting({
+    @Validate(IsResourceIdExisting, [MODELS.CLASSES_MODEL], {
         message: MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _classId: number;
 
-    @IsDefined({
-        message: MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_DEFINED_MESSAGE
-    })
     @IsNumber({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.CLASS_ROLE_ID_FIELD_NOT_NUMERIC_MESSAGE
     })
-    @IsClassRoleIdExisting({
+    @Validate(IsResourceIdExisting, [MODELS.CLASS_ROLES_MODEL], {
         message: MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _classRoleId: number;
 
-    @IsDefined({
-        message: MESSAGES.ERRORS.REPORT_ENTITIES.USER_ID_FIELD_NOT_DEFINED_MESSAGE
-    })
     @IsNumber({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.USER_ID_FIELD_NOT_NUMERIC_MESSAGE
     })
@@ -53,29 +48,32 @@ export class ReportEntityDTO {
     })
     private _userId: number;
 
-    @IsDefined({
-        message: MESSAGES.ERRORS.REPORT_ENTITIES.DATE_FIELD_NOT_DEFINED_MESSAGE
-    })
     @Validate(IsDate, {
         message: MESSAGES.ERRORS.REPORT_ENTITIES.DATE_FIELD_NOT_VALID_DATE_MESSAGE
     })
     private _date: Date;
 
-    @IsDefined({
-        message: MESSAGES.ERRORS.REPORT_ENTITIES.HOURS_SPEND_FIELD_NOT_DEFINED_MESSAGE
-    })
     @Validate(IsPositive, {
         message: MESSAGES.ERRORS.REPORT_ENTITIES.HOURS_SPEND_FIELD_NOT_POSITIVE_MESSAGE
     })
     private _hoursSpend: number;
 
-    constructor(reqBody: any) {
+    constructor(id: number, reqBody: any) {
+        this._id = id;
         this._reportId = reqBody.reportId;
         this._classId = reqBody.classId;
         this._classRoleId = reqBody.classRoleId;
         this._userId = reqBody.userId;
         this._date = new Date(reqBody.date);
-        this._hoursSpend = reqBody.hoursSpend;
+        this._hoursSpend = +reqBody.hoursSpend;
+    }
+
+    get id(): number {
+        return this._id;
+    }
+
+    set id(value: number) {
+        this._id = value;
     }
 
     get reportId(): number {
@@ -102,6 +100,14 @@ export class ReportEntityDTO {
         this._classRoleId = value;
     }
 
+    get userId(): number {
+        return this._userId;
+    }
+
+    set userId(value: number) {
+        this._userId = value;
+    }
+
     get date(): Date {
         return this._date;
     }
@@ -116,13 +122,5 @@ export class ReportEntityDTO {
 
     set hoursSpend(value: number) {
         this._hoursSpend = value;
-    }
-
-    get userId(): number {
-        return this._userId;
-    }
-
-    set userId(value: number) {
-        this._userId = value;
     }
 }

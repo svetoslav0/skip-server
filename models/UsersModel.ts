@@ -1,7 +1,8 @@
-import {MysqlDatabase} from "../database/MysqlDatabase";
-import {UserDTO} from "../data/users/UserDTO";
+import { MysqlDatabase } from "../database/MysqlDatabase";
+import { UserDTO } from "../data/users/UserDTO";
+import { IModel } from "./IModel";
 
-export class UsersModel {
+export class UsersModel implements IModel {
 
     private db: MysqlDatabase;
 
@@ -131,5 +132,13 @@ export class UsersModel {
             WHERE
                 id = ?
         `, [userId]);
+    }
+
+    public async archive(id: number): Promise<boolean> {
+        throw new Error("Method is not implemented!");
+    }
+
+    public async update(resourceDTO: any): Promise<boolean> {
+        throw new Error("Method is not implemented!");
     }
 }

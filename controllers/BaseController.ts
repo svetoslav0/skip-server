@@ -3,6 +3,7 @@ import httpStatus from "http-status-codes";
 
 import { MESSAGES } from "../common/consts/MESSAGES";
 import { ResponseBuilder } from "../data/ResponseBuilder";
+import { ROLES } from "../common/consts/ROLES";
 
 export abstract class BaseController {
     protected _request!: express.Request;
@@ -18,7 +19,7 @@ export abstract class BaseController {
         return responseBuilder
             .setHttpStatus(httpStatus.FORBIDDEN)
             .setSuccess(false)
-            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
+            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE_MESSAGE)
             .setErrors([MESSAGES.ERRORS.AUTH.FORBIDDEN_RESOURCE_MESSAGE]);
     }
 
@@ -36,7 +37,7 @@ export abstract class BaseController {
         return responseBuilder
             .setHttpStatus(httpStatus.BAD_REQUEST)
             .setSuccess(false)
-            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE)
+            .setMessage(MESSAGES.ERRORS.COMMON.FAILED_UPDATING_RESOURCE_MESSAGE)
             .setErrors(errors);
     }
 
@@ -68,6 +69,23 @@ export abstract class BaseController {
     }
 
     /**
+     * This methods checks if the logged user has access
+     *  to edit or delete this resource.
+     *  NOTE: Admins can edit and delete every report
+     *
+     * @returns {Promise<boolean>}
+     * @param {number} ownerId
+     */
+    protected async hasUserAccess(ownerId: number): Promise<boolean>
+    {
+        if (this._request.roleId === ROLES.ADMIN) {
+            return true;
+        }
+
+        return ownerId == this._request.userId;
+    }
+
+    /**
      * This method throws an exception if provided ID is not numeric
      *
      * @param id
@@ -76,5 +94,12 @@ export abstract class BaseController {
         if (isNaN(id)) {
             throw new Error(MESSAGES.ERRORS.COMMON.NON_NUMERIC_ID_PARAM_MESSAGE);
         }
+    }
+
+    /**
+     * @param date
+     */
+    protected isValidDate(date: any) {
+        return !isNaN(date) && date instanceof Date;
     }
 }

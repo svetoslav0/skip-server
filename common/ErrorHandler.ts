@@ -3,6 +3,8 @@ import httpStatus from "http-status-codes";
 import { MESSAGES } from "./consts/MESSAGES";
 
 export const handleError = (err: any, res: express.Response) => {
+    console.error(err);
+
     res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
         .json({
