@@ -79,7 +79,7 @@ export class ReportsController extends BaseController {
             report = new ReportEditDTO(reportId, {});
         }
 
-        if (!await this.hasUserAccess(reportId)) {
+        if (!await this.hasUserAccess(await this.reportsModel.findUserIdById(reportId))) {
             return this.buildForbiddenResponse(responseBuilder);
         }
 
@@ -143,7 +143,7 @@ export class ReportsController extends BaseController {
                 [MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE]);
         }
 
-        if (!await this.hasUserAccess(reportId)) {
+        if (!await this.hasUserAccess(await this.reportsModel.findUserIdById(reportId))) {
             return this.buildForbiddenResponse(responseBuilder);
         }
 
@@ -157,23 +157,5 @@ export class ReportsController extends BaseController {
         }
 
         return this.buildInternalErrorResponse(responseBuilder);
-    }
-
-    /**
-     * This methods checks if the logged user has access
-     *  to edit or delete this report.
-     *  NOTE: Admins can edit and delete every report
-     *
-     * @param {number} reportId
-     * @returns {Promise<boolean>}
-     */
-    private async hasUserAccess(reportId: number): Promise<boolean> {
-        if (this._request.roleId === ROLES.ADMIN) {
-            return true;
-        }
-
-        const ownerId: number = await this.reportsModel.findUserIdById(reportId);
-
-        return ownerId == this._request.userId;
     }
 }

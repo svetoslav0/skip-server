@@ -126,4 +126,26 @@ export class ReportEntitiesModel implements IModel {
 
         return result.affectedRows === 1;
     }
+
+    /**
+     * @param {number} entityId
+     * @returns
+     */
+    public async findUserIdById(entityId: number): Promise<number> {
+        const result = await this.db.query(`
+            SELECT
+                user_id AS userId
+            FROM
+                report_entities
+            WHERE
+                id = ?
+        `, [entityId]);
+
+
+        if (!result.length) {
+            return 0;
+        }
+
+        return result[0].userId;
+    }
 }

@@ -1,8 +1,10 @@
-import { IsDate, IsDefined, IsPositive, Validate } from "class-validator";
+import { IsDefined, Validate } from "class-validator";
 import { IsResourceIdExisting } from "../validators/IsResourceIdExisting";
 import { MESSAGES } from "../../common/consts/MESSAGES";
 import { MODELS } from "../../common/consts/MODELS";
 import { IsNumber } from "../validators/IsNumber";
+import { IsPositive } from "../validators/IsPositive";
+import { IsDate } from "../validators/IsDate";
 
 export class ReportEntityEditDTO {
 
@@ -46,14 +48,12 @@ export class ReportEntityEditDTO {
     })
     private _userId: number;
 
-    // TODO: write own IsDate validator so if no date is provided then the validation is passed
-    @IsDate({
+    @Validate(IsDate, {
         message: MESSAGES.ERRORS.REPORT_ENTITIES.DATE_FIELD_NOT_VALID_DATE_MESSAGE
     })
     private _date: Date;
 
-    // TODO: write own IsPositive validator so if no date is provided then the validation is passed
-    @IsPositive({
+    @Validate(IsPositive, {
         message: MESSAGES.ERRORS.REPORT_ENTITIES.HOURS_SPEND_FIELD_NOT_POSITIVE_MESSAGE
     })
     private _hoursSpend: number;

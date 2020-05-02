@@ -74,7 +74,9 @@ export class ReportEntitiesController extends BaseController {
             entity = new ReportEntityEditDTO(reportEntityId, {});
         }
 
-        // TODO: check if user has access to this resource
+        if(!await this.hasUserAccess(await this.model.findUserIdById(reportEntityId))) {
+            return this.buildForbiddenResponse(responseBuilder);
+        }
 
         try {
             entity.id = reportEntityId;
@@ -82,7 +84,7 @@ export class ReportEntitiesController extends BaseController {
             entity.classRoleId = request.body.classRoleId || entity.classRoleId;
             entity.reportId = request.body.reportId || entity.reportId;
             entity.hoursSpend = +request.body.hoursSpend || entity.hoursSpend;
-            entity.date = this.isValidDate(new Date(request.body.date)) ? new Date(request.body.date) : entity.date;
+            entity.date = new Date(request.body.date) || entity.date;
             entity.userId = request.body.userId || entity.userId;
 
             await validateOrReject(entity);

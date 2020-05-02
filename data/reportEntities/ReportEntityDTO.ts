@@ -1,4 +1,4 @@
-import { IsDefined, IsPositive, IsDate, Validate } from "class-validator";
+import { IsDefined, Validate } from "class-validator";
 
 import { IsReportIdExisting } from "../validators/IsReportIdExisting";
 import { MESSAGES } from "../../common/consts/MESSAGES";
@@ -7,6 +7,8 @@ import { IsClassRoleIdExisting } from "../validators/IsClassRoleIdExisting";
 import { IsNumber } from "../validators/IsNumber";
 import { MODELS } from "../../common/consts/MODELS";
 import { IsResourceIdExisting } from "../validators/IsResourceIdExisting";
+import { IsPositive } from "../validators/IsPositive";
+import { IsDate } from "../validators/IsDate";
 
 export class ReportEntityDTO {
 
@@ -54,7 +56,7 @@ export class ReportEntityDTO {
     @IsDefined({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.DATE_FIELD_NOT_DEFINED_MESSAGE
     })
-    @IsDate({
+    @Validate(IsDate, {
         message: MESSAGES.ERRORS.REPORT_ENTITIES.DATE_FIELD_NOT_VALID_DATE_MESSAGE
     })
     private _date: Date;
@@ -62,7 +64,7 @@ export class ReportEntityDTO {
     @IsDefined({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.HOURS_SPEND_FIELD_NOT_DEFINED_MESSAGE
     })
-    @IsPositive({
+    @Validate(IsPositive, {
         message: MESSAGES.ERRORS.REPORT_ENTITIES.HOURS_SPEND_FIELD_NOT_POSITIVE_MESSAGE
     })
     private _hoursSpend: number;
@@ -73,7 +75,7 @@ export class ReportEntityDTO {
         this._classRoleId = reqBody.classRoleId;
         this._userId = reqBody.userId;
         this._date = new Date(reqBody.date);
-        this._hoursSpend = +reqBody.hoursSpend;
+        this._hoursSpend = reqBody.hoursSpend;
     }
 
     get reportId(): number {
