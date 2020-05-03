@@ -69,11 +69,11 @@ export class ReportEntityDTO {
     })
     private _hoursSpend: number;
 
-    constructor(reqBody: any) {
+    constructor(userId: number, reqBody: any) {
+        this._userId = userId;
         this._reportId = reqBody.reportId;
         this._classId = reqBody.classId;
         this._classRoleId = reqBody.classRoleId;
-        this._userId = reqBody.userId;
         this._date = new Date(reqBody.date);
         this._hoursSpend = reqBody.hoursSpend;
     }

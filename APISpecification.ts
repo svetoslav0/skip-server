@@ -526,7 +526,8 @@ export class APISpecification {
                 "be created in two different ways with this method. The first way is to provide an existing " +
                 "Report ID and this entity will be attached to this report. The second way is to created " +
                 "an entity and NOT to provide Report ID. Thus providing an option to create a report " +
-                "at a later stage and then to use PUT /reportEntities/{id} to associate the entity with the report.",
+                "at a later stage and then to use PUT /reportEntities/{id} to associate the entity with the report. " +
+                "The created entity is automatically associated to the logged user.",
             tags: [
                 "Report Entities"
             ],
