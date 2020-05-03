@@ -29,10 +29,10 @@ export class ReportsController extends BaseController {
         const responseBuilder: ResponseBuilder = new ResponseBuilder();
 
         try {
-            const report: ReportDTO = new ReportDTO({
-                userId: request.body.userId,
-                name: request.body.name
-            });
+            const report: ReportDTO = new ReportDTO(
+                request.userId,
+                request.body.name
+            );
 
             await validateOrReject(report);
 
