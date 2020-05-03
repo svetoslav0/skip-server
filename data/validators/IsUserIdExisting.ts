@@ -6,7 +6,7 @@ import {
     ValidatorConstraintInterface
 } from "class-validator";
 import { MysqlDatabase } from "../../database/MysqlDatabase";
-import { UsersModel } from "../../models/UsersModel";
+import { UsersRepository } from "../../repositories/UsersRepository";
 
 @ValidatorConstraint({async: true})
 export class IsUserIdExistingConstraint implements ValidatorConstraintInterface {
@@ -16,7 +16,7 @@ export class IsUserIdExistingConstraint implements ValidatorConstraintInterface 
                 resolve(true);
             }
 
-            const result = await new UsersModel(new MysqlDatabase())
+            const result = await new UsersRepository(new MysqlDatabase())
                 .findById(id);
 
             resolve(!!result);

@@ -21,9 +21,9 @@ const {
     wrongTokenTestDelete
 } = require("./commonTests");
 
-import { ClassesModel } from "../models/ClassesModel";
+import { ClassesRepository } from "../repositories/ClassesRepository";
 
-const classesModel: ClassesModel = new ClassesModel(database);
+const classesRepository: ClassesRepository = new ClassesRepository(database);
 
 const CLASSES_CONTROLLER_URL: string = "/classes";
 const CREATE_URL: string = `${CLASSES_CONTROLLER_URL}`;
@@ -63,7 +63,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                     return result.body.data.resourceId;
                 })
                 .then(async (id: number) => {
-                    const result = await classesModel.deleteById(id);
+                    const result = await classesRepository.deleteById(id);
                     await expect(result).to.eql(expectedIsReportDeleted);
                 });
         });
@@ -109,7 +109,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                     return result.body.data.resourceId;
                 })
                 .then(async (classId: number) => {
-                    const result = await classesModel.deleteById(classId);
+                    const result = await classesRepository.deleteById(classId);
                     await expect(result).to.eql(expectedSuccess);
                 });
         });

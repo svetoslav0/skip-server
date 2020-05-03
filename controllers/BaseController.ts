@@ -76,13 +76,12 @@ export abstract class BaseController {
      * @returns {Promise<boolean>}
      * @param {number} ownerId
      */
-    protected async hasUserAccess(ownerId: number): Promise<boolean>
-    {
+    protected async hasUserAccess(ownerId: number): Promise<boolean> {
         if (this._request.roleId === ROLES.ADMIN) {
             return true;
         }
 
-        return ownerId == this._request.userId;
+        return ownerId === this._request.userId;
     }
 
     /**

@@ -3,7 +3,7 @@ import { validateOrReject } from "class-validator";
 import httpStatus from "http-status-codes";
 
 import { BaseController } from "../BaseController";
-import { ReportEntitiesModel } from "../../models/ReportEntitiesModel";
+import { ReportEntitiesRepository } from "../../repositories/ReportEntitiesRepository";
 import { ReportEntityDTO } from "../../data/reportEntities/ReportEntityDTO";
 import { MESSAGES } from "../../common/consts/MESSAGES";
 import { ResponseBuilder } from "../../data/ResponseBuilder";
@@ -11,11 +11,11 @@ import { ReportEntityEditDTO } from "../../data/reportEntities/ReportEntityEditD
 
 export class ReportEntitiesController extends BaseController {
 
-    private model: ReportEntitiesModel;
+    private repository: ReportEntitiesRepository;
 
-    constructor(model: ReportEntitiesModel) {
+    constructor(repository: ReportEntitiesRepository) {
         super();
-        this.model = model;
+        this.repository = repository;
     }
 
     /**
@@ -32,7 +32,7 @@ export class ReportEntitiesController extends BaseController {
         try {
             await validateOrReject(reportEntity);
 
-            const reportEntityId: number = await this.model.add(reportEntity);
+            const reportEntityId: number = await this.repository.add(reportEntity);
 
             return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
@@ -68,13 +68,13 @@ export class ReportEntitiesController extends BaseController {
 
         const reportEntityId: number = +request.params.id;
 
-        let entity: ReportEntityEditDTO | null = await this.model.findById(reportEntityId);
+        let entity: ReportEntityEditDTO | null = await this.repository.findById(reportEntityId);
 
         if (!entity || !entity.id) {
             entity = new ReportEntityEditDTO(reportEntityId, {});
         }
 
-        if(!await this.hasUserAccess(await this.model.findUserIdById(reportEntityId))) {
+        if(!await this.hasUserAccess(await this.repository.findUserIdById(reportEntityId))) {
             return this.buildForbiddenResponse(responseBuilder);
         }
 
@@ -94,7 +94,7 @@ export class ReportEntitiesController extends BaseController {
             return this.buildBadRequestResponse(responseBuilder, errors);
         }
 
-        const isUpdated: boolean = await this.model.update(entity);
+        const isUpdated: boolean = await this.repository.update(entity);
 
         if (isUpdated) {
             return responseBuilder

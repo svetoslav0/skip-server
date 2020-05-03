@@ -9,9 +9,9 @@ const {
 
 import httpStatus from "http-status-codes";
 
-import { UsersModel } from "../models/UsersModel";
+import { UsersRepository } from "../repositories/UsersRepository";
 
-const usersModel: UsersModel = new UsersModel(database);
+const usersRepository: UsersRepository = new UsersRepository(database);
 
 const USERS_CONTROLLER_URL: string = "/users";
 const LOGIN_URL: string = `${USERS_CONTROLLER_URL}/login`;
@@ -121,7 +121,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                    return  result.body.data.userId;
                })
                .then(async (userId: any) => {
-                   await usersModel.removeById(userId);
+                   await usersRepository.removeById(userId);
                });
        });
 

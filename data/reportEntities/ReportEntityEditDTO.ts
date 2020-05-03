@@ -1,7 +1,7 @@
 import { IsDefined, Validate } from "class-validator";
 import { IsResourceIdExisting } from "../validators/IsResourceIdExisting";
 import { MESSAGES } from "../../common/consts/MESSAGES";
-import { MODELS } from "../../common/consts/MODELS";
+import { REPOSITORIES } from "../../common/consts/REPOSITORIES";
 import { IsNumber } from "../validators/IsNumber";
 import { IsPositive } from "../validators/IsPositive";
 import { IsDate } from "../validators/IsDate";
@@ -11,7 +11,7 @@ export class ReportEntityEditDTO {
     @IsDefined({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.ID_FIELD_NOT_DEFINED_MESSAGE
     })
-    @Validate(IsResourceIdExisting, [MODELS.REPORT_ENTITIES_MODEL], {
+    @Validate(IsResourceIdExisting, [REPOSITORIES.REPORT_ENTITIES_REPOSITORY], {
         message: MESSAGES.ERRORS.REPORT_ENTITIES.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _id: number;
@@ -19,7 +19,7 @@ export class ReportEntityEditDTO {
     @IsNumber({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.REPORT_ID_FIELD_NOT_NUMERIC_MESSAGE
     })
-    @Validate(IsResourceIdExisting, [MODELS.REPORTS_MODEL], {
+    @Validate(IsResourceIdExisting, [REPOSITORIES.REPORTS_REPOSITORY], {
         message: MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _reportId: number;
@@ -27,7 +27,7 @@ export class ReportEntityEditDTO {
     @IsNumber({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.CLASS_ID_FIELD_NOT_NUMERIC_MESSAGE
     })
-    @Validate(IsResourceIdExisting, [MODELS.CLASSES_MODEL], {
+    @Validate(IsResourceIdExisting, [REPOSITORIES.CLASSES_REPOSITORY], {
         message: MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _classId: number;
@@ -35,7 +35,7 @@ export class ReportEntityEditDTO {
     @IsNumber({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.CLASS_ROLE_ID_FIELD_NOT_NUMERIC_MESSAGE
     })
-    @Validate(IsResourceIdExisting, [MODELS.CLASS_ROLES_MODEL], {
+    @Validate(IsResourceIdExisting, [REPOSITORIES.CLASS_ROLES_REPOSITORY], {
         message: MESSAGES.ERRORS.CLASS_ROLES.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _classRoleId: number;
@@ -43,7 +43,7 @@ export class ReportEntityEditDTO {
     @IsNumber({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.USER_ID_FIELD_NOT_NUMERIC_MESSAGE
     })
-    @Validate(IsResourceIdExisting, [MODELS.USERS_MODEL], {
+    @Validate(IsResourceIdExisting, [REPOSITORIES.USERS_REPOSITORY], {
         message: MESSAGES.ERRORS.USERS.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _userId: number;

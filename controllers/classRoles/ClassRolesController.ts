@@ -3,7 +3,7 @@ import { validateOrReject } from "class-validator";
 import httpStatus from "http-status-codes";
 
 import { BaseController } from "../BaseController";
-import { ClassRolesModel } from "../../models/ClassRolesModel";
+import { ClassRolesRepository } from "../../repositories/ClassRolesRepository";
 import { ClassRoleDTO } from "../../data/classRoles/ClassRoleDTO";
 import { ClassRoleEditDTO } from "../../data/classRoles/ClassRoleEditDTO";
 import { MESSAGES } from "../../common/consts/MESSAGES";
@@ -11,11 +11,11 @@ import { ResponseBuilder } from "../../data/ResponseBuilder";
 
 export class ClassRolesController extends BaseController {
 
-    private classRoleModel: ClassRolesModel;
+    private repository: ClassRolesRepository;
 
-    constructor(classRolesModel: ClassRolesModel) {
+    constructor(repository: ClassRolesRepository) {
         super();
-        this.classRoleModel = classRolesModel;
+        this.repository = repository;
     }
 
     /**
@@ -32,7 +32,7 @@ export class ClassRolesController extends BaseController {
         try {
             await validateOrReject(classRole);
 
-            const classRoleId: number = await this.classRoleModel.add(classRole);
+            const classRoleId: number = await this.repository.add(classRole);
 
             return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
@@ -73,7 +73,7 @@ export class ClassRolesController extends BaseController {
 
         const classRoleId: number = +request.params.id;
         
-        let classRole: ClassRoleEditDTO | null =  await this.classRoleModel.findById(classRoleId);
+        let classRole: ClassRoleEditDTO | null =  await this.repository.findById(classRoleId);
 
         if (!classRole || !classRole.id || classRole.id !== classRoleId) {
             classRole = new ClassRoleEditDTO(classRoleId, {});
@@ -94,7 +94,7 @@ export class ClassRolesController extends BaseController {
             );
         }
 
-        const isUpdated: boolean = await this.classRoleModel.update(classRole);
+        const isUpdated: boolean = await this.repository.update(classRole);
 
         if (isUpdated) {
             return responseBuilder
@@ -124,7 +124,7 @@ export class ClassRolesController extends BaseController {
 
         const classRoleId: number = +request.params.id;
 
-        const classRole: ClassRoleEditDTO | null = await this.classRoleModel.findById(classRoleId);
+        const classRole: ClassRoleEditDTO | null = await this.repository.findById(classRoleId);
 
         if (!classRole) {
             return this.buildBadRequestResponse(
@@ -133,7 +133,7 @@ export class ClassRolesController extends BaseController {
             );
         }
 
-        const isArchived: boolean = await this.classRoleModel.archive(classRoleId);
+        const isArchived: boolean = await this.repository.archive(classRoleId);
 
         if (isArchived) {
             return responseBuilder

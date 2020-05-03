@@ -21,9 +21,9 @@ const {
     wrongTokenTestDelete
 } = require("./commonTests");
 
-import { ClassRolesModel } from "../models/ClassRolesModel";
+import { ClassRolesRepository } from "../repositories/ClassRolesRepository";
 
-const classRolesModel: ClassRolesModel = new ClassRolesModel(database);
+const classRolesRepository: ClassRolesRepository = new ClassRolesRepository(database);
 
 const CLASS_ROLES_CONTROLLER_URL: string = "/classRoles";
 const CREATE_URL: string = `${CLASS_ROLES_CONTROLLER_URL}`;
@@ -75,7 +75,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                     return result.body.data.resourceId;
                 })
                 .then(async (classRoleId: number) => {
-                    const result: boolean = await classRolesModel.deleteById(classRoleId);
+                    const result: boolean = await classRolesRepository.deleteById(classRoleId);
                     await expect(result).to.eql(true);
                 });
         });
@@ -116,7 +116,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                     return result.body.data.resourceId;
                 })
                 .then(async (classRoleId: number) => {
-                    const result: boolean = await classRolesModel.deleteById(classRoleId);
+                    const result: boolean = await classRolesRepository.deleteById(classRoleId);
                     await expect(result).to.eql(true);
                 });
         });
@@ -157,7 +157,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                     return result.body.data.resourceId;
                 })
                 .then(async (classRoleId: any) => {
-                    const result: boolean = await classRolesModel.deleteById(classRoleId);
+                    const result: boolean = await classRolesRepository.deleteById(classRoleId);
                     await expect(result).to.eql(true);
                 });
         });
@@ -198,7 +198,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                     return result.body.data.resourceId;
                 })
                 .then(async (classRoleId: any) => {
-                    const result: boolean = await classRolesModel.deleteById(classRoleId);
+                    const result: boolean = await classRolesRepository.deleteById(classRoleId);
                     await expect(result).to.eql(true);
                 });
         });

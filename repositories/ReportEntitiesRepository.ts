@@ -1,9 +1,9 @@
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { ReportEntityDTO } from "../data/reportEntities/ReportEntityDTO";
-import { IModel } from "./IModel";
+import { IRepository } from "./IRepository";
 import { ReportEntityEditDTO } from "../data/reportEntities/ReportEntityEditDTO";
 
-export class ReportEntitiesModel implements IModel {
+export class ReportEntitiesRepository implements IRepository {
     private db: MysqlDatabase;
 
     constructor(db: MysqlDatabase) {
@@ -140,7 +140,6 @@ export class ReportEntitiesModel implements IModel {
             WHERE
                 id = ?
         `, [entityId]);
-
 
         if (!result.length) {
             return 0;

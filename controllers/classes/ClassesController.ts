@@ -2,7 +2,7 @@ import express from "express";
 import { validateOrReject } from "class-validator";
 import httpStatus from "http-status-codes";
 
-import { ClassesModel } from "../../models/ClassesModel";
+import { ClassesRepository } from "../../repositories/ClassesRepository";
 import { ClassDTO } from "../../data/classes/ClassDTO";
 import { ClassEditDTO } from "../../data/classes/ClassEditDTO";
 import { BaseController } from "../BaseController";
@@ -11,11 +11,11 @@ import { ResponseBuilder } from "../../data/ResponseBuilder";
 
 export class ClassesController extends BaseController {
 
-    private classesModel: ClassesModel;
+    private repository: ClassesRepository;
 
-    constructor(classesModel: ClassesModel) {
+    constructor(repository: ClassesRepository) {
         super();
-        this.classesModel = classesModel;
+        this.repository = repository;
     }
 
     /**
@@ -31,7 +31,7 @@ export class ClassesController extends BaseController {
         try {
             await validateOrReject(currentClass);
 
-            const classId: number = await this.classesModel.add(currentClass);
+            const classId: number = await this.repository.add(currentClass);
 
             return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
@@ -67,7 +67,7 @@ export class ClassesController extends BaseController {
 
         const classId: number = +request.params.id;
 
-        let currentClass: ClassEditDTO | null = await this.classesModel.findById(classId);
+        let currentClass: ClassEditDTO | null = await this.repository.findById(classId);
         if (!currentClass || !currentClass.id || currentClass.id !== classId) {
             currentClass = new ClassEditDTO(classId, {});
         }
@@ -85,7 +85,7 @@ export class ClassesController extends BaseController {
             return this.buildBadRequestResponse(responseBuilder, errors);
         }
 
-        const isUpdated: boolean = await this.classesModel.update(currentClass);
+        const isUpdated: boolean = await this.repository.update(currentClass);
 
         if (isUpdated) {
             return responseBuilder
@@ -120,7 +120,7 @@ export class ClassesController extends BaseController {
 
         const classId: number = +request.params.id;
 
-        const currentClass = await this.classesModel.findById(classId);
+        const currentClass = await this.repository.findById(classId);
 
         if (!currentClass) {
             return this.buildBadRequestResponse(
@@ -128,7 +128,7 @@ export class ClassesController extends BaseController {
                 [MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_EXISTING_MESSAGE]);
         }
 
-        const isArchived: boolean = await this.classesModel.archive(classId);
+        const isArchived: boolean = await this.repository.archive(classId);
 
         if (isArchived) {
             return responseBuilder
