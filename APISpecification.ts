@@ -179,7 +179,8 @@ export class APISpecification {
     private buildReportsCreatePath() {
         return {
             summary: "Create new report",
-            description: "Create new empty report and fill it with entities after that",
+            description: "Create new empty report and fill it with entities after that. " +
+                "The created report is automatically associated to the user who created it.",
             tags: [
                 "Reports"
             ],
@@ -635,15 +636,10 @@ export class APISpecification {
                 name: {
                     type: "string",
                     example: "September 2019"
-                },
-                userId: {
-                    type: "number",
-                    example: 12
                 }
             },
             required: [
-                "name",
-                "userId"
+                "name"
             ]
         };
     }

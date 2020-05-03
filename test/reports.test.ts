@@ -64,6 +64,36 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                  });
         });
 
+        it("Should add one more report.", () => {
+            const nameToSend: string = "September 2019";
+
+            const objectToSend = {
+                name: nameToSend
+            };
+
+            return Request(server)
+                .post(CREATE_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.CREATED);
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("resourceId");
+
+                    await expect(result.body.data.resourceId).to.be.a("number");
+                    await expect(result.body.data.success).to.eql(true);
+                    await expect(result.body.data.message).to.be.a("string");
+
+                    return result.body.data.resourceId;
+                })
+                .then(async (resourceId: number) => {
+                    const result = await reportsRepository.deleteById(resourceId);
+                    await expect(result).to.eql(true);
+                });
+        });
+
         it("Should not add a new report. Field 'name' is not provided", () => {
             const userIdToSend: number = 4;
 
@@ -96,38 +126,6 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
 
-        it("Should not add a new report. Field 'userId' is not provided", () => {
-            const nameToSend: string = "September 2019";
-
-            const objectToSend = {
-                name: nameToSend
-            };
-
-            const expectedSuccessProperty: string = "success";
-            const expectedMessageProperty: string = "message";
-            const expectedErrorsProperty: string = "errors";
-
-            const expectedSuccess: boolean = false;
-            const minimumExpectedErrorsCount: number = 1;
-
-            return Request(server)
-                .post(CREATE_URL)
-                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
-                .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body.data).to.have.property(expectedSuccessProperty);
-                    await expect(result.body.data).to.have.property(expectedMessageProperty);
-                    await expect(result.body.data).to.have.property(expectedErrorsProperty);
-
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
-                    await expect(result.body.data.errors.length).to.be.at.least(minimumExpectedErrorsCount);
-                });
-        });
-
         it("Should not add a new report. No fields are provided", () => {
 
             const expectedSuccessProperty: string = "success";
@@ -135,7 +133,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedErrorsProperty: string = "errors";
 
             const expectedSuccess: boolean = false;
-            const minimumExpectedErrorsCount: number = 2;
+            const minimumExpectedErrorsCount: number = 1;
 
             return Request(server)
                 .post(CREATE_URL)

@@ -16,9 +16,9 @@ export class ReportDTO {
     })
     private _name: string;
 
-    constructor(reqBody: any) {
-        this._userId = reqBody.userId;
-        this._name = reqBody.name;
+    constructor(userId: number, name: string) {
+        this._userId = userId;
+        this._name = name;
     }
 
     get userId(): number {
