@@ -1,9 +1,9 @@
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { ReportDTO } from "../data/reports/ReportDTO";
 import { ReportEditDTO } from "../data/reports/ReportEditDTO";
-import { IModel } from "./IModel";
+import { IRepository } from "./IRepository";
 
-export class ReportsModel implements IModel {
+export class ReportsRepository implements IRepository {
     private db: MysqlDatabase;
 
     constructor(db: MysqlDatabase) {

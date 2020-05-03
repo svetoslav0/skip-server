@@ -20,8 +20,7 @@ const {
     wrongTokenTestDelete
 } = require("./commonTests");
 
-import { ReportEntitiesModel } from "../models/ReportEntitiesModel";
-
+import { ReportEntitiesRepository } from "../repositories/ReportEntitiesRepository";
 
 import chai from "chai";
 import chaiHttp from "chai-http";
@@ -29,7 +28,7 @@ chai.use(chaiHttp);
 
 const request = chai.request;
 
-const reportEntitiesModel: ReportEntitiesModel = new ReportEntitiesModel(database);
+const reportEntitiesRepository: ReportEntitiesRepository = new ReportEntitiesRepository(database);
 
 const REPORT_ENTITIES_CONTROLLER_URL: string = "/reportEntities";
 const CREATE_URL: string = `${REPORT_ENTITIES_CONTROLLER_URL}`;
@@ -95,7 +94,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
                     return result.body.data.resourceId;
                 })
                 .then(async (reportEntityId: number) => {
-                    const isDeleted: boolean = await reportEntitiesModel.deleteById(reportEntityId);
+                    const isDeleted: boolean = await reportEntitiesRepository.deleteById(reportEntityId);
                     await expect(isDeleted).to.eql(true);
                 });
         });
@@ -135,7 +134,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
                     return result.body.data.resourceId;
                 })
                 .then(async (reportEntityId: number) => {
-                    const isDeleted: boolean = await reportEntitiesModel.deleteById(reportEntityId);
+                    const isDeleted: boolean = await reportEntitiesRepository.deleteById(reportEntityId);
                     await expect(isDeleted).to.eql(true);
                 });
         });

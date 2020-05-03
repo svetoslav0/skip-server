@@ -2,7 +2,7 @@ import express from "express";
 import { validateOrReject } from "class-validator";
 import httpStatus from "http-status-codes";
 
-import { ReportsModel } from "../../models/ReportsModel";
+import { ReportsRepository } from "../../repositories/ReportsRepository";
 import { ReportDTO } from "../../data/reports/ReportDTO";
 import { ReportEditDTO } from "../../data/reports/ReportEditDTO";
 import { BaseController } from "../BaseController";
@@ -12,11 +12,11 @@ import { ResponseBuilder } from "../../data/ResponseBuilder";
 
 export class ReportsController extends BaseController {
 
-    private reportsModel: ReportsModel;
+    private repository: ReportsRepository;
 
-    constructor(reportsModel: ReportsModel) {
+    constructor(repository: ReportsRepository) {
         super();
-        this.reportsModel = reportsModel;
+        this.repository = repository;
     }
 
     /**
@@ -36,7 +36,7 @@ export class ReportsController extends BaseController {
 
             await validateOrReject(report);
 
-            const reportId: number = await this.reportsModel.add(report);
+            const reportId: number = await this.repository.add(report);
 
             return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
@@ -73,13 +73,13 @@ export class ReportsController extends BaseController {
 
         const reportId: number = +request.params.id;
 
-        let report: ReportEditDTO | null = await this.reportsModel.findById(reportId);
+        let report: ReportEditDTO | null = await this.repository.findById(reportId);
 
         if (!report || !report.id || report.id !== reportId) {
             report = new ReportEditDTO(reportId, {});
         }
 
-        if (!await this.hasUserAccess(await this.reportsModel.findUserIdById(reportId))) {
+        if (!await this.hasUserAccess(await this.repository.findUserIdById(reportId))) {
             return this.buildForbiddenResponse(responseBuilder);
         }
 
@@ -97,7 +97,7 @@ export class ReportsController extends BaseController {
             return this.buildBadRequestResponse(responseBuilder, errors);
         }
 
-        const isUpdated: boolean = await this.reportsModel.update(report);
+        const isUpdated: boolean = await this.repository.update(report);
 
         if (isUpdated) {
             return responseBuilder
@@ -135,7 +135,7 @@ export class ReportsController extends BaseController {
 
         const reportId: number = +request.params.id;
 
-        const report = await this.reportsModel.findById(reportId);
+        const report = await this.repository.findById(reportId);
 
         if (!report) {
             return this.buildBadRequestResponse(
@@ -143,11 +143,11 @@ export class ReportsController extends BaseController {
                 [MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE]);
         }
 
-        if (!await this.hasUserAccess(await this.reportsModel.findUserIdById(reportId))) {
+        if (!await this.hasUserAccess(await this.repository.findUserIdById(reportId))) {
             return this.buildForbiddenResponse(responseBuilder);
         }
 
-        const isArchived: boolean = await this.reportsModel.archive(reportId);
+        const isArchived: boolean = await this.repository.archive(reportId);
 
         if (isArchived) {
             return responseBuilder

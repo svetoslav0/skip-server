@@ -20,9 +20,9 @@ const {
     wrongTokenTestPut
 } = require("./commonTests");
 
-import { ReportsModel } from "../models/ReportsModel";
+import { ReportsRepository } from "../repositories/ReportsRepository";
 
-const reportsModel: ReportsModel = new ReportsModel(database);
+const reportsRepository: ReportsRepository = new ReportsRepository(database);
 
 const REPORTS_CONTROLLERS_URL: string = "/reports";
 const CREATE_URL: string = `${REPORTS_CONTROLLERS_URL}`;
@@ -59,7 +59,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                      return result.body.data.resourceId;
                  })
                  .then(async (reportId: number) => {
-                     const result = await reportsModel.deleteById(reportId);
+                     const result = await reportsRepository.deleteById(reportId);
                      await expect(result).to.eql(expectedIsReportDeleted);
                  });
         });

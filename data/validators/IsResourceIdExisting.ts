@@ -3,9 +3,9 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface
 } from "class-validator";
-import { IModel } from "../../models/IModel";
+import { IRepository } from "../../repositories/IRepository";
 import { MysqlDatabase } from "../../database/MysqlDatabase";
-import { ModelFactory } from "../../models/ModelFactory";
+import { RepositoryFactory } from "../../repositories/RepositoryFactory";
 
 @ValidatorConstraint({async: true})
 export class IsResourceIdExisting implements ValidatorConstraintInterface {
@@ -15,11 +15,11 @@ export class IsResourceIdExisting implements ValidatorConstraintInterface {
                 resolve(true);
             }
 
-            const modelType: string = validationArguments?.constraints[0];
-            const model: IModel = new ModelFactory()
-                .createModel(modelType, new MysqlDatabase());
+            const repositoryType: string = validationArguments?.constraints[0];
+            const repository: IRepository = new RepositoryFactory()
+                .createRepository(repositoryType, new MysqlDatabase());
 
-            const result = await model.findById(id);
+            const result = await repository.findById(id);
 
             resolve(!!result);
         });

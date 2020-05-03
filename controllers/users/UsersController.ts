@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import httpStatus from "http-status-codes";
 
-import { UsersModel } from "../../models/UsersModel";
+import { UsersRepository } from "../../repositories/UsersRepository";
 import { UserDTO } from "../../data/users/UserDTO";
 import { UsersResponseBuilder } from "../../data/users/UsersResponseBuilder";
 import { BaseController } from "../BaseController";
@@ -13,11 +13,11 @@ export class UsersController extends BaseController {
 
     private readonly SALT_DIFFICULTY: number = 10;
 
-    private usersModel: UsersModel;
+    private repository: UsersRepository;
 
-    constructor(usersModel: UsersModel) {
+    constructor(repository: UsersRepository) {
         super();
-        this.usersModel = usersModel;
+        this.repository = repository;
     }
 
     public async register(request: any): Promise<UsersResponseBuilder> {
@@ -27,12 +27,12 @@ export class UsersController extends BaseController {
             const user: UserDTO = new UserDTO(request);
 
             await validateOrReject(user);
-            await this.usersModel.isUsernameUnique(user.username);
+            await this.repository.isUsernameUnique(user.username);
 
             const salt: string = await bcrypt.genSalt(this.SALT_DIFFICULTY);
             user.password = await bcrypt.hash(user.password, salt);
 
-            const userId: number = await this.usersModel.add(user);
+            const userId: number = await this.repository.add(user);
 
             return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
@@ -54,7 +54,7 @@ export class UsersController extends BaseController {
     public async login(request: any): Promise<UsersResponseBuilder> {
         const responseBuilder: UsersResponseBuilder = new UsersResponseBuilder();
 
-        const user = await this.usersModel
+        const user = await this.repository
             .findByUsername(
                 (new UserDTO(request)).username
             );
@@ -83,7 +83,7 @@ export class UsersController extends BaseController {
     }
 
     public async remove(request: any): Promise<any> {
-        const result = await this.usersModel
+        const result = await this.repository
             .removeById(request.userId);
     }
 }

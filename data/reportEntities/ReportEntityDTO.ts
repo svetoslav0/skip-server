@@ -5,7 +5,7 @@ import { MESSAGES } from "../../common/consts/MESSAGES";
 import { IsClassIdExisting } from "../validators/IsClassIdExisting";
 import { IsClassRoleIdExisting } from "../validators/IsClassRoleIdExisting";
 import { IsNumber } from "../validators/IsNumber";
-import { MODELS } from "../../common/consts/MODELS";
+import { REPOSITORIES } from "../../common/consts/REPOSITORIES";
 import { IsResourceIdExisting } from "../validators/IsResourceIdExisting";
 import { IsPositive } from "../validators/IsPositive";
 import { IsDate } from "../validators/IsDate";
@@ -48,7 +48,7 @@ export class ReportEntityDTO {
     @IsNumber({
         message: MESSAGES.ERRORS.REPORT_ENTITIES.USER_ID_FIELD_NOT_NUMERIC_MESSAGE
     })
-    @Validate(IsResourceIdExisting, [MODELS.USERS_MODEL], {
+    @Validate(IsResourceIdExisting, [REPOSITORIES.USERS_REPOSITORY], {
         message: MESSAGES.ERRORS.USERS.ID_FIELD_NOT_EXISTING_MESSAGE
     })
     private _userId: number;

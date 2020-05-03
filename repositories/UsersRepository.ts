@@ -1,8 +1,8 @@
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { UserDTO } from "../data/users/UserDTO";
-import { IModel } from "./IModel";
+import { IRepository } from "./IRepository";
 
-export class UsersModel implements IModel {
+export class UsersRepository implements IRepository {
 
     private db: MysqlDatabase;
 

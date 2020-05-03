@@ -6,11 +6,11 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
-import { UsersModel } from "./models/UsersModel";
-import { ReportsModel } from "./models/ReportsModel";
-import { ClassesModel } from "./models/ClassesModel";
-import { ClassRolesModel } from "./models/ClassRolesModel";
-import { ReportEntitiesModel } from "./models/ReportEntitiesModel";
+import { UsersRepository } from "./repositories/UsersRepository";
+import { ReportsRepository } from "./repositories/ReportsRepository";
+import { ClassesRepository } from "./repositories/ClassesRepository";
+import { ClassRolesRepository } from "./repositories/ClassRolesRepository";
+import { ReportEntitiesRepository } from "./repositories/ReportEntitiesRepository";
 
 import { UsersController } from "./controllers/users/UsersController";
 import { ReportsController } from "./controllers/reports/ReportsController";
@@ -30,17 +30,17 @@ import { handleError } from "./common/ErrorHandler";
 
 const database = new MysqlDatabase();
 
-const usersModel = new UsersModel(database);
-const reportsModel = new ReportsModel(database);
-const classesModel = new ClassesModel(database);
-const classRolesModel = new ClassRolesModel(database);
-const reportEntitiesModel = new ReportEntitiesModel(database);
+const usersRepository = new UsersRepository(database);
+const reportsRepository = new ReportsRepository(database);
+const classesRepository = new ClassesRepository(database);
+const classRolesRepository = new ClassRolesRepository(database);
+const reportEntitiesRepository = new ReportEntitiesRepository(database);
 
-const usersController = new UsersController(usersModel);
-const reportsController = new ReportsController(reportsModel);
-const classesController = new ClassesController(classesModel);
-const classRolesController = new ClassRolesController(classRolesModel);
-const reportEntitiesController = new ReportEntitiesController(reportEntitiesModel);
+const usersController = new UsersController(usersRepository);
+const reportsController = new ReportsController(reportsRepository);
+const classesController = new ClassesController(classesRepository);
+const classRolesController = new ClassRolesController(classRolesRepository);
+const reportEntitiesController = new ReportEntitiesController(reportEntitiesRepository);
 
 const usersRouter = new UsersRouter(usersController);
 const reportsRouter = new ReportsRouter(reportsController);
