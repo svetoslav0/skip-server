@@ -27,7 +27,7 @@ export class ReportEntitiesController extends BaseController {
     public async create(request: express.Request): Promise<ResponseBuilder> {
         const responseBuilder = new ResponseBuilder();
 
-        const reportEntity = new ReportEntityDTO(request.body);
+        const reportEntity = new ReportEntityDTO(request.userId, request.body);
 
         try {
             await validateOrReject(reportEntity);
