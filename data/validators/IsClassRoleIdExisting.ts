@@ -5,7 +5,7 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface
 } from "class-validator";
-import { MysqlDatabase } from "../../database/MysqlDatabase";
+import { database } from "../../server";
 import { ClassRolesRepository } from "../../repositories/ClassRolesRepository";
 
 @ValidatorConstraint({async: true})
@@ -16,7 +16,7 @@ export class IsClassRoleIdExistingConstraint implements ValidatorConstraintInter
                 resolve(true);
             }
 
-            const result = await new ClassRolesRepository(new MysqlDatabase())
+            const result = await new ClassRolesRepository(database)
                 .findById(id);
 
             resolve(!!result);
