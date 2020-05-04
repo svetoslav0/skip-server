@@ -43,6 +43,9 @@ export class APISpecification {
                 },
                 "/reportEntities": {
                     post: this.buildReportEntitiesCreatePath()
+                },
+                "/reportEntities/:id": {
+                    put: this.buildReportEntitiesEditPath()
                 }
             },
             components: {
@@ -75,6 +78,7 @@ export class APISpecification {
                     CreateClassRoleRequestSchema: this.buildCreateClassRoleRequestSchema(),
                     EditClassRoleRequestSchema: this.buildEditClassRoleRequestSchema(),
                     CreateReportEntityRequestSchema: this.buildCreateReportEntityRequestSchema(),
+                    EditReportEntityRequestSchema: this.buildEditReportEntityRequestSchema(),
 
                     LoginResponseSchema: this.buildLoginResponseSchema(),
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
@@ -88,6 +92,7 @@ export class APISpecification {
                     EditClassRoleResponseSchema: this.buildEditClassRoleResponseSchema(),
                     DeleteClassRolesResponseSchema: this.buildDeleteClassRolesResponseSchema(),
                     CreateReportEntityResponseSchema: this.buildCreateReportEntityResponseSchema(),
+                    EditReportEntityResponseSchema: this.buildEditReportEntityResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -562,6 +567,48 @@ export class APISpecification {
         }
     }
 
+    private buildReportEntitiesEditPath() {
+        return {
+            summary: "Update existing Report Entity",
+            description: "Update an existing Report Entity. Only provided fields will be " +
+                "validated and eventually updated.",
+            tags: [
+                "Report Entities"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                },
+                {
+                    $ref: "#/components/parameters/idParam"
+                }
+            ],
+            requestBody: {
+                required: true,
+                content: {
+                    [this.FORM_URLENCODED_CONTENT_TYPE]: {
+                        schema: {
+                            $ref: "#/components/schemas/EditReportEntityRequestSchema"
+                        }
+                    }
+                }
+            },
+            responses: {
+                200: {
+                    description: "Report Entity was successfully updated.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/EditReportEntityResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        }
+    }
+
     private buildRegisterUserSchema() {
         return {
             type: "object",
@@ -770,6 +817,39 @@ export class APISpecification {
                 "date",
                 "hoursSpend"
             ]
+        }
+    }
+
+    private buildEditReportEntityRequestSchema() {
+        return {
+            type: "object",
+            properties: {
+                reportId: {
+                    type: "number",
+                    description: "ID of an existing report",
+                    example: 15
+                },
+                classId: {
+                    type: "number",
+                    description: "ID of an existing class",
+                    example: 3
+                },
+                classRoleId: {
+                    type: "number",
+                    description: "ID of an existing class role",
+                    example: 2
+                },
+                date: {
+                    type: "string",
+                    description: "The date of the given lesson in format 'YYYY/MM/DD'",
+                    example: "2020/01/13"
+                },
+                hoursSpend: {
+                    type: "number",
+                    description: "The length of the lesson in hours",
+                    example: 2
+                }
+            }
         }
     }
 
@@ -990,6 +1070,31 @@ export class APISpecification {
                         message: {
                             type: "string",
                             example: "Class Role was successfully created."
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private buildEditReportEntityResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: true
+                        },
+                        resourceId: {
+                            type: "number",
+                            example: 15
+                        },
+                        message: {
+                            type: "string",
+                            example: "Class Role was updated successfully."
                         }
                     }
                 }
