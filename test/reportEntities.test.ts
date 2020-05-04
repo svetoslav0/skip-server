@@ -47,12 +47,18 @@ const existingClassRoleIdTwo: number = 74;
 const existingClassIdOne: number = 14;
 const existingClassIdTwo: number = 19;
 const existingReportIdOne: number = 13;
-const existingUserId: number = 6;
+const existingReportEntityOne: number = 38;
+const existingReportEntityTwo: number = 57;
+const existingReportEntityThree: number = 62;
+
+// User ID of entity 62, its role is employee
+const ownerOfReportEntityThree: number = 137;
 
 const nonExistingClassRoleId: number = 99999999;
 const nonExistingClassId: number = 99999998;
 const nonExistingReportId: number = 99999997;
-const nonExistingUserId: number = 7;
+const nonExistingReportEntityOne: number = 1;
+const nonExistingReportEntityTwo: number = 2;
 
 describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
     describe(`POST ${CREATE_URL}`, () => {
@@ -69,7 +75,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
                 classId: existingClassIdOne,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
-                userId: existingUserId
             };
 
             return request(server)
@@ -109,7 +114,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne,
-                userId: existingUserId
             };
 
             return request(server)
@@ -145,7 +149,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
 
             const objectToSend = {
                 classId: existingClassIdTwo,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -181,7 +184,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: "15a",
                 classId: existingClassIdTwo,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -217,7 +219,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: nonExistingClassRoleId,
                 classId: existingClassIdTwo,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -251,7 +252,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
 
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -287,7 +287,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: nonExistingClassId,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -324,7 +323,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: classIdToSend,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -357,7 +355,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdOne,
                 classId: existingClassIdTwo,
-                userId: existingUserId,
                 date: dateToSend,
                 reportId: existingReportIdOne
             };
@@ -392,7 +389,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: existingClassIdTwo,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -428,7 +424,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: existingClassIdTwo,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -462,7 +457,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdTwo,
                 classId: existingClassIdOne,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 reportId: existingReportIdOne
             };
@@ -496,7 +490,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdOne,
                 classId: existingClassIdTwo,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: existingReportIdOne
@@ -531,7 +524,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdOne,
                 classId: existingClassIdTwo,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: nonExistingReportId
@@ -567,7 +559,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             const objectToSend = {
                 classRoleId: existingClassRoleIdOne,
                 classId: existingClassIdTwo,
-                userId: existingUserId,
                 hoursSpend: hoursSpendToSend,
                 date: dateToSend,
                 reportId: reportIdToSend
@@ -577,6 +568,397 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+    });
+
+    describe(`PUT ${REPORT_ENTITIES_CONTROLLER_URL}/{id} tests`, () => {
+
+        noTokenTestPut(EDIT_URL(existingReportEntityOne));
+        wrongTokenTestPut(EDIT_URL(existingReportEntityTwo));
+
+        it("Should update report entity. Test No. 1", () => {
+            const hoursToSend: number = 3;
+
+            const objectToSend = {
+                classRoleId: existingClassRoleIdOne,
+                classId: existingClassIdOne,
+                hoursSpend: hoursToSend
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityTwo))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("resourceId");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.resourceId).to.be.a("number");
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+
+                    await expect(result.body.data.success).to.eql(true);
+                });
+        });
+
+        it("Should update report entity. Test No. 2", () => {
+            const hoursToSend: number = 1;
+            const dateToSend: string = "2020/05/13";
+
+            const objectToSend = {
+                classRoleId: existingClassRoleIdTwo,
+                hoursSpend: hoursToSend,
+                date: dateToSend,
+                reportId: existingReportIdOne
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, employeeToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("resourceId");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.resourceId).to.be.a("number");
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+
+                    await expect(result.body.data.success).to.eql(true);
+                });
+        });
+
+        it("Should not update the report entity. Provided ID is not numeric", () => {
+            const hoursToSend: number = 3;
+            const idToSend: string = "adw3aw";
+
+            const objectToSend = {
+                classRoleId: existingClassRoleIdOne,
+                hoursSpend: hoursToSend
+            };
+
+            return request(server)
+                .put(EDIT_URL(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Provided ID is not existing", () => {
+
+            const dateToSend: string = "2019/03/12";
+            const idToSend: number = nonExistingReportEntityOne;
+
+            const objectToSend = {
+                classRoleId: existingClassRoleIdOne,
+                date: dateToSend
+            };
+
+            return request(server)
+                .put(EDIT_URL(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Field 'classId' is provided but not numeric.", () => {
+            const dateToSend: string = "2019/03/12";
+            const classIdToSend: string = "38a";
+
+            const objectToSend = {
+                date: dateToSend,
+                classId: classIdToSend
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Field 'classId' is provided but not existing.", () => {
+
+            const dateToSend: string = "2019/03/12";
+
+            const objectToSend = {
+                date: dateToSend,
+                classId: nonExistingClassId
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Field 'classRoleId' is provided but not numeric.", () => {
+            const hourToSend: number = 1;
+            const classRoleIdToSend: string = "31b";
+
+            const objectToSend = {
+                hoursSpend: hourToSend,
+                classRoleId: classRoleIdToSend
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Field 'classRoleId' is provided but not existing.", () => {
+            const objectToSend = {
+                reportId: existingReportIdOne,
+                classRoleId: nonExistingClassRoleId
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Field 'hoursSpend' is provided but not numeric.", () => {
+            const hourToSend: string = "wawdasa";
+
+            const objectToSend = {
+                hoursSpend: hourToSend,
+                classRoleId: existingClassRoleIdTwo
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Field 'hoursSpend' is provided but is negative.", () => {
+
+            const hourToSend: number = -2;
+
+            const objectToSend = {
+                hoursSpend: hourToSend,
+                classRoleId: existingClassRoleIdTwo
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Field 'reportId' is provided but not numeric.", () => {
+            const hourToSend: number = 2;
+            const reportIdToSend: string = "13qw";
+
+            const objectToSend = {
+                hoursSpend: hourToSend,
+                reportId: reportIdToSend
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Field 'reportId' is provided but not existing.", () => {
+            const objectToSend = {
+                classId: existingClassIdOne,
+                reportId: nonExistingReportId
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+                    await expect(result.body.data).to.have.property("errors");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.errors).to.be.an("array");
+
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+
+        it("Should not update the report entity. Field 'date' is not valid", () => {
+            const dateToSend: string = "2020/19/18";
+
+            const objectToSend = {
+                classId: existingClassIdTwo,
+                date: dateToSend
+            };
+
+            return request(server)
+                .put(EDIT_URL(existingReportEntityThree))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, adminToken)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);

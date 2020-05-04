@@ -27,6 +27,7 @@ export class MysqlDatabase {
 
     private config(): mysql.Pool {
         const connection = this.mysqlDatabaseFactory();
+        console.log("Creating database connection . . .");
 
         return mysql.createPool(connection);
     }

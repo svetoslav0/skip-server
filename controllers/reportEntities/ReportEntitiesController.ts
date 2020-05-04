@@ -83,8 +83,8 @@ export class ReportEntitiesController extends BaseController {
             entity.classId = request.body.classId || entity.classId;
             entity.classRoleId = request.body.classRoleId || entity.classRoleId;
             entity.reportId = request.body.reportId || entity.reportId;
-            entity.hoursSpend = +request.body.hoursSpend || entity.hoursSpend;
-            entity.date = new Date(request.body.date) || entity.date;
+            entity.hoursSpend = request.body.hoursSpend || entity.hoursSpend;
+            entity.date = request.body.date ? new Date(request.body.date) : entity.date;
             entity.userId = request.body.userId || entity.userId;
 
             await validateOrReject(entity);

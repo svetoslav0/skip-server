@@ -5,7 +5,7 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface
 } from "class-validator";
-import { MysqlDatabase } from "../../database/MysqlDatabase";
+import { database } from "../../server";
 import { ReportsRepository } from "../../repositories/ReportsRepository";
 
 @ValidatorConstraint({async: true})
@@ -16,7 +16,7 @@ export class IsReportIdExistingConstraint implements ValidatorConstraintInterfac
                 resolve(true);
             }
 
-            const result = await new ReportsRepository(new MysqlDatabase())
+            const result = await new ReportsRepository(database)
                 .findById(id);
 
             resolve(!!result);

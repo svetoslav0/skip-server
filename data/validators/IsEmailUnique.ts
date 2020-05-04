@@ -5,14 +5,14 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface
 } from "class-validator";
-import { MysqlDatabase } from "../../database/MysqlDatabase";
+import { database } from "../../server";
 import { UsersRepository } from "../../repositories/UsersRepository";
 
 @ValidatorConstraint({async: true})
 export class IsEmailUniqueConstraint implements ValidatorConstraintInterface {
     validate(email: string, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
         return new Promise((async resolve => {
-                const result = await new UsersRepository(new MysqlDatabase())
+                const result = await new UsersRepository(database)
                     .isEmailUnique(email);
 
                 resolve(result);
