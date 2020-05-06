@@ -119,7 +119,6 @@ export class ReportsController extends BaseController {
      */
     public async archive(request: express.Request): Promise<ResponseBuilder> {
         const responseBuilder: ResponseBuilder = new ResponseBuilder();
-        // const responseBuilder: ReportsResponseBuilder = new ReportsResponseBuilder();
 
         this._request = request;
 
@@ -140,7 +139,8 @@ export class ReportsController extends BaseController {
         if (!report) {
             return this.buildBadRequestResponse(
                 responseBuilder,
-                [MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE]);
+                [MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE]
+            );
         }
 
         if (!await this.hasUserAccess(await this.repository.findUserIdById(reportId))) {

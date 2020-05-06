@@ -106,4 +106,46 @@ export class ReportEntitiesController extends BaseController {
 
         throw new Error(MESSAGES.ERRORS.COMMON.FAILED_UPDATE_NO_ROWS_AFFECTED_MESSAGE);
     }
+
+    public async archive(request: express.Request): Promise<ResponseBuilder> {
+        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+
+        this._request = request;
+
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            return responseBuilder
+                .setHttpStatus(httpStatus.BAD_REQUEST)
+                .setSuccess(false)
+                .setMessage(MESSAGES.ERRORS.REPORT_ENTITIES.ARCHIVE_GENERAL_FAILED_MESSAGE)
+                .setErrors([error.message]);
+        }
+
+        const entityId: number = +request.params.id;
+
+        const entity = await this.repository.findById(entityId);
+
+        if (!entity) {
+            return this.buildBadRequestResponse(
+                responseBuilder,
+                [MESSAGES.ERRORS.REPORT_ENTITIES.ID_FIELD_NOT_EXISTING_MESSAGE]
+            );
+        }
+
+        if (!await this.hasUserAccess(await this.repository.findUserIdById(entityId))) {
+            return this.buildForbiddenResponse(responseBuilder);
+        }
+
+        const isArchived: boolean = await this.repository.archive(entityId);
+
+        if (isArchived) {
+            return responseBuilder
+                .setHttpStatus(httpStatus.OK)
+                .setSuccess(true)
+                .setMessage(MESSAGES.SUCCESSES.REPORT_ENTITIES.SUCCESSFUL_ARCHIVED_MESSAGE);
+        }
+
+        throw new Error(MESSAGES.ERRORS.COMMON.FAILED_UPDATE_NO_ROWS_AFFECTED_MESSAGE);
+    }
 }
