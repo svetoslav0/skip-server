@@ -30,6 +30,7 @@ export const MESSAGES = {
             FAILED_UPDATE_NO_ROWS_AFFECTED_MESSAGE: "Failed updating the resource. No rows were affected..."
         },
         REPORT_ENTITIES: {
+            ARCHIVE_GENERAL_FAILED_MESSAGE: "Report Entity with given parameters cannot be archived.",
             CLASS_ID_FIELD_NOT_NUMERIC_MESSAGE: "Field 'classId' is not numeric!",
             CLASS_ROLE_ID_FIELD_NOT_NUMERIC_MESSAGE: "Field 'classRoleId' is not numeric!",
             DATE_FIELD_NOT_DEFINED_MESSAGE: "Field 'date' is not defined!",

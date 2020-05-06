@@ -59,9 +59,23 @@ export class ReportEntitiesRepository implements IRepository {
         return result.affectedRows === 1;
     }
 
-    public archive(id: number): Promise<boolean> {
-        // TODO: implement this method!
-        throw new Error("Method not implemented!");
+    /**
+     * @param {number} id
+     * @returns {Promise<boolean>}
+     */
+    public async archive(id: number): Promise<boolean> {
+        const isArchived: number = 1;
+
+        const result = await this.db.query(`
+            UPDATE
+                report_entities
+            SET
+                is_archived = ?
+            WHERE
+                id = ?
+        `, [isArchived, id]);
+
+        return result.affectedRows === 1;
     }
 
     /**
