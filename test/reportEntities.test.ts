@@ -976,4 +976,28 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
                 });
         });
     });
+
+    describe(`DELETE ${REPORT_ENTITIES_CONTROLLER_URL}/{id} tests`, () => {
+
+        noTokenTestDelete(DELETE_URL(existingReportEntityOne));
+        wrongTokenTestDelete(DELETE_URL(existingReportEntityOne));
+
+        it("Should archive the entity. Test No. 1", () => {
+
+        });
+
+        it("Should archive the entity. Test No. 2", () => {
+
+        });
+
+        it("Should not archive the entity. The provided ID is not numeric", () => {
+
+        });
+
+        it("Should not archive the entity. The provided ID does not exist", () => {
+
+        });
+
+        
+    });
 });
