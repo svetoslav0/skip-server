@@ -1,4 +1,4 @@
-import express, {request} from "express";
+import express from "express";
 import { validateOrReject } from "class-validator";
 import httpStatus from "http-status-codes";
 
@@ -19,13 +19,10 @@ export class ClassRolesController extends BaseController {
     }
 
     /**
-     * This method handles the creation of a class role an its validation
-     *
      * @param {express.Request} request
      * @returns {Promise<ResponseBuilder>}
      */
     public async create(request: express.Request): Promise<ResponseBuilder> {
-        // const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
         const responseBuilder: ResponseBuilder = new ResponseBuilder();
         const classRole: ClassRoleDTO = new ClassRoleDTO(request.body);
 
@@ -37,7 +34,6 @@ export class ClassRolesController extends BaseController {
             return responseBuilder
                 .setHttpStatus(httpStatus.CREATED)
                 .setResourceId(classRoleId)
-                // .setClassRoleId(classRoleId)
                 .setSuccess(true)
                 .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_CREATION_MESSAGE);
 
@@ -51,13 +47,10 @@ export class ClassRolesController extends BaseController {
     }
 
     /**
-     * This method handles updating of a class role and its validations
-     *
      * @param {express.Request} request
      * @returns {Promise<ResponseBuilder>}
      */
     public async edit(request: express.Request): Promise<ResponseBuilder> {
-        // const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
         const responseBuilder: ResponseBuilder = new ResponseBuilder();
 
         try {
@@ -72,7 +65,7 @@ export class ClassRolesController extends BaseController {
 
         const classRoleId: number = +request.params.id;
 
-        let classRole: ClassRoleEditDTO | null =  await this.repository.findById(classRoleId);
+        let classRole: ClassRoleEditDTO | null = await this.repository.findById(classRoleId);
 
         if (!classRole || !classRole.id || classRole.id !== classRoleId) {
             classRole = new ClassRoleEditDTO(classRoleId, {});
@@ -82,7 +75,8 @@ export class ClassRolesController extends BaseController {
             classRole
                 .setId(classRoleId)
                 .setName(request.body.name || classRole.name)
-                .setPaymentPerHour(request.body.paymentPerHour || classRole.paymentPerHour);
+                .setPaymentPerHour(request.body.paymentPerHour || classRole.paymentPerHour)
+                .setDescription(request.body.description || classRole.description);
 
             await validateOrReject(classRole);
         } catch (validationError) {
@@ -98,17 +92,15 @@ export class ClassRolesController extends BaseController {
         if (isUpdated) {
             return responseBuilder
                 .setHttpStatus(httpStatus.OK)
-                // .setClassRoleId(classRoleId)
                 .setResourceId(classRoleId)
                 .setSuccess(true)
                 .setMessage(MESSAGES.SUCCESSES.CLASS_ROLES.SUCCESSFUL_UPDATED_MESSAGE);
         }
 
-        return this.buildInternalErrorResponse(responseBuilder);
+        throw new Error(MESSAGES.ERRORS.COMMON.FAILED_UPDATE_NO_ROWS_AFFECTED_MESSAGE);
     }
 
     public async archive(request: express.Request): Promise<ResponseBuilder> {
-        // const responseBuilder: ClassRolesResponseBuilder = new ClassRolesResponseBuilder();
         const responseBuilder: ResponseBuilder = new ResponseBuilder();
 
         try {
