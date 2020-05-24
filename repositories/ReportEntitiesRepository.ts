@@ -11,8 +11,6 @@ export class ReportEntitiesRepository implements IRepository {
     }
 
     /**
-     * Inserts a report entity
-     *
      * @param {ReportEntityDTO} reportEntity
      * @returns {Promise<number>}
      */
@@ -25,16 +23,18 @@ export class ReportEntitiesRepository implements IRepository {
                     class_id,
                     class_role_id,
                     hours_spend,
-                    user_id
+                    user_id,
+                    description
                 )
-            VALUES (?, ?, ?, ?, ?, ?);
+            VALUES (?, ?, ?, ?, ?, ?, ?);
         `, [
             reportEntity.reportId,
             reportEntity.date,
             reportEntity.classId,
             reportEntity.classRoleId,
             reportEntity.hoursSpend,
-            reportEntity.userId
+            reportEntity.userId,
+            reportEntity.description
         ]);
 
         return result.insertId;
@@ -92,7 +92,8 @@ export class ReportEntitiesRepository implements IRepository {
                 class_id AS classId,
                 class_role_id AS classRoleId,
                 user_id AS userId,
-                hours_spend AS hoursSpend
+                hours_spend AS hoursSpend,
+                description
             FROM
                 report_entities
             WHERE
@@ -126,7 +127,8 @@ export class ReportEntitiesRepository implements IRepository {
                 report_id = ?,
                 hours_spend = ?,
                 date = ?,
-                user_id = ?
+                user_id = ?,
+                description = ?
             WHERE
                 id = ?
         `, [
@@ -136,6 +138,7 @@ export class ReportEntitiesRepository implements IRepository {
             entity.hoursSpend,
             entity.date,
             entity.userId,
+            entity.description,
             entity.id
         ]);
 

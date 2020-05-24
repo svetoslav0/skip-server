@@ -69,6 +69,8 @@ export class ReportEntityDTO {
     })
     private _hoursSpend: number;
 
+    private _description!: string;
+
     constructor(userId: number, reqBody: any) {
         this._userId = userId;
         this._reportId = reqBody.reportId;
@@ -76,6 +78,7 @@ export class ReportEntityDTO {
         this._classRoleId = reqBody.classRoleId;
         this._date = new Date(reqBody.date);
         this._hoursSpend = reqBody.hoursSpend;
+        this._description = reqBody.description;
     }
 
     get reportId(): number {
@@ -124,5 +127,13 @@ export class ReportEntityDTO {
 
     set userId(value: number) {
         this._userId = value;
+    }
+
+    get description(): string {
+        return this._description;
+    }
+
+    set description(value: string) {
+        this._description = value;
     }
 }
