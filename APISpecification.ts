@@ -825,6 +825,10 @@ export class APISpecification {
                     type: "number",
                     description: "The length of the lesson in hours",
                     example: 2
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             },
             required: [
@@ -864,6 +868,10 @@ export class APISpecification {
                     type: "number",
                     description: "The length of the lesson in hours",
                     example: 2
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             }
         };

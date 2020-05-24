@@ -58,6 +58,8 @@ export class ReportEntityEditDTO {
     })
     private _hoursSpend: number;
 
+    private _description!: string;
+
     constructor(id: number, reqBody: any) {
         this._id = id;
         this._reportId = reqBody.reportId;
@@ -66,6 +68,7 @@ export class ReportEntityEditDTO {
         this._userId = reqBody.userId;
         this._date = new Date(reqBody.date);
         this._hoursSpend = +reqBody.hoursSpend;
+        this._description = reqBody.description;
     }
 
     get id(): number {
@@ -122,5 +125,13 @@ export class ReportEntityEditDTO {
 
     set hoursSpend(value: number) {
         this._hoursSpend = value;
+    }
+
+    get description(): string {
+        return this._description;
+    }
+
+    set description(value: string) {
+        this._description = value;
     }
 }
