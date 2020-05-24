@@ -684,6 +684,10 @@ export class APISpecification {
                 name: {
                     type: "string",
                     example: "September 2019"
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             },
             required: [
@@ -703,6 +707,10 @@ export class APISpecification {
                 userId: {
                     type: "number",
                     example: 12
+                },
+                describe: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             }
         };

@@ -19,8 +19,6 @@ export class ReportsController extends BaseController {
     }
 
     /**
-     * This method handles the creation of a report and its validations
-     *
      * @param {express.Request} request
      * @returns {Promise<ResponseBuilder>}
      */
@@ -30,7 +28,7 @@ export class ReportsController extends BaseController {
         try {
             const report: ReportDTO = new ReportDTO(
                 request.userId,
-                request.body.name
+                request.body
             );
 
             await validateOrReject(report);
@@ -50,8 +48,6 @@ export class ReportsController extends BaseController {
     }
 
     /**
-     * This method handles the updating of a report and its validations
-     *
      * @param {express.Request} request
      * @returns {Promise<ResponseBuilder>}
      */
@@ -88,6 +84,7 @@ export class ReportsController extends BaseController {
             report.id = reportId;
             report.name = request.body.name || report.name;
             report.userId = +request.body.userId || report.userId;
+            report.description = request.body.description || report.description;
 
             await validateOrReject(report);
         } catch (validationError) {
@@ -110,9 +107,6 @@ export class ReportsController extends BaseController {
     }
 
     /**
-     * This method handles the archiving of a report and its validations
-     *  The report is not actually deleted, its status is changed in the database.
-     *
      * @param {express.Request} request
      * @returns {Promise<ResponseBuilder>}
      */
