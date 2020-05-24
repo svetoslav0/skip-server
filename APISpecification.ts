@@ -488,7 +488,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildClassRolesDeletePath() {
@@ -520,7 +520,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildReportEntitiesCreatePath() {
@@ -564,7 +564,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildReportEntitiesEditPath() {
@@ -606,7 +606,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildRegisterUserSchema() {
@@ -761,7 +761,7 @@ export class APISpecification {
                 "name",
                 "paymentPerHour"
             ]
-        }
+        };
     }
 
     private buildEditClassRoleRequestSchema() {
@@ -778,7 +778,7 @@ export class APISpecification {
                     minimum: 0
                 }
             }
-        }
+        };
     }
 
     private buildCreateReportEntityRequestSchema() {
@@ -817,7 +817,7 @@ export class APISpecification {
                 "date",
                 "hoursSpend"
             ]
-        }
+        };
     }
 
     private buildEditReportEntityRequestSchema() {
@@ -850,7 +850,7 @@ export class APISpecification {
                     example: 2
                 }
             }
-        }
+        };
     }
 
     private buildCreatedUserResponseSchema() {
@@ -976,7 +976,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateClassRoleResponseSchema() {
@@ -1002,7 +1002,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildEditClassRoleResponseSchema() {
@@ -1027,7 +1027,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildDeleteClassRolesResponseSchema() {
@@ -1048,7 +1048,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateReportEntityResponseSchema() {
@@ -1074,9 +1074,9 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
-    
+
     private buildEditReportEntityResponseSchema() {
         return {
             type: "object",
@@ -1099,7 +1099,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateClassResponseSchema() {
@@ -1227,7 +1227,7 @@ export class APISpecification {
     }
 
     private buildCommonResponses(withAuth: boolean = true) {
-        let response: any = {
+        const response: any = {
             400: {
                 description: "The given request cannot be proceeded from the server due to something that is perceived to be a client error.",
                 content: {

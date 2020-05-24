@@ -74,7 +74,7 @@ export class ReportEntitiesController extends BaseController {
             entity = new ReportEntityEditDTO(reportEntityId, {});
         }
 
-        if(!await this.hasUserAccess(await this.repository.findUserIdById(reportEntityId))) {
+        if (!await this.hasUserAccess(await this.repository.findUserIdById(reportEntityId))) {
             return this.buildForbiddenResponse(responseBuilder);
         }
 

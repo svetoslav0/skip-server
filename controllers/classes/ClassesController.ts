@@ -92,7 +92,7 @@ export class ClassesController extends BaseController {
                 .setHttpStatus(httpStatus.OK)
                 .setResourceId(classId)
                 .setSuccess(true)
-                .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_UPDATED_MESSAGE)
+                .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_UPDATED_MESSAGE);
         }
 
         return this.buildInternalErrorResponse(responseBuilder);

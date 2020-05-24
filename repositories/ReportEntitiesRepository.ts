@@ -27,7 +27,7 @@ export class ReportEntitiesRepository implements IRepository {
                     hours_spend,
                     user_id
                 )
-            VALUE (?, ?, ?, ?, ?, ?);
+            VALUES (?, ?, ?, ?, ?, ?);
         `, [
             reportEntity.reportId,
             reportEntity.date,
@@ -83,6 +83,7 @@ export class ReportEntitiesRepository implements IRepository {
      * @return {Promise<ReportEntityEditDTO | null>}
      */
     public async findById(id: number): Promise<ReportEntityEditDTO | null> {
+        // TODO: rename column 'date' to something meaningful, ex: event_date
         const result = await this.db.query(`
             SELECT
                 id,

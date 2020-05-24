@@ -1,5 +1,5 @@
 import { IsDefined } from "class-validator";
-import {MESSAGES} from "../../common/consts/MESSAGES";
+import { MESSAGES } from "../../common/consts/MESSAGES";
 
 export class ClassDTO {
 
