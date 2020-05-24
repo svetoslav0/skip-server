@@ -719,6 +719,10 @@ export class APISpecification {
                 ageGroup: {
                     type: "string",
                     example: "4 - 6 Grade"
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             },
             required: [
@@ -738,6 +742,10 @@ export class APISpecification {
                 ageGroup: {
                     type: "string",
                     example: "4 - 6 Grade"
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             }
         };
