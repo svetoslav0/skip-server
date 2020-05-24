@@ -1,43 +1,34 @@
-const {
-    server,
-    database,
-    expect,
-    Request,
-    CONTENT_TYPE_HEADING,
-    DEFAULT_CONTENT_TYPE,
-    TOKEN_HEADING,
-    adminToken,
-    employeeToken
-} = require("./base");
-
 import httpStatus from "http-status-codes";
 
-const {
-    noTokenTestPost,
-    wrongTokenTestPost,
-    noTokenTestPut,
-    wrongTokenTestPut,
-    noTokenTestDelete,
-    wrongTokenTestDelete
-} = require("./commonTests");
+import { server, database, expect, Request } from "./base";
+import { HttpMethod } from "./httpMethod";
+
+import {
+    noTokenTest,
+    wrongTokenTest
+} from "./commonTests";
 
 import { ClassesRepository } from "../repositories/ClassesRepository";
 
 const classesRepository: ClassesRepository = new ClassesRepository(database);
 
+const CONTENT_TYPE_HEADING = process.env.CONTENT_TYPE_HEADING || "";
+const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
+const TOKEN_HEADING = process.env.TOKEN_HEADING || "";
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
+const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || "";
+
 const CLASSES_CONTROLLER_URL: string = "/classes";
 const CREATE_URL: string = `${CLASSES_CONTROLLER_URL}`;
-const EDIT_URL = (id: number | string) => {
-    return `${CLASSES_CONTROLLER_URL}/${id}`;
-};
-const ARCHIVE_URL = (id: number) => {
+const URL_WITH_PARAM = (id: number | string) => {
     return `${CLASSES_CONTROLLER_URL}/${id}`;
 };
 
 describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
     describe(`POST ${CREATE_URL} tests`, () => {
-        noTokenTestPost(CREATE_URL);
-        wrongTokenTestPost(CREATE_URL);
+
+        noTokenTest(HttpMethod.Post, CREATE_URL);
+        wrongTokenTest(HttpMethod.Post, CREATE_URL);
 
         it(`Should add a new class. Should delete it after the test finishes`, () => {
             const nameToSend: string = "Scratch games";
@@ -54,7 +45,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
@@ -80,7 +71,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.FORBIDDEN);
@@ -100,7 +91,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
@@ -127,7 +118,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -138,8 +129,9 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
     });
 
     describe(`PUT ${CREATE_URL}/{id}`, () => {
-        noTokenTestPut(EDIT_URL(14));
-        wrongTokenTestPut(EDIT_URL(14));
+
+        noTokenTest(HttpMethod.Put, URL_WITH_PARAM(14));
+        wrongTokenTest(HttpMethod.Put, URL_WITH_PARAM(14));
 
         it("Should not update. Provided token belongs to employee's account", () => {
             const nameToSend: string = "HTML";
@@ -150,9 +142,9 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             };
 
             return Request(server)
-                .put(EDIT_URL(classIdToSend))
+                .put(URL_WITH_PARAM(classIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.FORBIDDEN);
@@ -170,9 +162,9 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const expectedSuccess: boolean = true;
 
             return Request(server)
-                .put(EDIT_URL(classIdToSend))
+                .put(URL_WITH_PARAM(classIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
@@ -189,9 +181,9 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             };
 
             return Request(server)
-                .put(EDIT_URL(classIdToSend))
+                .put(URL_WITH_PARAM(classIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -222,9 +214,9 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const errorsPropHeading: string = "errors";
 
             return Request(server)
-                .put(EDIT_URL(classIdToSend))
+                .put(URL_WITH_PARAM(classIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -235,16 +227,17 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
     });
 
     describe(`DELETE ${CREATE_URL}/{id}`, () => {
-        noTokenTestDelete(ARCHIVE_URL(14));
-        wrongTokenTestDelete(ARCHIVE_URL(14));
+
+        noTokenTest(HttpMethod.Delete, URL_WITH_PARAM(14));
+        wrongTokenTest(HttpMethod.Delete, URL_WITH_PARAM(14));
 
         it("Should not archive the class. Provided token belongs to employee", () => {
             const idToSend: number = 14;
 
             return Request(server)
-                .delete(ARCHIVE_URL(idToSend))
+                .delete(URL_WITH_PARAM(idToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.FORBIDDEN);
@@ -255,9 +248,9 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const idToSend: number = 1499999999;
 
             return Request(server)
-                .delete(ARCHIVE_URL(idToSend))
+                .delete(URL_WITH_PARAM(idToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -267,12 +260,10 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
         it("Should not archive. Provided ID is not numeric", () => {
             const classIdToSend: string = "15a";
 
-            const expectedSuccess: boolean = false;
-
             return Request(server)
-                .put(EDIT_URL(classIdToSend))
+                .put(URL_WITH_PARAM(classIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body).to.have.property("data");
@@ -294,9 +285,9 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const expectedSuccess: boolean = true;
 
             return Request(server)
-                .delete(ARCHIVE_URL(idToSend))
+                .delete(URL_WITH_PARAM(idToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.OK);

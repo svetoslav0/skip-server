@@ -6,7 +6,6 @@ import { ReportsRepository } from "../../repositories/ReportsRepository";
 import { ReportDTO } from "../../data/reports/ReportDTO";
 import { ReportEditDTO } from "../../data/reports/ReportEditDTO";
 import { BaseController } from "../BaseController";
-import { ROLES } from "../../common/consts/ROLES";
 import { MESSAGES } from "../../common/consts/MESSAGES";
 import { ResponseBuilder } from "../../data/ResponseBuilder";
 

@@ -1,17 +1,13 @@
-const {
-    server,
-    database,
-    expect,
-    Request,
-    CONTENT_TYPE_HEADING,
-    DEFAULT_CONTENT_TYPE
-} = require("./base");
-
 import httpStatus from "http-status-codes";
+
+import { server, database, expect, Request } from "./base";
 
 import { UsersRepository } from "../repositories/UsersRepository";
 
 const usersRepository: UsersRepository = new UsersRepository(database);
+
+const CONTENT_TYPE_HEADING: string = process.env.CONTENT_TYPE_HEADING || "";
+const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
 
 const USERS_CONTROLLER_URL: string = "/users";
 const LOGIN_URL: string = `${USERS_CONTROLLER_URL}/login`;

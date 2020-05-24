@@ -1,8 +1,6 @@
 import express from "express";
-import { MysqlDatabase } from "../database/MysqlDatabase";
 import { IRoutable } from "./IRoutable";
 import { APIMiddleware } from "../common/APIMiddleware";
-import { ReportEntitiesRepository } from "../repositories/ReportEntitiesRepository";
 import { ReportEntitiesController } from "../controllers/reportEntities/ReportEntitiesController";
 import { ResponseBuilder } from "../data/ResponseBuilder";
 

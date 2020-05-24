@@ -1,8 +1,6 @@
 import { MysqlDatabase } from "../database/MysqlDatabase";
 
-export interface IRepositoryConstructor {
-    new(db: MysqlDatabase): IRepository;
-}
+export type IRepositoryConstructor = new(db: MysqlDatabase) => IRepository;
 
 export interface IRepository {
     add: (resourceDTO: any) => Promise<number>;

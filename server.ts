@@ -6,6 +6,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
+import { MysqlDatabase } from "./database/MysqlDatabase";
+
 import { UsersRepository } from "./repositories/UsersRepository";
 import { ReportsRepository } from "./repositories/ReportsRepository";
 import { ClassesRepository } from "./repositories/ClassesRepository";
@@ -19,9 +21,8 @@ import { ClassRolesController } from "./controllers/classRoles/ClassRolesControl
 import { ReportEntitiesController } from "./controllers/reportEntities/ReportEntitiesController";
 
 import { UsersRouter } from "./routers/UsersRouter";
-import { MysqlDatabase } from "./database/MysqlDatabase";
 import { ReportsRouter } from "./routers/ReportsRouter";
-import { ClassesRouter } from "./routers/ClassesRouter"
+import { ClassesRouter } from "./routers/ClassesRouter";
 import { ClassRolesRouter } from "./routers/ClassRolesRouter";
 import { ReportEntitiesRouter } from "./routers/ReportEntitiesRouter";
 

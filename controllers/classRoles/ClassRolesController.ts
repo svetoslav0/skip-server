@@ -70,9 +70,8 @@ export class ClassRolesController extends BaseController {
                 .setErrors([error.message]);
         }
 
-
         const classRoleId: number = +request.params.id;
-        
+
         let classRole: ClassRoleEditDTO | null =  await this.repository.findById(classRoleId);
 
         if (!classRole || !classRole.id || classRole.id !== classRoleId) {

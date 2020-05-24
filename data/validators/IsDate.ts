@@ -6,7 +6,7 @@ import {
 
 @ValidatorConstraint()
 export class IsDate implements ValidatorConstraintInterface {
-    validate(value: any, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
+    public validate(value: any, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
         if (!value) {
             return true;
         }

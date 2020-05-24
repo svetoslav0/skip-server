@@ -1,6 +1,5 @@
 import { IsDefined } from "class-validator";
 import { IsUserIdExisting } from "../validators/IsUserIdExisting";
-import { ReportDTO } from "./ReportDTO";
 import { IsReportIdExisting } from "../validators/IsReportIdExisting";
 import { MESSAGES } from "../../common/consts/MESSAGES";
 
