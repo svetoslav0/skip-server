@@ -755,6 +755,10 @@ export class APISpecification {
                     type: "number",
                     example: 15,
                     minimum: 0
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             },
             required: [
@@ -776,6 +780,10 @@ export class APISpecification {
                     type: "number",
                     example: 12,
                     minimum: 0
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             }
         };

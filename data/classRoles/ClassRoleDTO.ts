@@ -21,10 +21,13 @@ export class ClassRoleDTO {
     })
     private _paymentPerHour!: number;
 
+    private _description!: string;
+
     constructor(reqBody: any) {
         this
             .setName(reqBody.name)
-            .setPaymentPerHour(reqBody.paymentPerHour);
+            .setPaymentPerHour(reqBody.paymentPerHour)
+            .setDescription(reqBody.description);
     }
 
     get name(): string {
@@ -35,6 +38,10 @@ export class ClassRoleDTO {
         return this._paymentPerHour;
     }
 
+    get description(): string {
+        return this._description;
+    }
+
     public setName(name: string): this {
         this._name = name;
         return this;
@@ -42,6 +49,11 @@ export class ClassRoleDTO {
 
     public setPaymentPerHour(payment: number): this {
         this._paymentPerHour = payment;
+        return this;
+    }
+
+    public setDescription(description: string): this {
+        this._description = description;
         return this;
     }
 }
