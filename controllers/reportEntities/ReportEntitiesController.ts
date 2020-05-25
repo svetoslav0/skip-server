@@ -19,8 +19,6 @@ export class ReportEntitiesController extends BaseController {
     }
 
     /**
-     * This method handles the creation of a Report Entity and its validations
-     *
      * @param {express.Request} request
      * @returns {Promise<ResponseBuilder>}
      */
@@ -74,7 +72,7 @@ export class ReportEntitiesController extends BaseController {
             entity = new ReportEntityEditDTO(reportEntityId, {});
         }
 
-        if(!await this.hasUserAccess(await this.repository.findUserIdById(reportEntityId))) {
+        if (!await this.hasUserAccess(await this.repository.findUserIdById(reportEntityId))) {
             return this.buildForbiddenResponse(responseBuilder);
         }
 
@@ -86,6 +84,7 @@ export class ReportEntitiesController extends BaseController {
             entity.hoursSpend = request.body.hoursSpend || entity.hoursSpend;
             entity.date = request.body.date ? new Date(request.body.date) : entity.date;
             entity.userId = request.body.userId || entity.userId;
+            entity.description = request.body.description || entity.description;
 
             await validateOrReject(entity);
         } catch (validationError) {

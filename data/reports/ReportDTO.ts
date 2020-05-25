@@ -16,9 +16,12 @@ export class ReportDTO {
     })
     private _name: string;
 
-    constructor(userId: number, name: string) {
+    private _description!: string;
+
+    constructor(userId: number, requestBody: any) {
         this._userId = userId;
-        this._name = name;
+        this._name = requestBody.name;
+        this._description = requestBody.description;
     }
 
     get userId(): number {
@@ -35,5 +38,13 @@ export class ReportDTO {
 
     set name(name: string) {
         this._name = name;
+    }
+
+    get description(): string {
+        return this._description;
+    }
+
+    set description(value: string) {
+        this._description = value;
     }
 }

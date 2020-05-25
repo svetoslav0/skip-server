@@ -21,12 +21,14 @@ export class ClassRolesRepository implements IRepository {
             INSERT INTO
                 class_roles (
                     name,
-                    payment_per_hour
+                    payment_per_hour,
+                    description
                 )
-             VALUES (?, ?)
+             VALUES (?, ?, ?)
         `, [
             classRole.name,
-            classRole.paymentPerHour
+            classRole.paymentPerHour,
+            classRole.description
         ]);
 
         return result.insertId;
@@ -44,7 +46,8 @@ export class ClassRolesRepository implements IRepository {
             SELECT
                 id,
                 name,
-                payment_per_hour AS paymentPerHour
+                payment_per_hour AS paymentPerHour,
+                description
             FROM
                 class_roles
             WHERE
@@ -65,22 +68,28 @@ export class ClassRolesRepository implements IRepository {
      * @returns {Promise<boolean>}
      */
     public async update(classRole: ClassRoleEditDTO): Promise<boolean> {
+
+        console.log(classRole);
         const result = await this.db.query(`
             UPDATE
                 class_roles
             SET
                 name = ?,
-                payment_per_hour = ?
+                payment_per_hour = ?,
+                description = ?
             WHERE
                 id = ?
-        `, [classRole.name, classRole.paymentPerHour, classRole.id]);
+        `, [
+            classRole.name,
+            classRole.paymentPerHour,
+            classRole.description,
+            classRole.id
+        ]);
 
         return result.affectedRows;
     }
 
     /**
-     * This method updates 'is_archived' field of a class role
-     *
      * @param {number} id
      * @returns {Promise<boolean>}
      */

@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "tslint ./*/*.ts",
     "ts-build": "tsc",
-    "test": "mocha -r ts-node/register dist/test/**/*.test.js --timeout 10000 --exit"
+    "test": "ENVIRONMENT=test mocha -r ts-node/register dist/test/**/*.test.js --timeout 10000 --exit"
   },
   "jest": {
     "moduleFileExtensions": [

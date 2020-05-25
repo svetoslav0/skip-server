@@ -8,7 +8,7 @@ import {
 
 @ValidatorConstraint()
 export class IsNumberConstraint implements ValidatorConstraintInterface {
-    validate(value: any, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
+    public validate(value: any, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
         if (!value) {
             return true;
         }
@@ -18,13 +18,13 @@ export class IsNumberConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsNumber(validationOptions: ValidationOptions) {
-    return function (object: Object, propertyName: string) {
+    return (object: object, propertyName: string) => {
         registerDecorator({
             target: object.constructor,
-            propertyName: propertyName,
+            propertyName,
             options: validationOptions,
             constraints: [],
             validator: IsNumberConstraint
-        })
-    }
+        });
+    };
 }

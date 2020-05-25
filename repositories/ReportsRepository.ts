@@ -11,9 +11,6 @@ export class ReportsRepository implements IRepository {
     }
 
     /**
-     * This methods adds a report in the database
-     *  and returns the ID of the created report
-     *
      * @param {ReportDTO} report
      * @returns {Promise<number>}
      */
@@ -22,21 +19,20 @@ export class ReportsRepository implements IRepository {
                 INSERT INTO
                     reports (
                         user_id,
-                        name
+                        name,
+                        description
                     )
-                VALUES (?, ?)
+                VALUES (?, ?, ?)
         `, [
             report.userId,
-            report.name
+            report.name,
+            report.description
         ]);
 
         return result.insertId;
     }
 
     /**
-     * This methods finds report by given report ID
-     *  and returns report object
-     *
      * @param {number} reportId
      * @returns {Promise<ReportEditDTO|null>}
      */
@@ -45,7 +41,8 @@ export class ReportsRepository implements IRepository {
                 SELECT
                     id,
                     user_id AS userId,
-                    name
+                    name,
+                    description
                 FROM
                     reports
                 WHERE
@@ -66,8 +63,6 @@ export class ReportsRepository implements IRepository {
     }
 
     /**
-     * This method gets user ID for given report ID
-     *
      * @param {number} id
      * @returns {Promise<number>}
      */
@@ -89,8 +84,6 @@ export class ReportsRepository implements IRepository {
     }
 
     /**
-     * This method updates report and returns if it was successful
-     *
      * @param {ReportEditDTO} report
      * @returns {Promise<boolean>}
      */
@@ -100,17 +93,21 @@ export class ReportsRepository implements IRepository {
                 reports
             SET
                 name = ?,
-                user_id = ?
+                user_id = ?,
+                description = ?
             WHERE
                 id = ?
-        `, [report.name, report.userId, report.id]);
+        `, [
+            report.name,
+            report.userId,
+            report.description,
+            report.id
+        ]);
 
         return result.affectedRows === 1;
     }
 
     /**
-     * This method changes the status of a report to 'Archived'
-     *
      * @param {number} id
      * @returns {Promise<boolean>}
      */

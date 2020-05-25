@@ -1,6 +1,7 @@
 import httpStatus from "http-status-codes";
 
 import { server, database, expect, Request } from "./base";
+
 import { HttpMethod } from "./httpMethods";
 
 import {
@@ -1044,7 +1045,6 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
                     await expect(result.body.data.success).to.eql(false);
                 });
         });
-
         it("Should not archive the entity. Provided token belongs to employee but the resource is admin's", () => {
             return Request(server)
                 .delete(URL_WITH_PARAM(ADMIN_REPORT_ENTITY_ID))

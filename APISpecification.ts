@@ -680,6 +680,10 @@ export class APISpecification {
                 roleId: {
                     type: "number",
                     example: 1
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the user"
                 }
             },
             required: [
@@ -719,6 +723,10 @@ export class APISpecification {
                 name: {
                     type: "string",
                     example: "September 2019"
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             },
             required: [
@@ -738,6 +746,10 @@ export class APISpecification {
                 userId: {
                     type: "number",
                     example: 12
+                },
+                describe: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             }
         };
@@ -754,6 +766,10 @@ export class APISpecification {
                 ageGroup: {
                     type: "string",
                     example: "4 - 6 Grade"
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             },
             required: [
@@ -773,6 +789,10 @@ export class APISpecification {
                 ageGroup: {
                     type: "string",
                     example: "4 - 6 Grade"
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             }
         };
@@ -790,6 +810,10 @@ export class APISpecification {
                     type: "number",
                     example: 15,
                     minimum: 0
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             },
             required: [
@@ -811,6 +835,10 @@ export class APISpecification {
                     type: "number",
                     example: 12,
                     minimum: 0
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             }
         };
@@ -844,6 +872,10 @@ export class APISpecification {
                     type: "number",
                     description: "The length of the lesson in hours",
                     example: 2
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             },
             required: [
@@ -883,6 +915,10 @@ export class APISpecification {
                     type: "number",
                     description: "The length of the lesson in hours",
                     example: 2
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             }
         };

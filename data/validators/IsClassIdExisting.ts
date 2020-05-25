@@ -10,8 +10,8 @@ import { ClassesRepository } from "../../repositories/ClassesRepository";
 
 @ValidatorConstraint({async: true})
 export class IsClassIdExistingConstraint implements ValidatorConstraintInterface {
-    validate(id: number, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
-        return new Promise(async resolve => {
+    public validate(id: number, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
+        return new Promise(async (resolve) => {
             if (!id) {
                 resolve(true);
             }
@@ -25,13 +25,13 @@ export class IsClassIdExistingConstraint implements ValidatorConstraintInterface
 }
 
 export function IsClassIdExisting(validationOptions: ValidationOptions) {
-    return function (object: Object, propertyName: string) {
+    return (object: object, propertyName: string) => {
         registerDecorator({
             target: object.constructor,
-            propertyName: propertyName,
+            propertyName,
             options: validationOptions,
             constraints: [],
             validator: IsClassIdExistingConstraint
-        })
-    }
+        });
+    };
 }
