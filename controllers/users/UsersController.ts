@@ -1,4 +1,5 @@
 import { validateOrReject } from "class-validator";
+import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import httpStatus from "http-status-codes";
@@ -20,6 +21,10 @@ export class UsersController extends BaseController {
         this.repository = repository;
     }
 
+    /**
+     * @param request
+     * @return {Promise<UsersResponseBuilder>}
+     */
     public async register(request: any): Promise<UsersResponseBuilder> {
         const responseBuilder: UsersResponseBuilder = new UsersResponseBuilder();
 
@@ -51,15 +56,19 @@ export class UsersController extends BaseController {
         }
     }
 
-    public async login(request: any): Promise<UsersResponseBuilder> {
+    /**
+     * @param requestBody
+     * @return {Promise<UsersResponseBuilder>}
+     */
+    public async login(requestBody: any): Promise<UsersResponseBuilder> {
         const responseBuilder: UsersResponseBuilder = new UsersResponseBuilder();
 
         const user = await this.repository
             .findByUsername(
-                (new UserDTO(request)).username
+                (new UserDTO(requestBody)).username
             );
 
-        const isPasswordValid: boolean = await bcrypt.compare(request.password || "", user ? user.password : "");
+        const isPasswordValid: boolean = await bcrypt.compare(requestBody.password || "", user ? user.password : "");
 
         if (!isPasswordValid || !user) {
             return responseBuilder
@@ -82,7 +91,10 @@ export class UsersController extends BaseController {
             .setAuthToken(token);
     }
 
-    public async remove(request: any): Promise<any> {
+    /**
+     * @param {express.Request} request
+     */
+    public async remove(request: express.Request): Promise<any> {
         const result = await this.repository
             .removeById(request.userId);
     }

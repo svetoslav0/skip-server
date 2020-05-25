@@ -645,6 +645,10 @@ export class APISpecification {
                 roleId: {
                     type: "number",
                     example: 1
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the user"
                 }
             },
             required: [
