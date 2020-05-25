@@ -1,17 +1,29 @@
-const config = require("./base");
-const request = config.Request;
-const server = config.server;
-const CONTENT_TYPE_HEADING = config.CONTENT_TYPE_HEADING;
-const DEFAULT_CONTENT_TYPE = config.DEFAULT_CONTENT_TYPE;
-const expect = config.expect;
-const TOKEN_HEADING = config.TOKEN_HEADING;
 
 import httpStatus from "http-status-codes";
+import { HttpMethod } from "./httpMethods";
+import { server, expect, Request } from "./base";
 
-const noTokenTestPost = (url: string ) => {
-    it("Should not add a row in the database. No 'auth-token' header was provided", () => {
-        return request(server)
-            .post(url)
+const CONTENT_TYPE_HEADING = process.env.CONTENT_TYPE_HEADING || "";
+const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
+
+const TOKEN_HEADING = process.env.TOKEN_HEADING || "";
+
+const httpMethodFactory = (method: HttpMethod, url: string) => {
+    switch (method) {
+        case HttpMethod.Get:
+            return Request(server).get(url);
+        case HttpMethod.Post:
+            return Request(server).post(url);
+        case HttpMethod.Put:
+            return Request(server).put(url);
+        case HttpMethod.Delete:
+            return Request(server).delete(url);
+    }
+};
+
+const noTokenTest = (httpMethod: HttpMethod, url: string) => {
+    it("Should fail. No 'auth-token' header is provided", () => {
+        httpMethodFactory(httpMethod, url)
             .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
             .send()
             .then(async (result: any) => {
@@ -20,77 +32,20 @@ const noTokenTestPost = (url: string ) => {
     });
 };
 
-const wrongTokenTestPost = (url: string) => {
-    it("Should not add a new row. Header 'auth-token' is provided but is invalid", () => {
-        const wrongTokenToSet: string = "WrOnGtOkEn";
+const wrongTokenTest = (httpMethod: HttpMethod, url: string) => {
+    it("Should fail. Header 'auth-token' is provided but is invalid", () => {
+        const wrongTokenToSend: string = "WrOnGtOkEn";
 
-        return request(server)
-            .post(url)
+        httpMethodFactory(httpMethod, url)
             .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-            .set(TOKEN_HEADING, wrongTokenToSet)
+            .set(TOKEN_HEADING, wrongTokenToSend)
             .then(async (result: any) => {
                 await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
             });
     });
 };
 
-const noTokenTestPut = (url: string) => {
-    it("Should not update row(s) in the database. No 'auth-token' header was provided", () => {
-        return request(server)
-            .put(url)
-            .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-            .send()
-            .then(async (result: any) => {
-                 await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
-            });
-    });
-};
-
-const wrongTokenTestPut = (url: string) => {
-    it("Should not update row(s) in the database. Header 'auth-token' is provided, but is invalid", () => {
-        const wrongTokenToSet: string = "ThisIsWrongToken";
-
-        return request(server)
-            .put(url)
-            .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-            .set(TOKEN_HEADING, wrongTokenToSet)
-            .then(async (result: any) => {
-                await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
-            });
-    });
-};
-
-const noTokenTestDelete = (url: string) => {
-    it("Should not archive row in the database. No 'auth-token' header is provided", () => {
-        return request(server)
-            .delete(url)
-            .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-            .send()
-            .then(async (result: any) => {
-                await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
-            });
-    });
-};
-
-const wrongTokenTestDelete = (url: string) => {
-    it("Should not archive row in the database. Header 'auth-token' is provided, but is invalid", () => {
-        const wrongTokenToSet: string = "WrongToken";
-
-        return request(server)
-            .delete(url)
-            .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-            .set(TOKEN_HEADING, wrongTokenToSet)
-            .then(async (result: any) => {
-                await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
-            });
-    });
-};
-
-module.exports = {
-    noTokenTestPost,
-    wrongTokenTestPost,
-    noTokenTestPut,
-    wrongTokenTestPut,
-    noTokenTestDelete,
-    wrongTokenTestDelete
+export {
+    noTokenTest,
+    wrongTokenTest
 };

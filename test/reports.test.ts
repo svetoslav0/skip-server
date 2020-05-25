@@ -1,67 +1,61 @@
-const {
-    server,
-    database,
-    expect,
-    Request,
-    CONTENT_TYPE_HEADING,
-    DEFAULT_CONTENT_TYPE,
-    TOKEN_HEADING,
-    adminToken,
-    employeeToken,
-    employeeReportId
-} = require("./base");
-
 import httpStatus from "http-status-codes";
 
-const {
-    noTokenTestPost,
-    wrongTokenTestPost,
-    noTokenTestPut,
-    wrongTokenTestPut
-} = require("./commonTests");
+import { server, database, expect, Request } from "./base";
+import { HttpMethod } from "./httpMethods";
+
+import {
+    noTokenTest,
+    wrongTokenTest
+} from "./commonTests";
 
 import { ReportsRepository } from "../repositories/ReportsRepository";
 
 const reportsRepository: ReportsRepository = new ReportsRepository(database);
 
+const CONTENT_TYPE_HEADING = process.env.CONTENT_TYPE_HEADING || "";
+const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
+const TOKEN_HEADING = process.env.TOKEN_HEADING || "";
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
+const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || "";
+const EMPLOYEE_REPORT_ID = +process.env.EMPLOYEE_REPORT_ID! || 0;
+
 const REPORTS_CONTROLLERS_URL: string = "/reports";
 const CREATE_URL: string = `${REPORTS_CONTROLLERS_URL}`;
-const EDIT_URL = (id: number | string) => {
+const URL_WITH_PARAM = (id: number | string) => {
     return `${REPORTS_CONTROLLERS_URL}/${id}`;
 };
-const ARCHIVE_URL = EDIT_URL;
 
 describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     describe(`POST ${CREATE_URL} tests`, () => {
 
-        noTokenTestPost(CREATE_URL);
-        wrongTokenTestPost(CREATE_URL);
+        noTokenTest(HttpMethod.Post, CREATE_URL);
+        wrongTokenTest(HttpMethod.Post, CREATE_URL);
 
         it("Should add a new report. After the test passes, the new report should be deleted", () => {
-             const nameToSend: string = "September 2019";
-             const userIdToSend: number = 4;
+            const nameToSend: string = "September 2019";
+            const userIdToSend: number = 4;
 
-             const objectToSend = {
-                 name: nameToSend,
-                 userId: userIdToSend
-             };
+            const objectToSend = {
+                name: nameToSend,
+                userId: userIdToSend
+            };
 
-             const expectedIsReportDeleted: boolean = true;
+            const expectedIsReportDeleted: boolean = true;
 
-             return Request(server)
-                 .post(CREATE_URL)
-                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                 .set(TOKEN_HEADING, employeeToken)
-                 .send(objectToSend)
-                 .then(async (result: any) => {
-                     await expect(result.status).to.eql(httpStatus.CREATED);
+            return Request(server)
+                .post(CREATE_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.CREATED);
 
-                     return result.body.data.resourceId;
-                 })
-                 .then(async (reportId: number) => {
-                     const result = await reportsRepository.deleteById(reportId);
-                     await expect(result).to.eql(expectedIsReportDeleted);
-                 });
+                    return result.body.data.resourceId;
+                })
+                .then(async (reportId: number) => {
+                    const result = await reportsRepository.deleteById(reportId);
+                    await expect(result).to.eql(expectedIsReportDeleted);
+                });
         });
 
         it("Should add one more report.", () => {
@@ -74,7 +68,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
@@ -111,7 +105,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -138,7 +132,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body.data).to.have.property(expectedErrorsProperty);
@@ -154,8 +148,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
     });
 
     describe(`PUT ${REPORTS_CONTROLLERS_URL}/{id} tests`, () => {
-        noTokenTestPut(EDIT_URL(14));
-        wrongTokenTestPut(EDIT_URL(14));
+
+        noTokenTest(HttpMethod.Put, URL_WITH_PARAM(14));
+        wrongTokenTest(HttpMethod.Put, URL_WITH_PARAM(14));
 
         it("Should update the report. Provided token and report ID are employee's",  () => {
             const nameToSend: string = "October 2020";
@@ -169,14 +164,14 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = true;
 
             return Request(server)
-                .put(EDIT_URL(employeeReportId))
+                .put(URL_WITH_PARAM(EMPLOYEE_REPORT_ID))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.resourceId).to.eql(employeeReportId);
+                    await expect(result.body.data.resourceId).to.eql(EMPLOYEE_REPORT_ID);
                 });
         });
 
@@ -193,14 +188,14 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = true;
 
             return Request(server)
-                .put(EDIT_URL(employeeReportId))
+                .put(URL_WITH_PARAM(EMPLOYEE_REPORT_ID))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.resourceId).to.eql(employeeReportId);
+                    await expect(result.body.data.resourceId).to.eql(EMPLOYEE_REPORT_ID);
                 });
         });
 
@@ -218,9 +213,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = false;
 
             return Request(server)
-                .put(EDIT_URL(reportId))
+                .put(URL_WITH_PARAM(reportId))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.FORBIDDEN);
@@ -243,9 +238,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedErrorsProperty: string = "errors";
 
             return Request(server)
-                .put(EDIT_URL(reportIdToUpdate))
+                .put(URL_WITH_PARAM(reportIdToUpdate))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -258,9 +253,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const reportIdToSend: string = "15a";
 
             return Request(server)
-                .put(EDIT_URL(reportIdToSend))
+                .put(URL_WITH_PARAM(reportIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body).to.have.property("data");
@@ -280,8 +275,8 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
 
     describe(`DELETE ${REPORTS_CONTROLLERS_URL}/id tests`, () => {
 
-        noTokenTestPost(REPORTS_CONTROLLERS_URL);
-        wrongTokenTestPost(REPORTS_CONTROLLERS_URL);
+        noTokenTest(HttpMethod.Delete, URL_WITH_PARAM(14));
+        wrongTokenTest(HttpMethod.Delete, URL_WITH_PARAM(14));
 
         it(`Should archive the report. Provided token and report ID are employee's`, () => {
             const dataProperty: string = "data";
@@ -289,9 +284,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = true;
 
             return Request(server)
-                .delete(ARCHIVE_URL(employeeReportId))
+                .delete(URL_WITH_PARAM(EMPLOYEE_REPORT_ID))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
@@ -308,9 +303,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = true;
 
             return Request(server)
-                .delete(ARCHIVE_URL(employeeReportId))
+                .delete(URL_WITH_PARAM(EMPLOYEE_REPORT_ID))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
@@ -327,9 +322,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const reportId: number = 15;
 
             return Request(server)
-                .delete(ARCHIVE_URL(reportId))
+                .delete(URL_WITH_PARAM(reportId))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.FORBIDDEN);
@@ -348,9 +343,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = false;
 
             return Request(server)
-                .delete(ARCHIVE_URL(reportIdToSend))
+                .delete(URL_WITH_PARAM(reportIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -366,9 +361,9 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
             const expectedSuccess: boolean = false;
 
             return Request(server)
-                .put(EDIT_URL(reportIdToSend))
+                .put(URL_WITH_PARAM(reportIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body).to.have.property("data");

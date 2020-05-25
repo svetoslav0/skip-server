@@ -1,39 +1,26 @@
-const {
-    server,
-    database,
-    expect,
-    Request,
-    CONTENT_TYPE_HEADING,
-    DEFAULT_CONTENT_TYPE,
-    TOKEN_HEADING,
-    adminToken,
-    employeeToken
-} = require("./base");
-
 import httpStatus from "http-status-codes";
 
-const {
-    noTokenTestPost,
-    wrongTokenTestPost,
-    noTokenTestPut,
-    wrongTokenTestPut,
-    noTokenTestDelete,
-    wrongTokenTestDelete
-} = require("./commonTests");
+import { server, database, expect, Request } from "./base";
+import { HttpMethod } from "./httpMethods";
+
+import {
+    noTokenTest,
+    wrongTokenTest
+} from "./commonTests";
 
 import { ClassRolesRepository } from "../repositories/ClassRolesRepository";
 
 const classRolesRepository: ClassRolesRepository = new ClassRolesRepository(database);
 
+const CONTENT_TYPE_HEADING = process.env.CONTENT_TYPE_HEADING || "";
+const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
+const TOKEN_HEADING = process.env.TOKEN_HEADING || "";
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
+const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || "";
+
 const CLASS_ROLES_CONTROLLER_URL: string = "/classRoles";
 const CREATE_URL: string = `${CLASS_ROLES_CONTROLLER_URL}`;
-const EDIT_URL = (id: number | string) => {
-    return `${CLASS_ROLES_CONTROLLER_URL}/${id}`;
-};
-const DELETE_URL = (id: number | string) => {
-    return `${CLASS_ROLES_CONTROLLER_URL}/${id}`;
-};
-const ARCHIVE_URL = (id: number) => {
+const URL_WITH_PARAM = (id: number | string) => {
     return `${CLASS_ROLES_CONTROLLER_URL}/${id}`;
 };
 
@@ -54,7 +41,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
@@ -94,7 +81,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
@@ -135,7 +122,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
@@ -176,7 +163,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
@@ -203,8 +190,8 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 });
         });
 
-        noTokenTestPost(CREATE_URL);
-        wrongTokenTestPost(CREATE_URL);
+        noTokenTest(HttpMethod.Post, CREATE_URL);
+        wrongTokenTest(HttpMethod.Post, CREATE_URL);
 
         it("Should not add a row. Provided token belongs to employee", () => {
             const nameToSend: string = "Lecturer";
@@ -218,7 +205,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.FORBIDDEN);
@@ -245,7 +232,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -276,7 +263,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -307,7 +294,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -338,7 +325,7 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             return Request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -359,8 +346,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
     });
 
     describe(`PUT ${CLASS_ROLES_CONTROLLER_URL}/{id} tests`, () => {
-        noTokenTestPut(EDIT_URL(24));
-        wrongTokenTestPut(EDIT_URL(24));
+
+        noTokenTest(HttpMethod.Put, URL_WITH_PARAM(24));
+        wrongTokenTest(HttpMethod.Put, URL_WITH_PARAM(24));
 
         it("Should update the class role", () => {
             const nameToSend: string = "Lecturer";
@@ -373,9 +361,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             };
 
             return Request(server)
-                .put(EDIT_URL(classRoleIdToSend))
+                .put(URL_WITH_PARAM(classRoleIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
@@ -398,9 +386,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             };
 
             return Request(server)
-                .put(EDIT_URL(classRoleIdToSend))
+                .put(URL_WITH_PARAM(classRoleIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.FORBIDDEN);
@@ -422,9 +410,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             };
 
             return Request(server)
-                .put(EDIT_URL(classRoleIdToSend))
+                .put(URL_WITH_PARAM(classRoleIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -448,9 +436,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             };
 
             return Request(server)
-                .put(EDIT_URL(classRoleIdToSend))
+                .put(URL_WITH_PARAM(classRoleIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -476,9 +464,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             };
 
             return Request(server)
-                .put(EDIT_URL(classRoleIdToSend))
+                .put(URL_WITH_PARAM(classRoleIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -504,9 +492,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             };
 
             return Request(server)
-                .put(EDIT_URL(classRoleIdToSend))
+                .put(URL_WITH_PARAM(classRoleIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -526,16 +514,16 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
 
     describe(`DELETE ${CLASS_ROLES_CONTROLLER_URL}/{id} tests`, () => {
 
-        noTokenTestDelete(EDIT_URL(24));
-        wrongTokenTestDelete(EDIT_URL(24));
+        noTokenTest(HttpMethod.Delete, URL_WITH_PARAM(24));
+        wrongTokenTest(HttpMethod.Delete, URL_WITH_PARAM(24));
 
         it("Should archive the class role", () => {
             const idToSend: number = 3;
 
             return Request(server)
-                .delete(DELETE_URL(idToSend))
+                .delete(URL_WITH_PARAM(idToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
@@ -554,9 +542,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             const idToSend: string = "3A";
 
             return Request(server)
-                .delete(DELETE_URL(idToSend))
+                .delete(URL_WITH_PARAM(idToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -577,9 +565,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             const idToSend: number = 91231341923;
 
             return Request(server)
-                .delete(DELETE_URL(idToSend))
+                .delete(URL_WITH_PARAM(idToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -601,9 +589,9 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
             const idToSend: number = 3;
 
             return Request(server)
-                .delete(DELETE_URL(idToSend))
+                .delete(URL_WITH_PARAM(idToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send()
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.FORBIDDEN);

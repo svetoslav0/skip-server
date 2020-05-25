@@ -1,24 +1,12 @@
-const {
-    server,
-    database,
-    expect,
-    CONTENT_TYPE_HEADING,
-    DEFAULT_CONTENT_TYPE,
-    TOKEN_HEADING,
-    adminToken,
-    employeeToken
-} = require("./base");
-
 import httpStatus from "http-status-codes";
 
-const {
-    noTokenTestPost,
-    wrongTokenTestPost,
-    noTokenTestPut,
-    wrongTokenTestPut,
-    noTokenTestDelete,
-    wrongTokenTestDelete
-} = require("./commonTests");
+import { server, database, expect, Request } from "./base";
+import { HttpMethod } from "./httpMethods";
+
+import {
+    noTokenTest,
+    wrongTokenTest
+} from "./commonTests";
 
 import { ReportEntitiesRepository } from "../repositories/ReportEntitiesRepository";
 
@@ -30,15 +18,17 @@ const request = chai.request;
 
 const reportEntitiesRepository: ReportEntitiesRepository = new ReportEntitiesRepository(database);
 
+const CONTENT_TYPE_HEADING = process.env.CONTENT_TYPE_HEADING || "";
+const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
+const TOKEN_HEADING = process.env.TOKEN_HEADING || "";
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
+const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || "";
+const ADMIN_REPORT_ENTITY_ID = +process.env.ADMIN_REPORT_ENTITY_ID! || 0;
+const EMPLOYEE_REPORT_ENTITY_ID = + process.env.EMPLOYEE_REPORT_ENTITY_ID! || 0;
+
 const REPORT_ENTITIES_CONTROLLER_URL: string = "/reportEntities";
 const CREATE_URL: string = `${REPORT_ENTITIES_CONTROLLER_URL}`;
-const EDIT_URL = (id: number | string) => {
-    return `${REPORT_ENTITIES_CONTROLLER_URL}/${id}`;
-};
-const DELETE_URL = (id: number | string) => {
-    return `${REPORT_ENTITIES_CONTROLLER_URL}/${id}`;
-};
-const ARCHIVE_URL = (id: number) => {
+const URL_WITH_PARAM = (id: number | string) => {
     return `${REPORT_ENTITIES_CONTROLLER_URL}/${id}`;
 };
 
@@ -51,9 +41,6 @@ const existingReportEntityOne: number = 38;
 const existingReportEntityTwo: number = 57;
 const existingReportEntityThree: number = 62;
 
-// User ID of entity 62, its role is employee
-const ownerOfReportEntityThree: number = 137;
-
 const nonExistingClassRoleId: number = 99999999;
 const nonExistingClassId: number = 99999998;
 const nonExistingReportId: number = 99999997;
@@ -63,8 +50,8 @@ const nonExistingReportEntityTwo: number = 2;
 describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
     describe(`POST ${CREATE_URL}`, () => {
 
-        noTokenTestPost(CREATE_URL);
-        wrongTokenTestPost(CREATE_URL);
+        noTokenTest(HttpMethod.Post, CREATE_URL);
+        wrongTokenTest(HttpMethod.Post, CREATE_URL);
 
         it("Should add report entity. Test No. 1", () => {
             const hoursSpendToSend: number = 2;
@@ -80,7 +67,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
@@ -119,7 +106,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.CREATED);
@@ -157,7 +144,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -192,7 +179,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -227,7 +214,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -260,7 +247,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -295,7 +282,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -331,7 +318,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -362,7 +349,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -397,7 +384,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -432,7 +419,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -464,7 +451,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -498,7 +485,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -532,7 +519,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -567,7 +554,7 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             return request(server)
                 .post(CREATE_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -588,8 +575,8 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
 
     describe(`PUT ${REPORT_ENTITIES_CONTROLLER_URL}/{id} tests`, () => {
 
-        noTokenTestPut(EDIT_URL(existingReportEntityOne));
-        wrongTokenTestPut(EDIT_URL(existingReportEntityTwo));
+        noTokenTest(HttpMethod.Put, URL_WITH_PARAM(existingReportEntityOne));
+        wrongTokenTest(HttpMethod.Put, URL_WITH_PARAM(existingReportEntityTwo));
 
         it("Should update report entity. Test No. 1", () => {
             const hoursToSend: number = 3;
@@ -601,9 +588,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityTwo))
+                .put(URL_WITH_PARAM(existingReportEntityTwo))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
@@ -633,9 +620,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, employeeToken)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.OK);
@@ -663,9 +650,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(idToSend))
+                .put(URL_WITH_PARAM(idToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -694,9 +681,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(idToSend))
+                .put(URL_WITH_PARAM(idToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -724,9 +711,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -754,9 +741,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -784,9 +771,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -811,9 +798,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -840,9 +827,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -870,9 +857,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -900,9 +887,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -927,9 +914,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -956,9 +943,9 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
             };
 
             return request(server)
-                .put(EDIT_URL(existingReportEntityThree))
+                .put(URL_WITH_PARAM(existingReportEntityThree))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                .set(TOKEN_HEADING, adminToken)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
                 .then(async (result: any) => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
@@ -979,25 +966,101 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
 
     describe(`DELETE ${REPORT_ENTITIES_CONTROLLER_URL}/{id} tests`, () => {
 
-        noTokenTestDelete(DELETE_URL(existingReportEntityOne));
-        wrongTokenTestDelete(DELETE_URL(existingReportEntityOne));
+        noTokenTest(HttpMethod.Delete, URL_WITH_PARAM(existingReportEntityOne));
+        wrongTokenTest(HttpMethod.Delete, URL_WITH_PARAM(existingReportEntityOne));
 
-        it("Should archive the entity. Test No. 1", () => {
+        it("Should archive the entity. Success test No. 1", () => {
+            return Request(server)
+                .delete(URL_WITH_PARAM(EMPLOYEE_REPORT_ENTITY_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
 
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(true);
+                });
         });
 
         it("Should archive the entity. Test No. 2", () => {
+            return Request(server)
+                .delete(URL_WITH_PARAM(EMPLOYEE_REPORT_ENTITY_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
 
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(true);
+                });
         });
 
         it("Should not archive the entity. The provided ID is not numeric", () => {
+            const idToSend: string = "Invalid ID";
 
+            return Request(server)
+                .delete(URL_WITH_PARAM(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(false);
+                });
         });
 
         it("Should not archive the entity. The provided ID does not exist", () => {
+            const idToSend: number = 9999999999;
 
+            return Request(server)
+                .delete(URL_WITH_PARAM(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(false);
+                });
         });
 
-        
+        it("Should not archive the entity. Provided token belongs to employee but the resource is admin's", () => {
+            return Request(server)
+                .delete(URL_WITH_PARAM(ADMIN_REPORT_ENTITY_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
     });
 });
