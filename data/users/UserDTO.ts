@@ -61,6 +61,8 @@ export class UserDTO {
 
     private readonly _roleId: number;
 
+    private readonly _description: string | undefined;
+
     constructor(reqBody: any) {
         this._username = reqBody.username;
         this._email = reqBody.email;
@@ -69,6 +71,7 @@ export class UserDTO {
         this._middleName = reqBody.middleName;
         this._lastName = reqBody.lastName;
         this._roleId = +reqBody.roleId || DEFAULT_ROLE;
+        this._description = reqBody.description;
     }
 
     get id(): number {
@@ -105,5 +108,9 @@ export class UserDTO {
 
     get roleId(): number {
         return this._roleId;
+    }
+
+    get description(): string | undefined {
+        return this._description;
     }
 }

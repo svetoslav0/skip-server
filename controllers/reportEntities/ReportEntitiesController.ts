@@ -27,8 +27,6 @@ export class ReportEntitiesController extends BaseController {
 
         const reportEntity = new ReportEntityDTO(request.userId, request.body);
 
-        console.log(reportEntity);
-
         try {
             await validateOrReject(reportEntity);
 

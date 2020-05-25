@@ -100,6 +100,9 @@ export class ClassRolesController extends BaseController {
         throw new Error(MESSAGES.ERRORS.COMMON.FAILED_UPDATE_NO_ROWS_AFFECTED_MESSAGE);
     }
 
+    /**
+     * @param {express.Request} request
+     */
     public async archive(request: express.Request): Promise<ResponseBuilder> {
         const responseBuilder: ResponseBuilder = new ResponseBuilder();
 

@@ -11,7 +11,6 @@ export class UsersRepository implements IRepository {
     }
 
     /**
-     * Inserts an user in the database and returns the ID of the created user
      * @param user
      */
     public async add(user: UserDTO): Promise<number> {
@@ -24,9 +23,10 @@ export class UsersRepository implements IRepository {
                         first_name,
                         middle_name,
                         last_name,
-                        role_id
+                        role_id,
+                        description
                     )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             user.username,
             user.email,
@@ -34,14 +34,14 @@ export class UsersRepository implements IRepository {
             user.firstName,
             user.middleName,
             user.lastName,
-            user.roleId
+            user.roleId,
+            user.description
         ]);
 
         return result.insertId;
     }
 
     /**
-     * Returns "true" or "false" depending on whether username is unique or not
      * @param username
      */
     public async isUsernameUnique(username: string): Promise<boolean> {
@@ -58,7 +58,6 @@ export class UsersRepository implements IRepository {
     }
 
     /**
-     * Returns "true" or "false" depending on whether username is unique or not
      * @param {string} email
      * @return Promise<boolean>
      */
@@ -76,7 +75,6 @@ export class UsersRepository implements IRepository {
     }
 
     /**
-     * Finds user by given ID and returns UserDTO
      * @param {number} id
      * @return Promise<UserDTO>
      */
@@ -95,6 +93,9 @@ export class UsersRepository implements IRepository {
         return result[0];
     }
 
+    /**
+     * @param {string} username
+     */
     public async findByUsername(username: string): Promise<UserDTO> {
         const result: any = await this.db.query(`
                 SELECT
@@ -111,10 +112,13 @@ export class UsersRepository implements IRepository {
         return result[0];
     }
 
+    /**
+     * @param {number} userId
+     */
     public async findRoleIdByUserId(userId: number): Promise<number> {
         const result: any = await this.db.query(`
             SELECT
-                roleId
+                role_id AS roleId
             FROM
                 users
             WHERE
