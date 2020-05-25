@@ -4,5 +4,5 @@ export interface IUsersResponseBuilder {
         success: boolean;
         message: string;
         errors: string[];
-    }
+    };
 }

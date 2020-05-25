@@ -488,7 +488,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildClassRolesDeletePath() {
@@ -520,7 +520,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildReportEntitiesCreatePath() {
@@ -564,7 +564,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildReportEntitiesEditPath() {
@@ -606,7 +606,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildRegisterUserSchema() {
@@ -645,6 +645,10 @@ export class APISpecification {
                 roleId: {
                     type: "number",
                     example: 1
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the user"
                 }
             },
             required: [
@@ -684,6 +688,10 @@ export class APISpecification {
                 name: {
                     type: "string",
                     example: "September 2019"
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             },
             required: [
@@ -703,6 +711,10 @@ export class APISpecification {
                 userId: {
                     type: "number",
                     example: 12
+                },
+                describe: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             }
         };
@@ -719,6 +731,10 @@ export class APISpecification {
                 ageGroup: {
                     type: "string",
                     example: "4 - 6 Grade"
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             },
             required: [
@@ -738,6 +754,10 @@ export class APISpecification {
                 ageGroup: {
                     type: "string",
                     example: "4 - 6 Grade"
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             }
         };
@@ -755,13 +775,17 @@ export class APISpecification {
                     type: "number",
                     example: 15,
                     minimum: 0
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             },
             required: [
                 "name",
                 "paymentPerHour"
             ]
-        }
+        };
     }
 
     private buildEditClassRoleRequestSchema() {
@@ -776,9 +800,13 @@ export class APISpecification {
                     type: "number",
                     example: 12,
                     minimum: 0
+                },
+                description: {
+                    type: "string",
+                    example: "Some description"
                 }
             }
-        }
+        };
     }
 
     private buildCreateReportEntityRequestSchema() {
@@ -809,6 +837,10 @@ export class APISpecification {
                     type: "number",
                     description: "The length of the lesson in hours",
                     example: 2
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             },
             required: [
@@ -817,7 +849,7 @@ export class APISpecification {
                 "date",
                 "hoursSpend"
             ]
-        }
+        };
     }
 
     private buildEditReportEntityRequestSchema() {
@@ -848,9 +880,13 @@ export class APISpecification {
                     type: "number",
                     description: "The length of the lesson in hours",
                     example: 2
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the object"
                 }
             }
-        }
+        };
     }
 
     private buildCreatedUserResponseSchema() {
@@ -976,7 +1012,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateClassRoleResponseSchema() {
@@ -1002,7 +1038,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildEditClassRoleResponseSchema() {
@@ -1027,7 +1063,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildDeleteClassRolesResponseSchema() {
@@ -1048,7 +1084,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateReportEntityResponseSchema() {
@@ -1074,9 +1110,9 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
-    
+
     private buildEditReportEntityResponseSchema() {
         return {
             type: "object",
@@ -1099,7 +1135,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateClassResponseSchema() {
@@ -1227,7 +1263,7 @@ export class APISpecification {
     }
 
     private buildCommonResponses(withAuth: boolean = true) {
-        let response: any = {
+        const response: any = {
             400: {
                 description: "The given request cannot be proceeded from the server due to something that is perceived to be a client error.",
                 content: {

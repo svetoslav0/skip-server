@@ -6,7 +6,7 @@ import {
 
 @ValidatorConstraint()
 export class IsPositive implements ValidatorConstraintInterface {
-    validate(value: string, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
+    public validate(value: string, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
         if (!value) {
             return true;
         }

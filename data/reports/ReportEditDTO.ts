@@ -1,6 +1,5 @@
 import { IsDefined } from "class-validator";
 import { IsUserIdExisting } from "../validators/IsUserIdExisting";
-import { ReportDTO } from "./ReportDTO";
 import { IsReportIdExisting } from "../validators/IsReportIdExisting";
 import { MESSAGES } from "../../common/consts/MESSAGES";
 
@@ -21,10 +20,13 @@ export class ReportEditDTO {
 
     private _name: string;
 
+    private _description!: string;
+
     constructor(id: number, reqBody: any) {
         this._id = id;
         this._userId = reqBody.userId;
         this._name = reqBody.name;
+        this._description = reqBody.description;
     }
 
     get id(): number {
@@ -49,5 +51,13 @@ export class ReportEditDTO {
 
     set userId(userId: number) {
         this._userId = userId;
+    }
+
+    get description(): string {
+        return this._description;
+    }
+
+    set description(value: string) {
+        this._description = value;
     }
 }

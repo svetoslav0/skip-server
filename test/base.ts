@@ -1,5 +1,3 @@
-process.env.ENVIRONMENT = "test";
-
 import { server, database } from "../server";
 
 import { config } from "dotenv";

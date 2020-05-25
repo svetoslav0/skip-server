@@ -19,8 +19,6 @@ export class ClassesController extends BaseController {
     }
 
     /**
-     * This method handles the creation of a class and its validations
-     *
      * @param {express.Request} request
      * @returns {Promise<ResponseBuilder>}
      */
@@ -47,8 +45,6 @@ export class ClassesController extends BaseController {
     }
 
     /**
-     * This method handles the updating of a class and its validations
-     *
      * @param {express.Request} request
      * @returns {Promise<ResponseBuilder>}
      */
@@ -76,7 +72,8 @@ export class ClassesController extends BaseController {
             currentClass
                 .setId(classId)
                 .setName(request.body.name || currentClass.name)
-                .setAgeGroup(request.body.ageGroup || currentClass.ageGroup);
+                .setAgeGroup(request.body.ageGroup || currentClass.ageGroup)
+                .setDescription(request.body.description || currentClass.description);
 
             await validateOrReject(currentClass);
         } catch (validationError) {
@@ -92,16 +89,13 @@ export class ClassesController extends BaseController {
                 .setHttpStatus(httpStatus.OK)
                 .setResourceId(classId)
                 .setSuccess(true)
-                .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_UPDATED_MESSAGE)
+                .setMessage(MESSAGES.SUCCESSES.CLASSES.SUCCESSFUL_UPDATED_MESSAGE);
         }
 
         return this.buildInternalErrorResponse(responseBuilder);
     }
 
     /**
-     * This method handles the archiving of a class and its validations
-     *  The class is not actually deleted, its status is changed in the database.
-     *
      * @param {express.Request} request
      * @returns {Promise<ResponseBuilder>}
      */

@@ -8,7 +8,7 @@ export class UsersResponseBuilder {
     protected _success!: boolean;
     protected _message!: string;
     protected _errors!: string[];
-    
+
     public buildResponse(): IUsersResponseBuilder {
         return {
             data: {
@@ -17,7 +17,7 @@ export class UsersResponseBuilder {
                 message: this._message,
                 errors: this._errors
             }
-        }
+        };
     }
 
     get authToken(): string {
@@ -28,12 +28,12 @@ export class UsersResponseBuilder {
         return this._httpStatus;
     }
 
-    public setUserId(value: number): this{
+    public setUserId(value: number): this {
         this._userId = value;
         return this;
     }
 
-    public setAuthToken(value: string): this{
+    public setAuthToken(value: string): this {
         this._authToken = value;
         return this;
     }

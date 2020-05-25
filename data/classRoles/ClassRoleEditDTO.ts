@@ -24,11 +24,14 @@ export class ClassRoleEditDTO {
     })
     private _paymentPerHour!: number;
 
+    private _description!: string;
+
     constructor(id: number, reqBody: any) {
         this
             .setId(id)
             .setName(reqBody.name)
-            .setPaymentPerHour(reqBody.paymentPerHour);
+            .setPaymentPerHour(reqBody.paymentPerHour)
+            .setDescription(reqBody.description);
     }
 
     get id(): number {
@@ -43,6 +46,10 @@ export class ClassRoleEditDTO {
         return this._paymentPerHour;
     }
 
+    get description(): string {
+        return this._description;
+    }
+
     public setId(id: number): this {
         this._id = id;
         return this;
@@ -55,6 +62,11 @@ export class ClassRoleEditDTO {
 
     public setPaymentPerHour(payment: number): this {
         this._paymentPerHour = payment;
+        return this;
+    }
+
+    public setDescription(description: string): this {
+        this._description = description;
         return this;
     }
 }

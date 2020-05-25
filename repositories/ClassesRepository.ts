@@ -11,9 +11,6 @@ export class ClassesRepository implements IRepository {
     }
 
     /**
-     * This methods adds a class in the database
-     *  and returns the ID of the created class
-     *
      * @param {ClassDTO} currentClass
      * @returns {Promise<number>}
      */
@@ -22,21 +19,20 @@ export class ClassesRepository implements IRepository {
             INSERT INTO
                 classes (
                     name,
-                    age_group
+                    age_group,
+                    description
                 )
-            VALUES (?, ?)
+            VALUES (?, ?, ?)
         `, [
             currentClass.name,
-            currentClass.ageGroup
+            currentClass.ageGroup,
+            currentClass.description
         ]);
 
         return result.insertId;
     }
 
     /**
-     * This methods finds class by given report ID
-     *  and returns class object
-     *
      * @param {number} id
      * @returns {Promise<ReportEditDTO|null>}
      */
@@ -45,7 +41,8 @@ export class ClassesRepository implements IRepository {
             SELECT
                 id,
                 name,
-                age_group AS ageGroup
+                age_group AS ageGroup,
+                description
             FROM
                 classes
             WHERE
@@ -60,8 +57,6 @@ export class ClassesRepository implements IRepository {
     }
 
     /**
-     * This method updates class and returns if it was successful
-     *
      * @param {ReportEditDTO} currentClass
      * @returns {Promise<boolean>}
      */
@@ -71,17 +66,21 @@ export class ClassesRepository implements IRepository {
                 classes
             SET
                 name = ?,
-                age_group = ?
+                age_group = ?,
+                description = ?
             WHERE
                 id = ?
-        `, [currentClass.name, currentClass.ageGroup, currentClass.id]);
+        `, [
+            currentClass.name,
+            currentClass.ageGroup,
+            currentClass.description,
+            currentClass.id
+        ]);
 
         return result.affectedRows === 1;
     }
 
     /**
-     * This method changes the status of a class to 'Archived'
-     *
      * @param {number} id
      * @returns {Promise<boolean>}
      */
