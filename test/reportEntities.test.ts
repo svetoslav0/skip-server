@@ -1,7 +1,8 @@
 import httpStatus from "http-status-codes";
 
 import { server, database, expect, Request } from "./base";
-import { HttpMethod } from "./httpMethod";
+
+import { HttpMethod } from "./httpMethods";
 
 import {
     noTokenTest,
@@ -23,6 +24,8 @@ const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
 const TOKEN_HEADING = process.env.TOKEN_HEADING || "";
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || "";
+const ADMIN_REPORT_ENTITY_ID = +process.env.ADMIN_REPORT_ENTITY_ID! || 0;
+const EMPLOYEE_REPORT_ENTITY_ID = + process.env.EMPLOYEE_REPORT_ENTITY_ID! || 0;
 
 const REPORT_ENTITIES_CONTROLLER_URL: string = "/reportEntities";
 const CREATE_URL: string = `${REPORT_ENTITIES_CONTROLLER_URL}`;
@@ -967,20 +970,97 @@ describe(`${REPORT_ENTITIES_CONTROLLER_URL} tests`, () => {
         noTokenTest(HttpMethod.Delete, URL_WITH_PARAM(existingReportEntityOne));
         wrongTokenTest(HttpMethod.Delete, URL_WITH_PARAM(existingReportEntityOne));
 
-        it("Should archive the entity. Test No. 1", () => {
+        it("Should archive the entity. Success test No. 1", () => {
+            return Request(server)
+                .delete(URL_WITH_PARAM(EMPLOYEE_REPORT_ENTITY_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
 
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(true);
+                });
         });
 
         it("Should archive the entity. Test No. 2", () => {
+            return Request(server)
+                .delete(URL_WITH_PARAM(EMPLOYEE_REPORT_ENTITY_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
 
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(true);
+                });
         });
 
         it("Should not archive the entity. The provided ID is not numeric", () => {
+            const idToSend: string = "Invalid ID";
 
+            return Request(server)
+                .delete(URL_WITH_PARAM(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(false);
+                });
         });
 
         it("Should not archive the entity. The provided ID does not exist", () => {
+            const idToSend: number = 9999999999;
 
+            return Request(server)
+                .delete(URL_WITH_PARAM(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(false);
+                });
+        });
+        it("Should not archive the entity. Provided token belongs to employee but the resource is admin's", () => {
+            return Request(server)
+                .delete(URL_WITH_PARAM(ADMIN_REPORT_ENTITY_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("success");
+                    await expect(result.body.data).to.have.property("message");
+
+                    await expect(result.body.data.success).to.be.a("boolean");
+                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(result.body.data.success).to.eql(false);
+                });
         });
     });
 });

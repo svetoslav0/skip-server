@@ -1,7 +1,7 @@
 import httpStatus from "http-status-codes";
 
 import { server, database, expect, Request } from "./base";
-import { HttpMethod } from "./httpMethod";
+import { HttpMethod } from "./httpMethods";
 
 import {
     noTokenTest,
@@ -32,30 +32,30 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
         wrongTokenTest(HttpMethod.Post, CREATE_URL);
 
         it("Should add a new report. After the test passes, the new report should be deleted", () => {
-             const nameToSend: string = "September 2019";
-             const userIdToSend: number = 4;
+            const nameToSend: string = "September 2019";
+            const userIdToSend: number = 4;
 
-             const objectToSend = {
-                 name: nameToSend,
-                 userId: userIdToSend
-             };
+            const objectToSend = {
+                name: nameToSend,
+                userId: userIdToSend
+            };
 
-             const expectedIsReportDeleted: boolean = true;
+            const expectedIsReportDeleted: boolean = true;
 
-             return Request(server)
-                 .post(CREATE_URL)
-                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
-                 .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
-                 .send(objectToSend)
-                 .then(async (result: any) => {
-                     await expect(result.status).to.eql(httpStatus.CREATED);
+            return Request(server)
+                .post(CREATE_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
+                .send(objectToSend)
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.CREATED);
 
-                     return result.body.data.resourceId;
-                 })
-                 .then(async (reportId: number) => {
-                     const result = await reportsRepository.deleteById(reportId);
-                     await expect(result).to.eql(expectedIsReportDeleted);
-                 });
+                    return result.body.data.resourceId;
+                })
+                .then(async (reportId: number) => {
+                    const result = await reportsRepository.deleteById(reportId);
+                    await expect(result).to.eql(expectedIsReportDeleted);
+                });
         });
 
         it("Should add one more report.", () => {

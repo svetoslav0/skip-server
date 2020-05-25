@@ -1,7 +1,8 @@
 import httpStatus from "http-status-codes";
 
 import { server, database, expect, Request } from "./base";
-import { HttpMethod } from "./httpMethod";
+
+import { HttpMethod } from "./httpMethods";
 
 import {
     noTokenTest,

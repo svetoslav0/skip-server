@@ -1,5 +1,8 @@
+
 import httpStatus from "http-status-codes";
-import { HttpMethod } from "./httpMethod";
+
+import { HttpMethod } from "./httpMethods";
+
 import { server, expect, Request } from "./base";
 
 const CONTENT_TYPE_HEADING = process.env.CONTENT_TYPE_HEADING || "";
