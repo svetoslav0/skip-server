@@ -45,7 +45,8 @@ export class APISpecification {
                     post: this.buildReportEntitiesCreatePath()
                 },
                 "/reportEntities/:id": {
-                    put: this.buildReportEntitiesEditPath()
+                    put: this.buildReportEntitiesEditPath(),
+                    delete: this.buildReportEntitiesDeletePath()
                 }
             },
             components: {
@@ -93,6 +94,7 @@ export class APISpecification {
                     DeleteClassRolesResponseSchema: this.buildDeleteClassRolesResponseSchema(),
                     CreateReportEntityResponseSchema: this.buildCreateReportEntityResponseSchema(),
                     EditReportEntityResponseSchema: this.buildEditReportEntityResponseSchema(),
+                    DeleteReportEntityResponseSchema: this.buildDeleteReportEntityResponseSchema()
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -600,6 +602,39 @@ export class APISpecification {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/EditReportEntityResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        };
+    }
+
+    private buildReportEntitiesDeletePath() {
+        return {
+            summary: "Archives existing Report Entity",
+            description: "Archives a Report Entity without actually deleting it from the database. " +
+                "This action be executed by all users with role ADMIN or by users by users with " +
+                "role EMPLOYEE but only in case the requested Report Entity belongs to them.",
+            tags: [
+                "Report Entities"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                },
+                {
+                    $ref: "#/components/parameters/idParam"
+                }
+            ],
+            responses: {
+                200: {
+                    description: "Report Entity was successfully archived.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/DeleteReportEntityResponseSchema"
                             }
                         }
                     }
@@ -1136,6 +1171,27 @@ export class APISpecification {
                 }
             }
         };
+    }
+
+    private buildDeleteReportEntityResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: true
+                        },
+                        message: {
+                            type: "string",
+                            example: "Report Entities was successfully archived."
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private buildCreateClassResponseSchema() {
