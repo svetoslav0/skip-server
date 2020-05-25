@@ -45,7 +45,8 @@ export class APISpecification {
                     post: this.buildReportEntitiesCreatePath()
                 },
                 "/reportEntities/:id": {
-                    put: this.buildReportEntitiesEditPath()
+                    put: this.buildReportEntitiesEditPath(),
+                    delete: this.buildReportEntitiesDeletePath()
                 }
             },
             components: {
@@ -93,6 +94,7 @@ export class APISpecification {
                     DeleteClassRolesResponseSchema: this.buildDeleteClassRolesResponseSchema(),
                     CreateReportEntityResponseSchema: this.buildCreateReportEntityResponseSchema(),
                     EditReportEntityResponseSchema: this.buildEditReportEntityResponseSchema(),
+                    DeleteReportEntityResponseSchema: this.buildDeleteReportEntityResponseSchema()
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -488,7 +490,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildClassRolesDeletePath() {
@@ -520,7 +522,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildReportEntitiesCreatePath() {
@@ -564,7 +566,7 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
     }
 
     private buildReportEntitiesEditPath() {
@@ -606,7 +608,40 @@ export class APISpecification {
                 },
                 ...this.buildCommonResponses()
             }
-        }
+        };
+    }
+
+    private buildReportEntitiesDeletePath() {
+        return {
+            summary: "Archives existing Report Entity",
+            description: "Archives a Report Entity without actually deleting it from the database. " +
+                "This action be executed by all users with role ADMIN or by users by users with " +
+                "role EMPLOYEE but only in case the requested Report Entity belongs to them.",
+            tags: [
+                "Report Entities"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                },
+                {
+                    $ref: "#/components/parameters/idParam"
+                }
+            ],
+            responses: {
+                200: {
+                    description: "Report Entity was successfully archived.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/DeleteReportEntityResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        };
     }
 
     private buildRegisterUserSchema() {
@@ -761,7 +796,7 @@ export class APISpecification {
                 "name",
                 "paymentPerHour"
             ]
-        }
+        };
     }
 
     private buildEditClassRoleRequestSchema() {
@@ -778,7 +813,7 @@ export class APISpecification {
                     minimum: 0
                 }
             }
-        }
+        };
     }
 
     private buildCreateReportEntityRequestSchema() {
@@ -817,7 +852,7 @@ export class APISpecification {
                 "date",
                 "hoursSpend"
             ]
-        }
+        };
     }
 
     private buildEditReportEntityRequestSchema() {
@@ -850,7 +885,7 @@ export class APISpecification {
                     example: 2
                 }
             }
-        }
+        };
     }
 
     private buildCreatedUserResponseSchema() {
@@ -976,7 +1011,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateClassRoleResponseSchema() {
@@ -1002,7 +1037,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildEditClassRoleResponseSchema() {
@@ -1027,7 +1062,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildDeleteClassRolesResponseSchema() {
@@ -1048,7 +1083,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateReportEntityResponseSchema() {
@@ -1074,9 +1109,9 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
-    
+
     private buildEditReportEntityResponseSchema() {
         return {
             type: "object",
@@ -1095,6 +1130,27 @@ export class APISpecification {
                         message: {
                             type: "string",
                             example: "Class Role was updated successfully."
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private buildDeleteReportEntityResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: true
+                        },
+                        message: {
+                            type: "string",
+                            example: "Report Entities was successfully archived."
                         }
                     }
                 }
@@ -1227,7 +1283,7 @@ export class APISpecification {
     }
 
     private buildCommonResponses(withAuth: boolean = true) {
-        let response: any = {
+        const response: any = {
             400: {
                 description: "The given request cannot be proceeded from the server due to something that is perceived to be a client error.",
                 content: {
