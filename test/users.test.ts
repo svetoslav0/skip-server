@@ -1,17 +1,28 @@
 import httpStatus from "http-status-codes";
 
-import { server, database, expect, Request } from "./base";
+import {database, expect, Request, server} from "./base";
 
-import { UsersRepository } from "../repositories/UsersRepository";
+import {UsersRepository} from "../repositories/UsersRepository";
+import {noTokenTest, wrongTokenTest} from "./commonTests";
+import {HttpMethod} from "./httpMethods";
 
 const usersRepository: UsersRepository = new UsersRepository(database);
 
 const CONTENT_TYPE_HEADING: string = process.env.CONTENT_TYPE_HEADING || "";
 const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
+const TOKEN_HEADING = process.env.TOKEN_HEADING || "";
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
+const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || "";
+const ADMIN_USER_ID_ONE: number = +process.env.ADMIN_USER_ID_ONE! || 0;
+const ADMIN_USER_ID_TWO: number = +process.env.ADMIN_USER_ID_TWO! || 0;
+const EMPLOYEE_USER_ID: number = +process.env.EMPLOYEE_USER_ID! || 0;
 
 const USERS_CONTROLLER_URL: string = "/users";
 const LOGIN_URL: string = `${USERS_CONTROLLER_URL}/login`;
 const REGISTER_URL: string = `${USERS_CONTROLLER_URL}/register`;
+const ULR_WITH_PARAM = (id: number | string | null) => {
+    return `${USERS_CONTROLLER_URL}/${id}`;
+};
 
 describe(`${USERS_CONTROLLER_URL} tests`, () => {
     describe(`POST ${LOGIN_URL} tests`, () => {
@@ -388,6 +399,174 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                     await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
                     await expect(result.body.data.success).to.eql(expectedSuccess);
                     await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                });
+        });
+    });
+
+    describe(`GET ${USERS_CONTROLLER_URL} tests`, () => {
+
+        noTokenTest(HttpMethod.Get, ULR_WITH_PARAM(ADMIN_USER_ID_ONE));
+        wrongTokenTest(HttpMethod.Get, ULR_WITH_PARAM(ADMIN_USER_ID_ONE));
+
+        it("Should return data for user. Success test No. 1", () => {
+
+            const expectedUsername: string = "ivanivan";
+            const expectedEmail: string = "dimi21taar@abv.bg";
+            const expectedFirstName: string = "DImitar";
+            const expectedLastName: string = "Dimitar";
+            const expectedRoleId: number = 2;
+
+            return Request(server)
+                .get(ULR_WITH_PARAM(ADMIN_USER_ID_ONE))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("username");
+                    await expect(result.body.data).to.have.property("email");
+                    await expect(result.body.data).to.have.property("firstName");
+                    await expect(result.body.data).to.have.property("middleName");
+                    await expect(result.body.data).to.have.property("lastName");
+                    await expect(result.body.data).to.have.property("roleId");
+                    await expect(result.body.data).to.have.property("description");
+
+                    await expect(result.body.data.username).to.be.a("string");
+                    await expect(result.body.data.email).to.be.a("string");
+                    await expect(result.body.data.firstName).to.be.a("string");
+                    await expect(result.body.data.middleName).to.be.a("null");
+                    await expect(result.body.data.lastName).to.be.a("string");
+                    await expect(result.body.data.roleId).to.be.a("number");
+                    await expect(result.body.data.description).to.be.a("null");
+
+                    await expect(result.body.data.username).to.eql(expectedUsername);
+                    await expect(result.body.data.email).to.eql(expectedEmail);
+                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(result.body.data.lastName).to.eql(expectedLastName);
+                    await expect(result.body.data.roleId).to.eql(expectedRoleId);
+                });
+        });
+
+        it("Should return data for user. Success test No. 2", () => {
+
+            const expectedUsername: string = "adminadmin";
+            const expectedEmail: string = "admin@admin.admin";
+            const expectedFirstName: string = "Pass: adminadmin";
+            const expectedLastName: string = "Admin";
+            const expectedRoleId: number = 2;
+
+            return Request(server)
+                .get(ULR_WITH_PARAM(ADMIN_USER_ID_TWO))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("username");
+                    await expect(result.body.data).to.have.property("email");
+                    await expect(result.body.data).to.have.property("firstName");
+                    await expect(result.body.data).to.have.property("middleName");
+                    await expect(result.body.data).to.have.property("lastName");
+                    await expect(result.body.data).to.have.property("roleId");
+                    await expect(result.body.data).to.have.property("description");
+
+                    await expect(result.body.data.username).to.be.a("string");
+                    await expect(result.body.data.email).to.be.a("string");
+                    await expect(result.body.data.firstName).to.be.a("string");
+                    await expect(result.body.data.middleName).to.be.a("null");
+                    await expect(result.body.data.lastName).to.be.a("string");
+                    await expect(result.body.data.roleId).to.be.a("number");
+                    await expect(result.body.data.description).to.be.a("null");
+
+                    await expect(result.body.data.username).to.eql(expectedUsername);
+                    await expect(result.body.data.email).to.eql(expectedEmail);
+                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(result.body.data.lastName).to.eql(expectedLastName);
+                    await expect(result.body.data.roleId).to.eql(expectedRoleId);
+                });
+        });
+
+        it("Should return data for user. Success test No. 3", () => {
+
+            const expectedUsername: string = "test-employee";
+            const expectedEmail: string = "employee@abv.bg";
+            const expectedFirstName: string = "Pass:1-6";
+            const expectedLastName: string = "Trifonov";
+            const expectedRoleId: number = 1;
+
+            return Request(server)
+                .get(ULR_WITH_PARAM(EMPLOYEE_USER_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("username");
+                    await expect(result.body.data).to.have.property("email");
+                    await expect(result.body.data).to.have.property("firstName");
+                    await expect(result.body.data).to.have.property("middleName");
+                    await expect(result.body.data).to.have.property("lastName");
+                    await expect(result.body.data).to.have.property("roleId");
+                    await expect(result.body.data).to.have.property("description");
+
+                    await expect(result.body.data.username).to.be.a("string");
+                    await expect(result.body.data.email).to.be.a("string");
+                    await expect(result.body.data.firstName).to.be.a("string");
+                    await expect(result.body.data.middleName).to.be.a("null");
+                    await expect(result.body.data.lastName).to.be.a("string");
+                    await expect(result.body.data.roleId).to.be.a("number");
+                    await expect(result.body.data.description).to.be.a("null");
+
+                    await expect(result.body.data.username).to.eql(expectedUsername);
+                    await expect(result.body.data.email).to.eql(expectedEmail);
+                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(result.body.data.lastName).to.eql(expectedLastName);
+                    await expect(result.body.data.roleId).to.eql(expectedRoleId);
+                });
+        });
+
+        it("Should fail. Provided ID is not numeric", () => {
+            const id: string = "15a";
+
+            return Request(server)
+                .get(ULR_WITH_PARAM(id))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("error");
+
+                    await expect(result.body.data.error).to.be.a("string");
+                });
+        });
+
+        it("Should fail. Provided ID does not exist", () => {
+            const id: number = 0;
+
+            return Request(server)
+                .get(ULR_WITH_PARAM(id))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data).to.have.property("error");
+
+                    await expect(result.body.data.error).to.be.a("string");
                 });
         });
     });

@@ -59,7 +59,10 @@ server.use(cors());
 server.use(bodyParser.urlencoded({
     extended: true
 }));
-server.use(morgan("dev"));
+
+if (process.env.ENVIRONMENT !== "test") {
+    server.use(morgan("dev"));
+}
 
 server.use("/users", usersRouter.registerRoutes());
 server.use("/reports", reportsRouter.registerRoutes());
