@@ -20,6 +20,9 @@ export class APISpecification {
                 "/users/login": {
                     post: this.buildUsersLoginPath()
                 },
+                "/users/:id": {
+                    get: this.buildGetUserByIdPath()
+                },
                 "/reports": {
                     post: this.buildReportsCreatePath()
                 },
@@ -67,6 +70,15 @@ export class APISpecification {
                             type: "number"
                         },
                         required: true
+                    },
+                    userIdParam: {
+                        in: "path",
+                        name: "id",
+                        description: "The User ID",
+                        schema: {
+                            type: "number"
+                        },
+                        required: true
                     }
                 },
                 schemas: {
@@ -95,11 +107,40 @@ export class APISpecification {
                     CreateReportEntityResponseSchema: this.buildCreateReportEntityResponseSchema(),
                     EditReportEntityResponseSchema: this.buildEditReportEntityResponseSchema(),
                     DeleteReportEntityResponseSchema: this.buildDeleteReportEntityResponseSchema(),
+                    GetUserByIdResponseSchema: this.buildGetUserByIdResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
                     ForbiddenResponseSchema: this.buildForbiddenResponseSchema()
                 }
+            }
+        };
+    }
+
+    private buildGetUserByIdPath() {
+        return {
+            summary: "Get user by ID",
+            description: "This methods returns a user by his ID",
+            tags: [
+                "Users"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/userIdParam"
+                }
+            ],
+            responses: {
+                200: {
+                    description: "OK. Response with user data is returned.",
+                        content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/GetUserByIdResponseSchema"
+                            }
+                        }
+                    }
+                },
+            ...this.buildCommonResponses()
             }
         };
     }
@@ -1187,6 +1228,55 @@ export class APISpecification {
                         message: {
                             type: "string",
                             example: "Report Entities was successfully archived."
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private buildGetUserByIdResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        username: {
+                            type: "string",
+                            description: "The username of the user. It is user to login.",
+                            example: "pesho"
+                        },
+                        email: {
+                            type: "string",
+                            description: "The email of the user.",
+                            example: "pesho@gmail.com"
+                        },
+                        firstName: {
+                            type: "string",
+                            description: "First name of the user",
+                            example: "Pesho"
+                        },
+                        middleName: {
+                            type: "string",
+                            description: "The middle name of the user",
+                            example: "Peshov"
+                        },
+                        lastName: {
+                            type: "string",
+                            description: "The last name (surname) of the user",
+                            example: "Peshov"
+                        },
+                        roleId: {
+                            type: "number",
+                            description: "Show the role of the user in the application" +
+                                "\n 1 - Employee\n 2 - Administrator",
+                            example: 1
+                        },
+                        description: {
+                            type: "string",
+                            description: "Optional description of the user profile",
+                            example: "Some words describing the user"
                         }
                     }
                 }
