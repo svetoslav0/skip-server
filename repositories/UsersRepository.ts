@@ -1,6 +1,7 @@
 import { MysqlDatabase } from "../database/MysqlDatabase";
 import { UserDTO } from "../data/users/UserDTO";
 import { IRepository } from "./IRepository";
+import { MESSAGES } from "../common/consts/MESSAGES";
 
 export class UsersRepository implements IRepository {
 
@@ -80,17 +81,25 @@ export class UsersRepository implements IRepository {
      */
     public async findById(id: number): Promise<UserDTO> {
         const result: any = await this.db.query(`
-                SELECT
-                    id,
-                    username,
-                    role_id AS roleId
-                FROM
-                    users
-                WHERE
-                    id = ?
+            SELECT
+                id,
+                username,
+                email,
+                first_name AS firstName,
+                middle_name AS middleName,
+                last_name AS lastName,
+                role_id AS roleId
+            FROM
+                users
+            WHERE
+                id = ?
         `, [id]);
 
-        return result[0];
+        if (!result.length) {
+            throw new Error(MESSAGES.ERRORS.USERS.ID_FIELD_NOT_EXISTING_MESSAGE);
+        }
+
+        return new UserDTO(result[0]);
     }
 
     /**

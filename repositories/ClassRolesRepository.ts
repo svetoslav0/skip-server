@@ -68,8 +68,6 @@ export class ClassRolesRepository implements IRepository {
      * @returns {Promise<boolean>}
      */
     public async update(classRole: ClassRoleEditDTO): Promise<boolean> {
-
-        console.log(classRole);
         const result = await this.db.query(`
             UPDATE
                 class_roles
