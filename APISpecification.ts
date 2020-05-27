@@ -94,7 +94,7 @@ export class APISpecification {
                     DeleteClassRolesResponseSchema: this.buildDeleteClassRolesResponseSchema(),
                     CreateReportEntityResponseSchema: this.buildCreateReportEntityResponseSchema(),
                     EditReportEntityResponseSchema: this.buildEditReportEntityResponseSchema(),
-                    DeleteReportEntityResponseSchema: this.buildDeleteReportEntityResponseSchema()
+                    DeleteReportEntityResponseSchema: this.buildDeleteReportEntityResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -1191,7 +1191,7 @@ export class APISpecification {
                     }
                 }
             }
-        }
+        };
     }
 
     private buildCreateClassResponseSchema() {

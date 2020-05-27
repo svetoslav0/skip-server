@@ -1,7 +1,9 @@
 import express from "express";
 import { UsersController } from "../controllers/users/UsersController";
-import { UsersResponseBuilder } from "../data/users/UsersResponseBuilder";
+import { UserAccountsResponseBuilder } from "../data/users/UserAccountsResponseBuilder";
 import { IRoutable } from "./IRoutable";
+import { UsersResponseBuilder } from "../data/users/UsersResponseBuilder";
+import { APIMiddleware } from "../common/APIMiddleware";
 
 export class UsersRouter implements IRoutable {
 
@@ -16,6 +18,7 @@ export class UsersRouter implements IRoutable {
     public registerRoutes(): express.Router {
         this.signLoginRoute();
         this.signRegisterRoute();
+        this.signGetUsersRoute();
 
         return this.router;
     }
@@ -24,7 +27,7 @@ export class UsersRouter implements IRoutable {
         this.router.post("/login", (req: express.Request, res: express.Response, next: express.NextFunction) => {
             this.controller
                 .login(req.body)
-                .then((result: UsersResponseBuilder) => {
+                .then((result: UserAccountsResponseBuilder) => {
                     const authToken = result.authToken || "";
 
                     if (authToken) {
@@ -33,7 +36,7 @@ export class UsersRouter implements IRoutable {
 
                     return res
                         .status(result.httpStatus)
-                        .send(result.buildResponse());
+                        .send(result.buildAccountsResponse());
                 })
                 .catch(next);
         });
@@ -45,9 +48,25 @@ export class UsersRouter implements IRoutable {
         this.router.post("/register", (req: express.Request, res: express.Response, next: express.NextFunction) => {
             this.controller
                 .register(req.body)
-                .then((result: UsersResponseBuilder) => {
+                .then((result: UserAccountsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
+                        .send(result.buildAccountsResponse());
+                })
+                .catch(next);
+        });
+    }
+
+    private signGetUsersRoute() {
+        this.router.get("/:id",
+            APIMiddleware.isUserEmployee,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            this.controller
+                .getUser(req)
+                .then((result: UsersResponseBuilder) => {
+                    return res
+                        .status(result.getStatus())
                         .send(result.buildResponse());
                 })
                 .catch(next);

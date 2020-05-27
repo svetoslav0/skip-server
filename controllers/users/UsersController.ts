@@ -1,4 +1,4 @@
-import { validateOrReject } from "class-validator";
+import {validateOrReject} from "class-validator";
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -6,27 +6,31 @@ import httpStatus from "http-status-codes";
 
 import { UsersRepository } from "../../repositories/UsersRepository";
 import { UserDTO } from "../../data/users/UserDTO";
-import { UsersResponseBuilder } from "../../data/users/UsersResponseBuilder";
+import { UserAccountsResponseBuilder } from "../../data/users/UserAccountsResponseBuilder";
 import { BaseController } from "../BaseController";
 import { MESSAGES } from "../../common/consts/MESSAGES";
+import { UsersResponseFormatter } from "./UsersResponseFormatter";
+import { UsersResponseBuilder } from "../../data/users/UsersResponseBuilder";
 
 export class UsersController extends BaseController {
 
     private readonly SALT_DIFFICULTY: number = 10;
 
     private repository: UsersRepository;
+    private formatter: UsersResponseFormatter;
 
-    constructor(repository: UsersRepository) {
+    constructor(repository: UsersRepository, usersFormatter: UsersResponseFormatter) {
         super();
         this.repository = repository;
+        this.formatter = usersFormatter;
     }
 
     /**
      * @param request
-     * @return {Promise<UsersResponseBuilder>}
+     * @return {Promise<UserAccountsResponseBuilder>}
      */
-    public async register(request: any): Promise<UsersResponseBuilder> {
-        const responseBuilder: UsersResponseBuilder = new UsersResponseBuilder();
+    public async register(request: any): Promise<UserAccountsResponseBuilder> {
+        const responseBuilder: UserAccountsResponseBuilder = new UserAccountsResponseBuilder();
 
         try {
             const user: UserDTO = new UserDTO(request);
@@ -58,10 +62,10 @@ export class UsersController extends BaseController {
 
     /**
      * @param requestBody
-     * @return {Promise<UsersResponseBuilder>}
+     * @return {Promise<UserAccountsResponseBuilder>}
      */
-    public async login(requestBody: any): Promise<UsersResponseBuilder> {
-        const responseBuilder: UsersResponseBuilder = new UsersResponseBuilder();
+    public async login(requestBody: any): Promise<UserAccountsResponseBuilder> {
+        const responseBuilder: UserAccountsResponseBuilder = new UserAccountsResponseBuilder();
 
         const user = await this.repository
             .findByUsername(
@@ -89,6 +93,34 @@ export class UsersController extends BaseController {
             .setSuccess(true)
             .setMessage(MESSAGES.SUCCESSES.USERS.LOGIN_SUCCESS_MESSAGE)
             .setAuthToken(token);
+    }
+
+    /**
+     * @param {express.Request} request
+     * @return {Promise<UsersResponseBuilder>}
+     */
+    public async getUser(request: express.Request): Promise<UsersResponseBuilder> {
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            const data = {
+                error: error.message
+            };
+            return new UsersResponseBuilder(httpStatus.BAD_REQUEST, data);
+        }
+        const userId: number = +request.params.id;
+
+        try {
+            const user: UserDTO = await this.repository.findById(userId);
+
+            const data = this.formatter.formatGetUser(user);
+            return new UsersResponseBuilder(httpStatus.OK, data);
+        } catch (error) {
+            const data = {
+                error: error.message
+            };
+            return new UsersResponseBuilder(httpStatus.BAD_REQUEST, data);
+        }
     }
 
     /**

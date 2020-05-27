@@ -28,6 +28,7 @@ import { ReportEntitiesRouter } from "./routers/ReportEntitiesRouter";
 
 import { APISpecification } from "./APISpecification";
 import { handleError } from "./common/ErrorHandler";
+import { UsersResponseFormatter } from "./controllers/users/UsersResponseFormatter";
 
 const database = new MysqlDatabase();
 
@@ -37,7 +38,9 @@ const classesRepository = new ClassesRepository(database);
 const classRolesRepository = new ClassRolesRepository(database);
 const reportEntitiesRepository = new ReportEntitiesRepository(database);
 
-const usersController = new UsersController(usersRepository);
+const usersFormatter = new UsersResponseFormatter();
+
+const usersController = new UsersController(usersRepository, usersFormatter);
 const reportsController = new ReportsController(reportsRepository);
 const classesController = new ClassesController(classesRepository);
 const classRolesController = new ClassRolesController(classRolesRepository);
