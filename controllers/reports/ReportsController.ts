@@ -7,7 +7,10 @@ import { ReportDTO } from "../../data/reports/ReportDTO";
 import { ReportEditDTO } from "../../data/reports/ReportEditDTO";
 import { BaseController } from "../BaseController";
 import { MESSAGES } from "../../common/consts/MESSAGES";
-import { ResponseBuilder } from "../../data/ResponseBuilder";
+import { ManipulationsResponseBuilder } from "../../data/ManipulationsResponseBuilder";
+import {DataResponseBuilder} from "../../data/DataResponseBuilder";
+import {ReportEntitiesRepository} from "../../repositories/ReportEntitiesRepository";
+import {ReportsResponseFormatter} from "./ReportsResponseFormatter";
 
 export class ReportsController extends BaseController {
 
@@ -20,10 +23,10 @@ export class ReportsController extends BaseController {
 
     /**
      * @param {express.Request} request
-     * @returns {Promise<ResponseBuilder>}
+     * @returns {Promise<ManipulationsResponseBuilder>}
      */
-    public async create(request: express.Request): Promise<ResponseBuilder> {
-        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+    public async create(request: express.Request): Promise<ManipulationsResponseBuilder> {
+        const responseBuilder: ManipulationsResponseBuilder = new ManipulationsResponseBuilder();
 
         try {
             const report: ReportDTO = new ReportDTO(
@@ -49,10 +52,10 @@ export class ReportsController extends BaseController {
 
     /**
      * @param {express.Request} request
-     * @returns {Promise<ResponseBuilder>}
+     * @returns {Promise<ManipulationsResponseBuilder>}
      */
-    public async edit(request: express.Request): Promise<ResponseBuilder> {
-        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+    public async edit(request: express.Request): Promise<ManipulationsResponseBuilder> {
+        const responseBuilder: ManipulationsResponseBuilder = new ManipulationsResponseBuilder();
 
         this._request = request;
 
@@ -108,10 +111,10 @@ export class ReportsController extends BaseController {
 
     /**
      * @param {express.Request} request
-     * @returns {Promise<ResponseBuilder>}
+     * @returns {Promise<ManipulationsResponseBuilder>}
      */
-    public async archive(request: express.Request): Promise<ResponseBuilder> {
-        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+    public async archive(request: express.Request): Promise<ManipulationsResponseBuilder> {
+        const responseBuilder: ManipulationsResponseBuilder = new ManipulationsResponseBuilder();
 
         this._request = request;
 
@@ -150,5 +153,35 @@ export class ReportsController extends BaseController {
         }
 
         return this.buildInternalErrorResponse(responseBuilder);
+    }
+
+    /**
+     * @param {express.Request} request
+     * @return {Promise<ManipulationsResponseBuilder>}
+     */
+    public async getReportById(request: express.Request): Promise<DataResponseBuilder> {
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            const data = {
+                error: error.message
+            };
+            return new DataResponseBuilder(httpStatus.BAD_REQUEST, data);
+        }
+
+        const id: number = +request.params.id;
+        const report = await this.repository.findById(id);
+
+        if (!report) {
+            const data = {
+                error: MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE
+            };
+            return new DataResponseBuilder(httpStatus.BAD_REQUEST, data);
+        }
+
+        const entities = await this.repository.findEntitiesByReportId(id);
+        const result = new ReportsResponseFormatter().formatGetReport(report, entities);
+
+        return new DataResponseBuilder(httpStatus.OK, result);
     }
 }

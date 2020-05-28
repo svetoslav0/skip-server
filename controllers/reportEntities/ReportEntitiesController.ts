@@ -6,7 +6,7 @@ import { BaseController } from "../BaseController";
 import { ReportEntitiesRepository } from "../../repositories/ReportEntitiesRepository";
 import { ReportEntityDTO } from "../../data/reportEntities/ReportEntityDTO";
 import { MESSAGES } from "../../common/consts/MESSAGES";
-import { ResponseBuilder } from "../../data/ResponseBuilder";
+import { ManipulationsResponseBuilder } from "../../data/ManipulationsResponseBuilder";
 import { ReportEntityEditDTO } from "../../data/reportEntities/ReportEntityEditDTO";
 
 export class ReportEntitiesController extends BaseController {
@@ -20,10 +20,10 @@ export class ReportEntitiesController extends BaseController {
 
     /**
      * @param {express.Request} request
-     * @returns {Promise<ResponseBuilder>}
+     * @returns {Promise<ManipulationsResponseBuilder>}
      */
-    public async create(request: express.Request): Promise<ResponseBuilder> {
-        const responseBuilder = new ResponseBuilder();
+    public async create(request: express.Request): Promise<ManipulationsResponseBuilder> {
+        const responseBuilder = new ManipulationsResponseBuilder();
 
         const reportEntity = new ReportEntityDTO(request.userId, request.body);
 
@@ -47,10 +47,10 @@ export class ReportEntitiesController extends BaseController {
 
     /**
      * @param {express.Request} request
-     * @returns {Promise<ResponseBuilder>}
+     * @returns {Promise<ManipulationsResponseBuilder>}
      */
-    public async edit(request: express.Request): Promise<ResponseBuilder> {
-        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+    public async edit(request: express.Request): Promise<ManipulationsResponseBuilder> {
+        const responseBuilder: ManipulationsResponseBuilder = new ManipulationsResponseBuilder();
 
         this._request = request;
 
@@ -106,8 +106,8 @@ export class ReportEntitiesController extends BaseController {
         throw new Error(MESSAGES.ERRORS.COMMON.FAILED_UPDATE_NO_ROWS_AFFECTED_MESSAGE);
     }
 
-    public async archive(request: express.Request): Promise<ResponseBuilder> {
-        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+    public async archive(request: express.Request): Promise<ManipulationsResponseBuilder> {
+        const responseBuilder: ManipulationsResponseBuilder = new ManipulationsResponseBuilder();
 
         this._request = request;
 

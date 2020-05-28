@@ -1,4 +1,4 @@
-import {validateOrReject} from "class-validator";
+import { validateOrReject } from "class-validator";
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -10,7 +10,7 @@ import { UserAccountsResponseBuilder } from "../../data/users/UserAccountsRespon
 import { BaseController } from "../BaseController";
 import { MESSAGES } from "../../common/consts/MESSAGES";
 import { UsersResponseFormatter } from "./UsersResponseFormatter";
-import { UsersResponseBuilder } from "../../data/users/UsersResponseBuilder";
+import { DataResponseBuilder } from "../../data/DataResponseBuilder";
 
 export class UsersController extends BaseController {
 
@@ -97,16 +97,16 @@ export class UsersController extends BaseController {
 
     /**
      * @param {express.Request} request
-     * @return {Promise<UsersResponseBuilder>}
+     * @return {Promise<DataResponseBuilder>}
      */
-    public async getUser(request: express.Request): Promise<UsersResponseBuilder> {
+    public async getUser(request: express.Request): Promise<DataResponseBuilder> {
         try {
             this.validateIdParam(request.params.id);
         } catch (error) {
             const data = {
                 error: error.message
             };
-            return new UsersResponseBuilder(httpStatus.BAD_REQUEST, data);
+            return new DataResponseBuilder(httpStatus.BAD_REQUEST, data);
         }
         const userId: number = +request.params.id;
 
@@ -114,12 +114,12 @@ export class UsersController extends BaseController {
             const user: UserDTO = await this.repository.findById(userId);
 
             const data = this.formatter.formatGetUser(user);
-            return new UsersResponseBuilder(httpStatus.OK, data);
+            return new DataResponseBuilder(httpStatus.OK, data);
         } catch (error) {
             const data = {
                 error: error.message
             };
-            return new UsersResponseBuilder(httpStatus.BAD_REQUEST, data);
+            return new DataResponseBuilder(httpStatus.BAD_REQUEST, data);
         }
     }
 

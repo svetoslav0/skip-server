@@ -2,7 +2,7 @@ import express from "express";
 import { APIMiddleware } from "../common/APIMiddleware";
 import { ClassesController } from "../controllers/classes/ClassesController";
 import { IRoutable } from "./IRoutable";
-import { ResponseBuilder } from "../data/ResponseBuilder";
+import { ManipulationsResponseBuilder } from "../data/ManipulationsResponseBuilder";
 
 export class ClassesRouter implements IRoutable {
 
@@ -15,8 +15,6 @@ export class ClassesRouter implements IRoutable {
     }
 
     /**
-     * This method registers all Classes endpoints
-     *
      * @returns {express.Router}
      */
     public registerRoutes(): express.Router {
@@ -27,9 +25,6 @@ export class ClassesRouter implements IRoutable {
         return this.router;
     }
 
-    /**
-     * This method registers POST /classes
-     */
     private signCreateRoute() {
         this.router.post("/",
             APIMiddleware.isUserAdministrator,
@@ -37,7 +32,7 @@ export class ClassesRouter implements IRoutable {
 
             this.controller
                 .create(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -46,9 +41,6 @@ export class ClassesRouter implements IRoutable {
         });
     }
 
-    /**
-     * This method registers PUT /classes/{id}
-     */
     private signEditRoute() {
         this.router.put("/:id",
             APIMiddleware.isUserAdministrator,
@@ -56,7 +48,7 @@ export class ClassesRouter implements IRoutable {
 
             this.controller
                 .edit(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -65,9 +57,6 @@ export class ClassesRouter implements IRoutable {
         });
     }
 
-    /**
-     * This method registers DELETE /classes/{id}
-     */
     private signArchiveRoute() {
         this.router.delete("/:id",
             APIMiddleware.isUserAdministrator,
@@ -75,7 +64,7 @@ export class ClassesRouter implements IRoutable {
 
             this.controller
                 .archive(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());

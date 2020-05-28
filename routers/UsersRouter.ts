@@ -2,7 +2,7 @@ import express from "express";
 import { UsersController } from "../controllers/users/UsersController";
 import { UserAccountsResponseBuilder } from "../data/users/UserAccountsResponseBuilder";
 import { IRoutable } from "./IRoutable";
-import { UsersResponseBuilder } from "../data/users/UsersResponseBuilder";
+import { DataResponseBuilder } from "../data/DataResponseBuilder";
 import { APIMiddleware } from "../common/APIMiddleware";
 
 export class UsersRouter implements IRoutable {
@@ -64,7 +64,7 @@ export class UsersRouter implements IRoutable {
 
             this.controller
                 .getUser(req)
-                .then((result: UsersResponseBuilder) => {
+                .then((result: DataResponseBuilder) => {
                     return res
                         .status(result.getStatus())
                         .send(result.buildResponse());

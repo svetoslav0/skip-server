@@ -2,7 +2,7 @@ import express from "express";
 import httpStatus from "http-status-codes";
 
 import { MESSAGES } from "../common/consts/MESSAGES";
-import { ResponseBuilder } from "../data/ResponseBuilder";
+import { ManipulationsResponseBuilder } from "../data/ManipulationsResponseBuilder";
 import { ROLES } from "../common/consts/ROLES";
 
 export abstract class BaseController {
@@ -11,10 +11,10 @@ export abstract class BaseController {
     /**
      * This methods builds response when status is FORBIDDEN
      *
-     * @param {ResponseBuilder} responseBuilder
-     * @returns ResponseBuilder
+     * @param {ManipulationsResponseBuilder} responseBuilder
+     * @returns ManipulationsResponseBuilder
      */
-    protected buildForbiddenResponse(responseBuilder: ResponseBuilder): ResponseBuilder {
+    protected buildForbiddenResponse(responseBuilder: ManipulationsResponseBuilder): ManipulationsResponseBuilder {
 
         return responseBuilder
             .setHttpStatus(httpStatus.FORBIDDEN)
@@ -26,13 +26,13 @@ export abstract class BaseController {
     /**
      * This methods builds response when status is BAD_REQUEST
      *
-     * @param {ResponseBuilder} responseBuilder
+     * @param {ManipulationsResponseBuilder} responseBuilder
      * @param {[string]}        errors
-     * @returns {ResponseBuilder}
+     * @returns {ManipulationsResponseBuilder}
      */
     protected buildBadRequestResponse(
-        responseBuilder: ResponseBuilder, errors: string[]
-    ): ResponseBuilder {
+        responseBuilder: ManipulationsResponseBuilder, errors: string[]
+    ): ManipulationsResponseBuilder {
 
         return responseBuilder
             .setHttpStatus(httpStatus.BAD_REQUEST)
@@ -44,10 +44,10 @@ export abstract class BaseController {
     /**
      * This methods builds response when status is INTERNAL_SERVER_ERROR
      *
-     * @param {ResponseBuilder} responseBuilder
-     * @returns {ResponseBuilder}
+     * @param {ManipulationsResponseBuilder} responseBuilder
+     * @returns {ManipulationsResponseBuilder}
      */
-    protected buildInternalErrorResponse(responseBuilder: ResponseBuilder): ResponseBuilder {
+    protected buildInternalErrorResponse(responseBuilder: ManipulationsResponseBuilder): ManipulationsResponseBuilder {
 
         return responseBuilder
             .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)

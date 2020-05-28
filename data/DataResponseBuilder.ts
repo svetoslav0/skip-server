@@ -1,6 +1,6 @@
-import {IUsersDataResponseBuilder} from "./IUsersDataResponseBuilder";
+import { IDataResponseBuilder } from "./IDataResponseBuilder";
 
-export class UsersResponseBuilder {
+export class DataResponseBuilder {
 
     private status: number;
     private data: any;
@@ -10,7 +10,7 @@ export class UsersResponseBuilder {
         this.data = data;
     }
 
-    public buildData(): IUsersDataResponseBuilder {
+    public buildData(): IDataResponseBuilder {
         return {
             httpStatus: this.status,
             data: this.data
