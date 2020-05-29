@@ -23,6 +23,7 @@ export class ReportsRouter implements IRoutable {
         this.signEditRoute();
         this.signArchiveRoute();
         this.signGetReport();
+        this.signGetReportsByUserId();
 
         return this.router;
     }
@@ -81,7 +82,23 @@ export class ReportsRouter implements IRoutable {
             (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
             this.controller
-                .getReportById(req)
+                .getReport(req)
+                .then((result: DataResponseBuilder) => {
+                    return res
+                        .status(result.getStatus())
+                        .send(result.buildResponse());
+                })
+                .catch(next);
+        });
+    }
+
+    private signGetReportsByUserId() {
+        this.router.get("/",
+            APIMiddleware.isUserEmployee,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            this.controller
+                .getReportsByUserId(req)
                 .then((result: DataResponseBuilder) => {
                     return res
                         .status(result.getStatus())

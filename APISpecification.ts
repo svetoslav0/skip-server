@@ -1338,7 +1338,13 @@ export class APISpecification {
                         },
                         userId: {
                             type: "number",
-                            description: "The ID of the user that owns the report"
+                            description: "The ID of the user that owns the report",
+                            example: 25
+                        },
+                        description: {
+                            type: "string",
+                            description: "Some words describing the Report",
+                            example: "Report scope: 04.01 - 01.02"
                         },
                         reportEntities: {
                             type: "array",
