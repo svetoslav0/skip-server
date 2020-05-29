@@ -632,4 +632,186 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                 });
         });
     });
+
+    describe(`GET ${REPORTS_CONTROLLERS_URL} tests`, () => {
+
+        noTokenTest(HttpMethod.Get, REPORTS_CONTROLLERS_URL);
+        wrongTokenTest(HttpMethod.Get, REPORTS_CONTROLLERS_URL);
+
+        it("Should succeed and return requested data. Success test No. 1", () => {
+
+            const expectedCount: number = 2;
+            const expectedReportName: string = "Jan 2021";
+            const expectedUserId: number = 136;
+            const expectedReportDescription: string = "Report for January 2021";
+            const expectedReportEntitiesCount: number = 3;
+            const expectedReportEntityId: number = 114;
+            const expectedReportEntityDate: string = "2021-01-14 00:00:00.000";
+            const expectedReportEntityClassName: string = "HTML and CSS";
+            const expectedReportEntityClassRoleName: string = "Lecturer";
+            const expectedReportEntityHoursSpend: number = 2;
+            const expectedReportEntityDescription: string = "Some Rand Desc";
+
+            return Request(server)
+                .get(REPORTS_CONTROLLERS_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property("data");
+
+                    await expect(result.body.data)
+                        .to.have.property("count")
+                        .that.is.a("number")
+                        .that.is.eql(expectedCount);
+
+                    await expect(result.body.data)
+                        .to.have.property("reports")
+                        .that.is.an("array")
+                        .that.has.lengthOf(expectedCount);
+
+                    const firstReport = result.body.data.reports[0];
+                    await expect(firstReport)
+                        .to.have.property("name")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportName);
+
+                    await expect(firstReport)
+                        .to.have.property("userId")
+                        .that.is.a("number")
+                        .that.is.eql(expectedUserId);
+
+                    await expect(firstReport)
+                        .to.have.property("description")
+                        .that.is.a("string")
+                        .that.eql(expectedReportDescription);
+
+                    await expect(firstReport)
+                        .to.have.property("reportEntities")
+                        .that.is.an("array")
+                        .that.has.lengthOf(expectedReportEntitiesCount);
+
+                    const firstReportEntity = firstReport.reportEntities[0];
+
+                    await expect(firstReportEntity)
+                        .to.have.property("id")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityId);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("date")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityDate);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("className")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("classRoleName")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassRoleName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("hoursSpend")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityHoursSpend);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("description")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityDescription);
+                });
+        });
+
+        it("Should succeed and return requested data. Success test No. 2", () => {
+
+            const expectedCount: number = 14;
+            const expectedReportName: string = "Sept 2020";
+            const expectedUserId: number = 137;
+            const expectedReportDescription = null;
+            const expectedReportEntitiesCount: number = 11;
+            const expectedReportEntityId: number = 3;
+            const expectedReportEntityDate: string = "2020-05-13 00:00:00.000";
+            const expectedReportEntityClassName: string = "Micro:bit";
+            const expectedReportEntityClassRoleName: string = "Co-Lecturer";
+            const expectedReportEntityHoursSpend: number = 1;
+            const expectedReportEntityDescription = null;
+
+            return Request(server)
+                .get(REPORTS_CONTROLLERS_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+                    await expect(result.body).to.have.property("data");
+
+                    await expect(result.body.data)
+                        .to.have.property("count")
+                        .that.is.a("number")
+                        .that.is.eql(expectedCount);
+
+                    await expect(result.body.data)
+                        .to.have.property("reports")
+                        .that.is.an("array")
+                        .that.has.lengthOf(expectedCount);
+
+                    const firstReport = result.body.data.reports[0];
+                    await expect(firstReport)
+                        .to.have.property("name")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportName);
+
+                    await expect(firstReport)
+                        .to.have.property("userId")
+                        .that.is.a("number")
+                        .that.is.eql(expectedUserId);
+
+                    await expect(firstReport)
+                        .to.have.property("description")
+                        .that.is.a("null")
+                        .that.eql(expectedReportDescription);
+
+                    await expect(firstReport)
+                        .to.have.property("reportEntities")
+                        .that.is.an("array")
+                        .that.has.lengthOf(expectedReportEntitiesCount);
+
+                    const firstReportEntity = firstReport.reportEntities[0];
+
+                    await expect(firstReportEntity)
+                        .to.have.property("id")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityId);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("date")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityDate);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("className")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("classRoleName")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassRoleName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("hoursSpend")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityHoursSpend);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("description")
+                        .that.is.a("null")
+                        .that.is.eql(expectedReportEntityDescription);
+                });
+        });
+    });
 });
