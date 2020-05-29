@@ -5,7 +5,15 @@ export class ReportsResponseFormatter {
         return {
             name: report.name,
             userId: report.userId,
+            description: report.description,
             reportEntities: this.formatEntities(entities)
+        };
+    }
+
+    public formatGetReportsForUserId(reportsCount: number, reports: any) {
+        return {
+            count: reportsCount,
+            reports
         };
     }
 

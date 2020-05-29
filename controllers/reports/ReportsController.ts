@@ -159,7 +159,7 @@ export class ReportsController extends BaseController {
      * @param {express.Request} request
      * @return {Promise<ManipulationsResponseBuilder>}
      */
-    public async getReportById(request: express.Request): Promise<DataResponseBuilder> {
+    public async getReport(request: express.Request): Promise<DataResponseBuilder> {
         try {
             this.validateIdParam(request.params.id);
         } catch (error) {
@@ -170,18 +170,51 @@ export class ReportsController extends BaseController {
         }
 
         const id: number = +request.params.id;
-        const report = await this.repository.findById(id);
 
-        if (!report) {
+        try {
+            const result = await this.getReportById(id);
+            return new DataResponseBuilder(httpStatus.OK, result);
+        } catch (error) {
             const data = {
-                error: MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE
+                error: error.message
             };
             return new DataResponseBuilder(httpStatus.BAD_REQUEST, data);
         }
 
-        const entities = await this.repository.findEntitiesByReportId(id);
-        const result = new ReportsResponseFormatter().formatGetReport(report, entities);
+    }
 
-        return new DataResponseBuilder(httpStatus.OK, result);
+    /**
+     * @param {express.Request} request
+     */
+    public async getReportsByUserId(request: express.Request): Promise<DataResponseBuilder> {
+        const userId: number = request.userId;
+
+        const reportsCount: number = await this.repository.findReportsCountByUserId(userId);
+
+        const reportIds: number[] = await this.repository.findReportIdsByUserId(userId);
+        const reports = await Promise.all(
+            reportIds.map((id: number) => {
+                return this.getReportById(id);
+            })
+        );
+
+        const result = new ReportsResponseFormatter().formatGetReportsForUserId(reportsCount, reports);
+
+        return new DataResponseBuilder(200, result);
+    }
+
+    /**
+     * @param {number} id
+     * @throws Error
+     */
+    private async getReportById(id: number) {
+        const report = await this.repository.findById(id);
+
+        if (!report) {
+            throw new Error(MESSAGES.ERRORS.REPORTS.ID_FIELD_NOT_EXISTING_MESSAGE);
+        }
+
+        const entities = await this.repository.findEntitiesByReportId(id);
+        return new ReportsResponseFormatter().formatGetReport(report, entities);
     }
 }

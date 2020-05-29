@@ -1,4 +1,4 @@
-// process.env.ENVIRONMENT = "test"; console.log("!!! USING TEST ENV !!!");
+process.env.ENVIRONMENT = "test"; console.log("!!! USING TEST ENV !!!");
 
 import bodyParser from "body-parser";
 import "./config/env";
@@ -79,7 +79,8 @@ server.get("/specification", (req, res) => {
 server.use((
         err: express.ErrorRequestHandler,
         req: express.Request,
-        res: express.Response) => {
+        res: express.Response,
+        next: express.NextFunction) => {
 
     handleError(err, res);
 });

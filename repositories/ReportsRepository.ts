@@ -1,7 +1,7 @@
-import { MysqlDatabase } from "../database/MysqlDatabase";
-import { ReportDTO } from "../data/reports/ReportDTO";
-import { ReportEditDTO } from "../data/reports/ReportEditDTO";
-import { IRepository } from "./IRepository";
+import {MysqlDatabase} from "../database/MysqlDatabase";
+import {ReportDTO} from "../data/reports/ReportDTO";
+import {ReportEditDTO} from "../data/reports/ReportEditDTO";
+import {IRepository} from "./IRepository";
 
 export class ReportsRepository implements IRepository {
     private db: MysqlDatabase;
@@ -155,9 +155,53 @@ export class ReportsRepository implements IRepository {
                     ON re.class_role_id = cr.id
             WHERE
                 r.id = ?
+#                     AND
+#                 re.is_archived = ?
+        `, [reportId]);
+    }
+
+    /**
+     * @param {number} userId
+     * @return {Promise<number>}
+     */
+    public async findReportsCountByUserId(userId: number): Promise<number> {
+        const isArchived: number = 0;
+
+        const result = await this.db.query(`
+            SELECT
+                COUNT(*) AS count
+            FROM
+                reports
+            WHERE
+                user_id = ?
                     AND
-                re.is_archived = ?
-        `, [reportId, isArchived]);
+                is_archived = ?
+        `, [userId, isArchived]);
+
+        return result[0].count;
+    }
+
+    /**
+     * @param {number} userId
+     * @return {Promise<number[]>}
+     */
+    public async findReportIdsByUserId(userId: number): Promise<number[]> {
+        const isArchived: number = 0;
+
+        const result = await this.db.query(`
+            SELECT
+                r.id
+            FROM
+                reports AS r
+            WHERE
+                user_id = ?
+                    AND
+                is_archived = ?
+        `, [userId, isArchived]);
+
+        return result
+            .map((id: number) => Object.values(id))
+            .flat();
     }
 
     /**

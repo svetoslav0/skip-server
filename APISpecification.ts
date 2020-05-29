@@ -24,6 +24,7 @@ export class APISpecification {
                     get: this.buildGetUserByIdPath()
                 },
                 "/reports": {
+                    get: this.buildGetReportsForUser(),
                     post: this.buildReportsCreatePath()
                 },
                 "/reports/:id": {
@@ -92,6 +93,8 @@ export class APISpecification {
                     }
                 },
                 schemas: {
+                    ReportEntitiesSchema: this.buildReportEntitiesSchema(),
+
                     RegisterUserSchema: this.buildRegisterUserSchema(),
                     LoginUserSchema: this.buildLoginUserSchema(),
                     CreateReportRequestSchema: this.buildCreateReportRequestSchema(),
@@ -119,6 +122,7 @@ export class APISpecification {
                     DeleteReportEntityResponseSchema: this.buildDeleteReportEntityResponseSchema(),
                     GetUserByIdResponseSchema: this.buildGetUserByIdResponseSchema(),
                     GetReportByIdResponseSchema: this.buildGetReportByIdResponseSchema(),
+                    GetReportsForUserResponseSchema: this.buildGetReportsForUserResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -152,6 +156,37 @@ export class APISpecification {
                     }
                 },
             ...this.buildCommonResponses()
+            }
+        };
+    }
+
+    private buildGetReportsForUser() {
+        return {
+            summary: "Get all Reports with its Report Entities for a user",
+            description: "This method returns list of all available non-archived Reports. " +
+                "Lists of all Report Entities that belong to the return Reports is also included. " +
+                "To get Reports for a specific user 'userId' parameter is not needed. " +
+                "User is identified by the given 'auth-token' header",
+            tags: [
+                "Reports"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                }
+            ],
+            responses: {
+                200: {
+                    description: "OK. List of all avaiable non-archive reports is returned.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/GetReportsForUserResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
             }
         };
     }
@@ -283,6 +318,9 @@ export class APISpecification {
                 "Reports"
             ],
             parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                },
                 {
                     $ref: "#/components/parameters/reportIdParam"
                 }
@@ -1338,48 +1376,108 @@ export class APISpecification {
                         },
                         userId: {
                             type: "number",
-                            description: "The ID of the user that owns the report"
+                            description: "The ID of the user that owns the report",
+                            example: 25
+                        },
+                        description: {
+                            type: "string",
+                            description: "Some words describing the Report",
+                            example: "Report scope: 04.01 - 01.02"
                         },
                         reportEntities: {
                             type: "array",
                             description: "List of all Report Entities that belong to the requested Report",
                             items: {
+                                $ref: "#/components/schemas/ReportEntitiesSchema"
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private buildGetReportsForUserResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        count: {
+                            type: "number",
+                            description: "The count of the returned Reports",
+                            example: 16
+                        },
+                        reports: {
+                            type: "array",
+                            description: "List of the available Report Entities",
+                            items: {
                                 properties: {
-                                    id: {
+                                    name: {
+                                        type: "string",
+                                        description: "The name of the Report Entity",
+                                        example: "September 2020"
+                                    },
+                                    userId: {
                                         type: "number",
-                                        description: "The ID of the Report Entity",
-                                        example: 225
-                                    },
-                                    date: {
-                                        type: "string",
-                                        description: "The date of the Report Entity entry",
-                                        example: "2021-01-14 00:00:00.000"
-                                    },
-                                    className: {
-                                        type: "string",
-                                        description: "The name of the Class of the Report Entity",
-                                        example: "Scratch Games"
-                                    },
-                                    classRoleName: {
-                                        type: "string",
-                                        description: "The name of the Class Role of the Report Entity; " +
-                                            "The role that the user took during the lesson",
-                                        example: "Lecturer"
-                                    },
-                                    hoursSpend: {
-                                        type: "string",
-                                        description: "The duration for which the activity was performed in hours",
-                                        example: 2
+                                        description: "The User ID of the owner of the Report Entity",
+                                        example: 14
                                     },
                                     description: {
                                         type: "string",
-                                        description: "Some words describing the Report Entity entry",
-                                        example: "The introduction lesson"
+                                        description: "Some words describing the Report Entity",
+                                        example: "The final lesson"
+                                    },
+                                    reportEntities: {
+                                        type: "array",
+                                        description: "A list of Report Entities",
+                                        items: {
+                                            $ref: "#/components/schemas/ReportEntitiesSchema"
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                }
+            }
+        };
+    }
+
+    private buildReportEntitiesSchema() {
+        return {
+            properties: {
+                id: {
+                    type: "number",
+                    description: "The ID of the Report Entity",
+                    example: 225
+                },
+                date: {
+                    type: "string",
+                    description: "The date of the Report Entity entry",
+                    example: "2021-01-14 00:00:00.000"
+                },
+                className: {
+                    type: "string",
+                    description: "The name of the Class of the Report Entity",
+                    example: "Scratch Games"
+                },
+                classRoleName: {
+                    type: "string",
+                    description: "The name of the Class Role of the Report Entity; " +
+                        "The role that the user took during the lesson",
+                    example: "Lecturer"
+                },
+                hoursSpend: {
+                    type: "string",
+                    description: "The duration for which the activity was performed in hours",
+                    example: 2
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the Report Entity entry",
+                    example: "The introduction lesson"
                 }
             }
         };
