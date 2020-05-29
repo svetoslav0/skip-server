@@ -182,6 +182,8 @@ export class ReportsRepository implements IRepository {
      * @return {Promise<number[]>}
      */
     public async findReportIdsByUserId(userId: number): Promise<number[]> {
+        const isArchived: number = 0;
+
         const result = await this.db.query(`
             SELECT
                 r.id
@@ -189,7 +191,9 @@ export class ReportsRepository implements IRepository {
                 reports AS r
             WHERE
                 user_id = ?
-        `, [userId]);
+                    AND
+                is_archived = ?
+        `, [userId, isArchived]);
 
         return result
             .map((id: number) => Object.values(id))
