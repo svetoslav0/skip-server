@@ -13,6 +13,9 @@ export class ClassesResponseFormatter {
         };
     }
 
+    /**
+     * @param {ClassEditDTO[]} classes
+     */
     private formatClasses(classes: ClassEditDTO[]) {
         return classes.map((currentClass: ClassEditDTO) => {
             return {

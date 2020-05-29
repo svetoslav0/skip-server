@@ -1,15 +1,12 @@
 import httpStatus from "http-status-codes";
 
-import { server, database, expect, Request } from "./base";
+import {database, expect, Request, server} from "./base";
 
-import { HttpMethod } from "./httpMethods";
+import {HttpMethod} from "./httpMethods";
 
-import {
-    noTokenTest,
-    wrongTokenTest
-} from "./commonTests";
+import {noTokenTest, wrongTokenTest} from "./commonTests";
 
-import { ClassesRepository } from "../repositories/ClassesRepository";
+import {ClassesRepository} from "../repositories/ClassesRepository";
 
 const classesRepository: ClassesRepository = new ClassesRepository(database);
 
@@ -20,16 +17,15 @@ const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || "";
 
 const CLASSES_CONTROLLER_URL: string = "/classes";
-const CREATE_URL: string = `${CLASSES_CONTROLLER_URL}`;
 const URL_WITH_PARAM = (id: number | string) => {
     return `${CLASSES_CONTROLLER_URL}/${id}`;
 };
 
 describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
-    describe(`POST ${CREATE_URL} tests`, () => {
+    describe(`POST ${CLASSES_CONTROLLER_URL} tests`, () => {
 
-        noTokenTest(HttpMethod.Post, CREATE_URL);
-        wrongTokenTest(HttpMethod.Post, CREATE_URL);
+        noTokenTest(HttpMethod.Post, CLASSES_CONTROLLER_URL);
+        wrongTokenTest(HttpMethod.Post, CLASSES_CONTROLLER_URL);
 
         it(`Should add a new class. Should delete it after the test finishes`, () => {
             const nameToSend: string = "Scratch games";
@@ -44,7 +40,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const expectedIsReportDeleted: boolean = true;
 
             return Request(server)
-                .post(CREATE_URL)
+                .post(CLASSES_CONTROLLER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
@@ -70,7 +66,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             };
 
             return Request(server)
-                .post(CREATE_URL)
+                .post(CLASSES_CONTROLLER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
@@ -90,7 +86,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const expectedSuccess: boolean = true;
 
             return Request(server)
-                .post(CREATE_URL)
+                .post(CLASSES_CONTROLLER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
@@ -117,7 +113,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
             const expectedErrors: number = 1;
 
             return Request(server)
-                .post(CREATE_URL)
+                .post(CLASSES_CONTROLLER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
@@ -129,7 +125,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
         });
     });
 
-    describe(`PUT ${CREATE_URL}/{id}`, () => {
+    describe(`PUT ${CLASSES_CONTROLLER_URL}/{id}`, () => {
 
         noTokenTest(HttpMethod.Put, URL_WITH_PARAM(14));
         wrongTokenTest(HttpMethod.Put, URL_WITH_PARAM(14));
@@ -227,7 +223,7 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
         });
     });
 
-    describe(`DELETE ${CREATE_URL}/{id}`, () => {
+    describe(`DELETE ${CLASSES_CONTROLLER_URL}/{id}`, () => {
 
         noTokenTest(HttpMethod.Delete, URL_WITH_PARAM(14));
         wrongTokenTest(HttpMethod.Delete, URL_WITH_PARAM(14));
@@ -293,6 +289,63 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .then(async (result: any) => {
                     expect(result.status).to.eql(httpStatus.OK);
                     expect(result.body.data.success).to.eql(expectedSuccess);
+                });
+        });
+    });
+
+    describe(`GET ${CLASSES_CONTROLLER_URL}`, () => {
+
+        noTokenTest(HttpMethod.Get, CLASSES_CONTROLLER_URL);
+        wrongTokenTest(HttpMethod.Get, CLASSES_CONTROLLER_URL);
+
+        it("Should return all available non-archived classes", () => {
+
+            const expectedCount: number = 19;
+            const expectedId: number = 28;
+            const expectedName: string = "Scratch games";
+            const expectedAgeGroup: string = "2 - 3 grade";
+            const expectedDescription = null;
+
+            return Request(server)
+                .get(CLASSES_CONTROLLER_URL)
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data)
+                        .to.have.property("count")
+                        .that.is.a("number")
+                        .that.eql(expectedCount);
+
+                    await expect(result.body.data)
+                        .to.have.property("classes")
+                        .that.is.an("array")
+                        .that.has.lengthOf(expectedCount);
+
+                    const secondClass = result.body.data.classes[1];
+
+                    await expect(secondClass)
+                        .to.have.property("id")
+                        .that.is.a("number")
+                        .that.eql(expectedId);
+
+                    await expect(secondClass)
+                        .to.have.property("name")
+                        .that.is.a("string")
+                        .that.eql(expectedName);
+
+                    await expect(secondClass)
+                        .to.have.property("ageGroup")
+                        .that.is.a("string")
+                        .that.eql(expectedAgeGroup);
+
+                    await expect(secondClass)
+                        .to.have.property("description")
+                        .that.is.a("null")
+                        .that.eql(expectedDescription);
                 });
         });
     });

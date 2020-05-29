@@ -1,7 +1,7 @@
-import { MysqlDatabase } from "../database/MysqlDatabase";
-import { ClassEditDTO } from "../data/classes/ClassEditDTO";
-import { ClassDTO } from "../data/classes/ClassDTO";
-import { IRepository } from "./IRepository";
+import {MysqlDatabase} from "../database/MysqlDatabase";
+import {ClassEditDTO} from "../data/classes/ClassEditDTO";
+import {ClassDTO} from "../data/classes/ClassDTO";
+import {IRepository} from "./IRepository";
 
 export class ClassesRepository implements IRepository {
     private db: MysqlDatabase;
@@ -132,12 +132,9 @@ export class ClassesRepository implements IRepository {
                 c.is_archived = ?
         `, [isArchived]);
 
-        const classes: ClassEditDTO[] = result.map((currentClass: any) => {
+        return result.map((currentClass: any) => {
             return new ClassEditDTO(currentClass.id, currentClass);
         });
-
-        console.log(classes);
-        return classes;
     }
 
     /**
