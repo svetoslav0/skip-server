@@ -1,14 +1,11 @@
 import httpStatus from "http-status-codes";
 
-import { server, database, expect, Request } from "./base";
-import { HttpMethod } from "./httpMethods";
+import {database, expect, Request, server} from "./base";
+import {HttpMethod} from "./httpMethods";
 
-import {
-    noTokenTest,
-    wrongTokenTest
-} from "./commonTests";
+import {noTokenTest, wrongTokenTest} from "./commonTests";
 
-import { ReportsRepository } from "../repositories/ReportsRepository";
+import {ReportsRepository} from "../repositories/ReportsRepository";
 
 const reportsRepository: ReportsRepository = new ReportsRepository(database);
 
@@ -17,7 +14,10 @@ const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
 const TOKEN_HEADING = process.env.TOKEN_HEADING || "";
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || "";
+
 const EMPLOYEE_REPORT_ID = +process.env.EMPLOYEE_REPORT_ID! || 0;
+const ADMIN_REPORT_ONE_ID = +process.env.ADMIN_REPORT_ONE_ID! || 0;
+const ADMIN_REPORT_TWO_ID = +process.env.ADMIN_REPORT_TWO_ID! || 0;
 
 const REPORTS_CONTROLLERS_URL: string = "/reports";
 const CREATE_URL: string = `${REPORTS_CONTROLLERS_URL}`;
@@ -376,6 +376,259 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
                     await expect(result.body.data.errors).to.be.an("array");
 
                     await expect(result.body.data.success).to.eql(false);
+                });
+        });
+    });
+
+    describe(`GET ${REPORTS_CONTROLLERS_URL}/id tests`, () => {
+
+        noTokenTest(HttpMethod.Get, URL_WITH_PARAM(EMPLOYEE_REPORT_ID));
+        wrongTokenTest(HttpMethod.Get, URL_WITH_PARAM(EMPLOYEE_REPORT_ID));
+
+        it("Should return data for requested report. Success test No. 1", () => {
+
+            const expectedReportName: string = "Sept 2020";
+            const expectedUserId: number = 137;
+            const expectedReportEntityId: number = 3;
+            const expectedReportEntityDate: string = "2020-05-13 00:00:00.000";
+            const expectedReportEntityClassName: string = "Micro:bit";
+            const expectedReportEntityClassRoleName: string = "Co-Lecturer";
+            const expectedReportEntityHoursSpend: number = 1;
+            const expectedReportEntityDescription = null;
+
+            return Request(server)
+                .get(URL_WITH_PARAM(EMPLOYEE_REPORT_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data)
+                        .to.have.property("name")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportName);
+
+                    await expect(result.body.data)
+                        .to.have.property("userId")
+                        .that.is.a("number")
+                        .that.is.eql(expectedUserId);
+
+                    await expect(result.body.data)
+                        .to.have.property("reportEntities")
+                        .that.is.an("array")
+                        .that.is.not.empty;
+
+                    const firstReportEntity = result.body.data.reportEntities[0];
+
+                    await expect(firstReportEntity)
+                        .to.have.property("id")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityId);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("date")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityDate);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("className")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("classRoleName")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassRoleName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("hoursSpend")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityHoursSpend);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("description")
+                        .that.is.a("null")
+                        .that.is.eql(expectedReportEntityDescription);
+                });
+        });
+
+        it("Should return data for requested report. Success test No. 2", () => {
+
+            const expectedReportName: string = "Jan 2021";
+            const expectedUserId: number = 136;
+            const expectedReportEntitiesCount: number = 3;
+            const expectedReportEntityId: number = 114;
+            const expectedReportEntityDate: string = "2021-01-14 00:00:00.000";
+            const expectedReportEntityClassName: string = "HTML and CSS";
+            const expectedReportEntityClassRoleName: string = "Lecturer";
+            const expectedReportEntityHoursSpend: number = 2;
+            const expectedReportEntityDescription = "Some Rand Desc";
+
+            return Request(server)
+                .get(URL_WITH_PARAM(ADMIN_REPORT_ONE_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data)
+                        .to.have.property("name")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportName);
+
+                    await expect(result.body.data)
+                        .to.have.property("userId")
+                        .that.is.a("number")
+                        .that.is.eql(expectedUserId);
+
+                    await expect(result.body.data)
+                        .to.have.property("reportEntities")
+                        .that.is.an("array")
+                        .that.has.lengthOf(expectedReportEntitiesCount);
+
+                    const firstReportEntity = result.body.data.reportEntities[0];
+
+                    await expect(firstReportEntity)
+                        .to.have.property("id")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityId);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("date")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityDate);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("className")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("classRoleName")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassRoleName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("hoursSpend")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityHoursSpend);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("description")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityDescription);
+                });
+        });
+
+        it("Should return data for requested report. Success test No. 3", () => {
+
+            const expectedReportName: string = "March 2021";
+            const expectedUserId: number = 136;
+            const expectedReportEntitiesCount: number = 1;
+            const expectedReportEntityId: number = 117;
+            const expectedReportEntityDate: string = "2021-02-15 00:00:00.000";
+            const expectedReportEntityClassName: string = "HTML and CSS";
+            const expectedReportEntityClassRoleName: string = "Lecturer";
+            const expectedReportEntityHoursSpend: number = 4;
+            const expectedReportEntityDescription = "Some Desc";
+
+            return Request(server)
+                .get(URL_WITH_PARAM(ADMIN_REPORT_TWO_ID))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.OK);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data)
+                        .to.have.property("name")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportName);
+
+                    await expect(result.body.data)
+                        .to.have.property("userId")
+                        .that.is.a("number")
+                        .that.is.eql(expectedUserId);
+
+                    await expect(result.body.data)
+                        .to.have.property("reportEntities")
+                        .that.is.an("array")
+                        .that.has.lengthOf(expectedReportEntitiesCount);
+
+                    const firstReportEntity = result.body.data.reportEntities[0];
+
+                    await expect(firstReportEntity)
+                        .to.have.property("id")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityId);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("date")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityDate);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("className")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("classRoleName")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityClassRoleName);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("hoursSpend")
+                        .that.is.a("number")
+                        .that.is.eql(expectedReportEntityHoursSpend);
+
+                    await expect(firstReportEntity)
+                        .to.have.property("description")
+                        .that.is.a("string")
+                        .that.is.eql(expectedReportEntityDescription);
+                });
+        });
+
+        it("Should fail. Requested Report ID is not numeric", () => {
+
+            const id: string = "15a";
+
+            return Request(server)
+                .get(URL_WITH_PARAM(id))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data)
+                        .to.have.property("error")
+                        .that.is.a("string");
+                });
+        });
+
+        it("Should fail. Requested Report ID does not exist", () => {
+
+            const id: number = 0;
+
+            return Request(server)
+                .get(URL_WITH_PARAM(id))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (result: any) => {
+                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(result.body).to.have.property("data");
+                    await expect(result.body.data)
+                        .to.have.property("error")
+                        .that.is.a("string");
                 });
         });
     });

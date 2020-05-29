@@ -10,7 +10,7 @@ import { RepositoryFactory } from "../../repositories/RepositoryFactory";
 @ValidatorConstraint({async: true})
 export class IsResourceIdExisting implements ValidatorConstraintInterface {
     public validate(id: number, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
-        return new Promise(async (resolve) => {
+        return new Promise(async (resolve, reject) => {
             if (!id) {
                 resolve(true);
             }
@@ -19,9 +19,12 @@ export class IsResourceIdExisting implements ValidatorConstraintInterface {
             const repository: IRepository = new RepositoryFactory()
                 .createRepository(repositoryType, database);
 
-            const result = await repository.findById(id);
-
-            resolve(!!result);
+            try {
+                const result = await repository.findById(id);
+                resolve(!!result);
+            } catch (err) {
+                reject(err);
+            }
         });
     }
 }

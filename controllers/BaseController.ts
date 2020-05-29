@@ -9,8 +9,6 @@ export abstract class BaseController {
     protected _request!: express.Request;
 
     /**
-     * This methods builds response when status is FORBIDDEN
-     *
      * @param {ManipulationsResponseBuilder} responseBuilder
      * @returns ManipulationsResponseBuilder
      */
@@ -24,8 +22,6 @@ export abstract class BaseController {
     }
 
     /**
-     * This methods builds response when status is BAD_REQUEST
-     *
      * @param {ManipulationsResponseBuilder} responseBuilder
      * @param {[string]}        errors
      * @returns {ManipulationsResponseBuilder}
@@ -42,8 +38,6 @@ export abstract class BaseController {
     }
 
     /**
-     * This methods builds response when status is INTERNAL_SERVER_ERROR
-     *
      * @param {ManipulationsResponseBuilder} responseBuilder
      * @returns {ManipulationsResponseBuilder}
      */
@@ -56,23 +50,22 @@ export abstract class BaseController {
     }
 
     /**
-     * This methods handles errors from 'class-validation' pack methods
-     *
      * @param validationError
      * @returns {[string]}
      */
-    protected buildValidationErrors(validationError: any): string[] {
-        return validationError
-            .map((error: any) => error.constraints)
-            .map((error: any) => Object.values(error))
-            .flat();
+    protected buildValidationErrors(validationError: any): any[] {
+
+        if (!Array.isArray(validationError)) {
+            return [validationError.message];
+        } else {
+            return validationError
+                .map((error: any) => error.constraints)
+                .map((error: any) => Object.values(error))
+                .flat();
+        }
     }
 
     /**
-     * This methods checks if the logged user has access
-     *  to edit or delete this resource.
-     *  NOTE: Admins can edit and delete every report
-     *
      * @returns {Promise<boolean>}
      * @param {number} ownerId
      */
@@ -85,8 +78,6 @@ export abstract class BaseController {
     }
 
     /**
-     * This method throws an exception if provided ID is not numeric
-     *
      * @param id
      */
     protected validateIdParam(id: any): void {
