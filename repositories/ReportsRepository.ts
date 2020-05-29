@@ -155,9 +155,9 @@ export class ReportsRepository implements IRepository {
                     ON re.class_role_id = cr.id
             WHERE
                 r.id = ?
-                    AND
-                re.is_archived = ?
-        `, [reportId, isArchived]);
+#                     AND
+#                 re.is_archived = ?
+        `, [reportId]);
     }
 
     /**

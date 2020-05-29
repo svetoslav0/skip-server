@@ -728,12 +728,12 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
 
         it("Should succeed and return requested data. Success test No. 2", () => {
 
-            const expectedCount: number = 13;
+            const expectedCount: number = 14;
             const expectedReportName: string = "Sept 2020";
             const expectedUserId: number = 137;
             const expectedReportDescription = null;
-            const expectedReportEntitiesCount: number = 11;
-            const expectedReportEntityId: number = 3;
+            const expectedReportEntitiesCount: number = 1;
+            const expectedReportEntityId: number = 56;
             const expectedReportEntityDate: string = "2020-05-13 00:00:00.000";
             const expectedReportEntityClassName: string = "Micro:bit";
             const expectedReportEntityClassRoleName: string = "Co-Lecturer";
