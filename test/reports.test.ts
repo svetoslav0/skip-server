@@ -728,7 +728,7 @@ describe(`${REPORTS_CONTROLLERS_URL} tests`, () => {
 
         it("Should succeed and return requested data. Success test No. 2", () => {
 
-            const expectedCount: number = 14;
+            const expectedCount: number = 13;
             const expectedReportName: string = "Sept 2020";
             const expectedUserId: number = 137;
             const expectedReportDescription = null;
