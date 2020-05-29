@@ -8,6 +8,8 @@ import { ClassEditDTO } from "../../data/classes/ClassEditDTO";
 import { BaseController } from "../BaseController";
 import { MESSAGES } from "../../common/consts/MESSAGES";
 import { ManipulationsResponseBuilder } from "../../data/ManipulationsResponseBuilder";
+import {DataResponseBuilder} from "../../data/DataResponseBuilder";
+import {ClassesResponseFormatter} from "./ClassesResponseFormatter";
 
 export class ClassesController extends BaseController {
 
@@ -132,5 +134,17 @@ export class ClassesController extends BaseController {
         }
 
         return this.buildInternalErrorResponse(responseBuilder);
+    }
+
+    /**
+     * @return {Promise<DataResponseBuilder>}
+     */
+    public async getAll(): Promise<DataResponseBuilder> {
+        const classesCount: number = await this.repository.findCount();
+        const classes: ClassEditDTO[] = await this.repository.findAll();
+
+        const result = new ClassesResponseFormatter().formatAllClasses(classesCount, classes);
+
+        return new DataResponseBuilder(httpStatus.OK, result);
     }
 }

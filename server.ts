@@ -1,4 +1,4 @@
-process.env.ENVIRONMENT = "test"; console.log("!!! USING TEST ENV !!!");
+// process.env.ENVIRONMENT = "test"; console.log("!!! USING TEST ENV !!!");
 
 import bodyParser from "body-parser";
 import "./config/env";
