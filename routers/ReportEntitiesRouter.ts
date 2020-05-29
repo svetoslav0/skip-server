@@ -2,7 +2,7 @@ import express from "express";
 import { IRoutable } from "./IRoutable";
 import { APIMiddleware } from "../common/APIMiddleware";
 import { ReportEntitiesController } from "../controllers/reportEntities/ReportEntitiesController";
-import { ResponseBuilder } from "../data/ResponseBuilder";
+import { ManipulationsResponseBuilder } from "../data/ManipulationsResponseBuilder";
 
 export class ReportEntitiesRouter implements IRoutable {
 
@@ -29,7 +29,7 @@ export class ReportEntitiesRouter implements IRoutable {
 
             this.controller
                 .create(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -45,7 +45,7 @@ export class ReportEntitiesRouter implements IRoutable {
 
             this.controller
                 .edit(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -61,7 +61,7 @@ export class ReportEntitiesRouter implements IRoutable {
 
             this.controller
                 .archive(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());

@@ -2,19 +2,17 @@ import express from "express";
 import httpStatus from "http-status-codes";
 
 import { MESSAGES } from "../common/consts/MESSAGES";
-import { ResponseBuilder } from "../data/ResponseBuilder";
+import { ManipulationsResponseBuilder } from "../data/ManipulationsResponseBuilder";
 import { ROLES } from "../common/consts/ROLES";
 
 export abstract class BaseController {
     protected _request!: express.Request;
 
     /**
-     * This methods builds response when status is FORBIDDEN
-     *
-     * @param {ResponseBuilder} responseBuilder
-     * @returns ResponseBuilder
+     * @param {ManipulationsResponseBuilder} responseBuilder
+     * @returns ManipulationsResponseBuilder
      */
-    protected buildForbiddenResponse(responseBuilder: ResponseBuilder): ResponseBuilder {
+    protected buildForbiddenResponse(responseBuilder: ManipulationsResponseBuilder): ManipulationsResponseBuilder {
 
         return responseBuilder
             .setHttpStatus(httpStatus.FORBIDDEN)
@@ -24,15 +22,13 @@ export abstract class BaseController {
     }
 
     /**
-     * This methods builds response when status is BAD_REQUEST
-     *
-     * @param {ResponseBuilder} responseBuilder
+     * @param {ManipulationsResponseBuilder} responseBuilder
      * @param {[string]}        errors
-     * @returns {ResponseBuilder}
+     * @returns {ManipulationsResponseBuilder}
      */
     protected buildBadRequestResponse(
-        responseBuilder: ResponseBuilder, errors: string[]
-    ): ResponseBuilder {
+        responseBuilder: ManipulationsResponseBuilder, errors: string[]
+    ): ManipulationsResponseBuilder {
 
         return responseBuilder
             .setHttpStatus(httpStatus.BAD_REQUEST)
@@ -42,12 +38,10 @@ export abstract class BaseController {
     }
 
     /**
-     * This methods builds response when status is INTERNAL_SERVER_ERROR
-     *
-     * @param {ResponseBuilder} responseBuilder
-     * @returns {ResponseBuilder}
+     * @param {ManipulationsResponseBuilder} responseBuilder
+     * @returns {ManipulationsResponseBuilder}
      */
-    protected buildInternalErrorResponse(responseBuilder: ResponseBuilder): ResponseBuilder {
+    protected buildInternalErrorResponse(responseBuilder: ManipulationsResponseBuilder): ManipulationsResponseBuilder {
 
         return responseBuilder
             .setHttpStatus(httpStatus.INTERNAL_SERVER_ERROR)
@@ -56,23 +50,22 @@ export abstract class BaseController {
     }
 
     /**
-     * This methods handles errors from 'class-validation' pack methods
-     *
      * @param validationError
      * @returns {[string]}
      */
-    protected buildValidationErrors(validationError: any): string[] {
-        return validationError
-            .map((error: any) => error.constraints)
-            .map((error: any) => Object.values(error))
-            .flat();
+    protected buildValidationErrors(validationError: any): any[] {
+
+        if (!Array.isArray(validationError)) {
+            return [validationError.message];
+        } else {
+            return validationError
+                .map((error: any) => error.constraints)
+                .map((error: any) => Object.values(error))
+                .flat();
+        }
     }
 
     /**
-     * This methods checks if the logged user has access
-     *  to edit or delete this resource.
-     *  NOTE: Admins can edit and delete every report
-     *
      * @returns {Promise<boolean>}
      * @param {number} ownerId
      */
@@ -85,8 +78,6 @@ export abstract class BaseController {
     }
 
     /**
-     * This method throws an exception if provided ID is not numeric
-     *
      * @param id
      */
     protected validateIdParam(id: any): void {

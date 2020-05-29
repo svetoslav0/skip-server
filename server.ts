@@ -79,8 +79,7 @@ server.get("/specification", (req, res) => {
 server.use((
         err: express.ErrorRequestHandler,
         req: express.Request,
-        res: express.Response,
-        next: express.NextFunction) => {
+        res: express.Response) => {
 
     handleError(err, res);
 });

@@ -27,6 +27,7 @@ export class APISpecification {
                     post: this.buildReportsCreatePath()
                 },
                 "/reports/:id": {
+                    get: this.buildGetReportByIdPath(),
                     put: this.buildReportsEditPath(),
                     delete: this.buildReportsDeletePath()
                 },
@@ -79,6 +80,15 @@ export class APISpecification {
                             type: "number"
                         },
                         required: true
+                    },
+                    reportIdParam: {
+                        in: "path",
+                        name: "id",
+                        description: "The Report ID",
+                        schema: {
+                            type: "number"
+                        },
+                        required: true
                     }
                 },
                 schemas: {
@@ -108,6 +118,7 @@ export class APISpecification {
                     EditReportEntityResponseSchema: this.buildEditReportEntityResponseSchema(),
                     DeleteReportEntityResponseSchema: this.buildDeleteReportEntityResponseSchema(),
                     GetUserByIdResponseSchema: this.buildGetUserByIdResponseSchema(),
+                    GetReportByIdResponseSchema: this.buildGetReportByIdResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -132,7 +143,7 @@ export class APISpecification {
             responses: {
                 200: {
                     description: "OK. Response with user data is returned.",
-                        content: {
+                    content: {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/GetUserByIdResponseSchema"
@@ -254,6 +265,35 @@ export class APISpecification {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/CreateReportResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        };
+    }
+
+    private buildGetReportByIdPath() {
+        return {
+            summary: "Get report by its ID",
+            description: "This method returns a report with all report entities " +
+                "that are associated with it",
+            tags: [
+                "Reports"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/reportIdParam"
+                }
+            ],
+            responses: {
+                200: {
+                    description: "OK. Response with report data is returned.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/GetReportByIdResponseSchema"
                             }
                         }
                     }
@@ -1277,6 +1317,67 @@ export class APISpecification {
                             type: "string",
                             description: "Optional description of the user profile",
                             example: "Some words describing the user"
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private buildGetReportByIdResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        name: {
+                            type: "string",
+                            description: "The name of the report",
+                            example: "January 2021"
+                        },
+                        userId: {
+                            type: "number",
+                            description: "The ID of the user that owns the report"
+                        },
+                        reportEntities: {
+                            type: "array",
+                            description: "List of all Report Entities that belong to the requested Report",
+                            items: {
+                                properties: {
+                                    id: {
+                                        type: "number",
+                                        description: "The ID of the Report Entity",
+                                        example: 225
+                                    },
+                                    date: {
+                                        type: "string",
+                                        description: "The date of the Report Entity entry",
+                                        example: "2021-01-14 00:00:00.000"
+                                    },
+                                    className: {
+                                        type: "string",
+                                        description: "The name of the Class of the Report Entity",
+                                        example: "Scratch Games"
+                                    },
+                                    classRoleName: {
+                                        type: "string",
+                                        description: "The name of the Class Role of the Report Entity; " +
+                                            "The role that the user took during the lesson",
+                                        example: "Lecturer"
+                                    },
+                                    hoursSpend: {
+                                        type: "string",
+                                        description: "The duration for which the activity was performed in hours",
+                                        example: 2
+                                    },
+                                    description: {
+                                        type: "string",
+                                        description: "Some words describing the Report Entity entry",
+                                        example: "The introduction lesson"
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -2,7 +2,8 @@ import express from "express";
 import { APIMiddleware } from "../common/APIMiddleware";
 import { ReportsController } from "../controllers/reports/ReportsController";
 import { IRoutable } from "./IRoutable";
-import { ResponseBuilder } from "../data/ResponseBuilder";
+import { ManipulationsResponseBuilder } from "../data/ManipulationsResponseBuilder";
+import { DataResponseBuilder } from "../data/DataResponseBuilder";
 
 export class ReportsRouter implements IRoutable {
 
@@ -15,21 +16,17 @@ export class ReportsRouter implements IRoutable {
     }
 
     /**
-     * This method registers all Reports endpoints
-     *
      * @returns {express.Router}
      */
     public registerRoutes(): express.Router {
         this.signCreateRoute();
         this.signEditRoute();
         this.signArchiveRoute();
+        this.signGetReport();
 
         return this.router;
     }
 
-    /**
-     * This method registers POST /reports
-     */
     private signCreateRoute() {
         this.router.post("/",
             APIMiddleware.isUserEmployee,
@@ -37,7 +34,7 @@ export class ReportsRouter implements IRoutable {
 
             this.controller
                 .create(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -46,9 +43,6 @@ export class ReportsRouter implements IRoutable {
         });
     }
 
-    /**
-     * This method registers PUT /reports/{id}
-     */
     private signEditRoute() {
         this.router.put("/:id",
             APIMiddleware.isUserEmployee,
@@ -56,7 +50,7 @@ export class ReportsRouter implements IRoutable {
 
             this.controller
                 .edit(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -65,9 +59,6 @@ export class ReportsRouter implements IRoutable {
         });
     }
 
-    /**
-     * This method registers DELETE /reports/{id}
-     */
     private signArchiveRoute() {
         this.router.delete("/:id",
             APIMiddleware.isUserEmployee,
@@ -75,9 +66,25 @@ export class ReportsRouter implements IRoutable {
 
             this.controller
                 .archive(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
+                        .send(result.buildResponse());
+                })
+                .catch(next);
+        });
+    }
+
+    private signGetReport() {
+        this.router.get("/:id",
+            APIMiddleware.isUserEmployee,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            this.controller
+                .getReportById(req)
+                .then((result: DataResponseBuilder) => {
+                    return res
+                        .status(result.getStatus())
                         .send(result.buildResponse());
                 })
                 .catch(next);

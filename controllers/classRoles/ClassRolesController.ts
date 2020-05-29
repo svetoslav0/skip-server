@@ -7,7 +7,7 @@ import { ClassRolesRepository } from "../../repositories/ClassRolesRepository";
 import { ClassRoleDTO } from "../../data/classRoles/ClassRoleDTO";
 import { ClassRoleEditDTO } from "../../data/classRoles/ClassRoleEditDTO";
 import { MESSAGES } from "../../common/consts/MESSAGES";
-import { ResponseBuilder } from "../../data/ResponseBuilder";
+import { ManipulationsResponseBuilder } from "../../data/ManipulationsResponseBuilder";
 
 export class ClassRolesController extends BaseController {
 
@@ -20,10 +20,10 @@ export class ClassRolesController extends BaseController {
 
     /**
      * @param {express.Request} request
-     * @returns {Promise<ResponseBuilder>}
+     * @returns {Promise<ManipulationsResponseBuilder>}
      */
-    public async create(request: express.Request): Promise<ResponseBuilder> {
-        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+    public async create(request: express.Request): Promise<ManipulationsResponseBuilder> {
+        const responseBuilder: ManipulationsResponseBuilder = new ManipulationsResponseBuilder();
         const classRole: ClassRoleDTO = new ClassRoleDTO(request.body);
 
         try {
@@ -48,10 +48,10 @@ export class ClassRolesController extends BaseController {
 
     /**
      * @param {express.Request} request
-     * @returns {Promise<ResponseBuilder>}
+     * @returns {Promise<ManipulationsResponseBuilder>}
      */
-    public async edit(request: express.Request): Promise<ResponseBuilder> {
-        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+    public async edit(request: express.Request): Promise<ManipulationsResponseBuilder> {
+        const responseBuilder: ManipulationsResponseBuilder = new ManipulationsResponseBuilder();
 
         try {
             this.validateIdParam(request.params.id);
@@ -103,8 +103,8 @@ export class ClassRolesController extends BaseController {
     /**
      * @param {express.Request} request
      */
-    public async archive(request: express.Request): Promise<ResponseBuilder> {
-        const responseBuilder: ResponseBuilder = new ResponseBuilder();
+    public async archive(request: express.Request): Promise<ManipulationsResponseBuilder> {
+        const responseBuilder: ManipulationsResponseBuilder = new ManipulationsResponseBuilder();
 
         try {
             this.validateIdParam(request.params.id);

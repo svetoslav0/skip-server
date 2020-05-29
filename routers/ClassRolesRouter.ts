@@ -2,7 +2,7 @@ import express from "express";
 import { ClassRolesController } from "../controllers/classRoles/ClassRolesController";
 import { APIMiddleware } from "../common/APIMiddleware";
 import { IRoutable } from "./IRoutable";
-import { ResponseBuilder } from "../data/ResponseBuilder";
+import { ManipulationsResponseBuilder } from "../data/ManipulationsResponseBuilder";
 
 export class ClassRolesRouter implements IRoutable {
     private readonly router: express.Router;
@@ -36,7 +36,7 @@ export class ClassRolesRouter implements IRoutable {
 
             this.controller
                 .create(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -55,7 +55,7 @@ export class ClassRolesRouter implements IRoutable {
 
             this.controller
                 .edit(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());
@@ -74,7 +74,7 @@ export class ClassRolesRouter implements IRoutable {
 
             this.controller
                 .archive(req)
-                .then((result: ResponseBuilder) => {
+                .then((result: ManipulationsResponseBuilder) => {
                     return res
                         .status(result.httpStatus)
                         .send(result.buildResponse());

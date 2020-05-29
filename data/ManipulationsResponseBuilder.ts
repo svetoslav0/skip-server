@@ -1,4 +1,4 @@
-export class ResponseBuilder {
+export class ManipulationsResponseBuilder {
     protected _httpStatus!: number;
     protected _resourceId!: number;
     protected _success!: boolean;

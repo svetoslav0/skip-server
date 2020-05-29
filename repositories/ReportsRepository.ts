@@ -127,6 +127,40 @@ export class ReportsRepository implements IRepository {
     }
 
     /**
+     * @param {number} reportId
+     * @return {Promise<any>}
+     */
+    public async findEntitiesByReportId(reportId: number) {
+        const isArchived: number = 0;
+
+        return await this.db.query(`
+            SELECT
+                re.id AS reportEntityId,
+                re.report_id AS reportId,
+                re.date,
+                c.name AS className,
+                cr.name AS classRoleName,
+                re.hours_spend AS hoursSpend,
+                re.description
+            FROM
+                reports AS r
+            INNER JOIN
+                report_entities AS re
+                    ON r.id = re.report_id
+            INNER JOIN
+                classes AS c
+                    ON re.class_id = c.id
+            INNER JOIN
+                class_roles AS cr
+                    ON re.class_role_id = cr.id
+            WHERE
+                r.id = ?
+                    AND
+                re.is_archived = ?
+        `, [reportId, isArchived]);
+    }
+
+    /**
      * *** USED FOR TEST PURPOSES ***
      * Deletes report from the database by given report ID
      *
