@@ -33,7 +33,8 @@ export class APISpecification {
                     delete: this.buildReportsDeletePath()
                 },
                 "/classes": {
-                    post: this.buildClassesCreatePath()
+                    post: this.buildClassesCreatePath(),
+                    get: this.buildGetClassesPath(),
                 },
                 "/classes/:id": {
                     put: this.buildClassesEditPath(),
@@ -58,7 +59,7 @@ export class APISpecification {
                 parameters: {
                     authHeaderParam: {
                         in: "header",
-                        name: "auth-header",
+                        name: "auth-token",
                         schema: {
                             type: "string"
                         },
@@ -123,6 +124,7 @@ export class APISpecification {
                     GetUserByIdResponseSchema: this.buildGetUserByIdResponseSchema(),
                     GetReportByIdResponseSchema: this.buildGetReportByIdResponseSchema(),
                     GetReportsForUserResponseSchema: this.buildGetReportsForUserResponseSchema(),
+                    GetAllClassesResponseSchema: this.buildGetAllClassesResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -177,7 +179,7 @@ export class APISpecification {
             ],
             responses: {
                 200: {
-                    description: "OK. List of all avaiable non-archive reports is returned.",
+                    description: "OK. List of all available non-archive reports is returned.",
                     content: {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
@@ -216,6 +218,14 @@ export class APISpecification {
             responses: {
                 201: {
                     description: "Message that shows that the user has been successfully added it the database and its ID",
+                    headers: {
+                        "auth-token": {
+                            schema: {
+                                type: "string"
+                            },
+                            description: "Token used to identify the user"
+                        }
+                    },
                     content: {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
@@ -447,6 +457,34 @@ export class APISpecification {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/CreateClassResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        };
+    }
+
+    private buildGetClassesPath() {
+        return {
+            summary: "Get all classes",
+            description: "This method return all available non-archived classes",
+            tags: [
+                "Classes"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                }
+            ],
+            responses: {
+                200: {
+                    description: "OK. List of all available non-archived Classes is returned.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/GetAllClassesResponseSchema"
                             }
                         }
                     }
@@ -1435,6 +1473,52 @@ export class APISpecification {
                                         items: {
                                             $ref: "#/components/schemas/ReportEntitiesSchema"
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private buildGetAllClassesResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        count: {
+                            type: "number",
+                            description: "The count of all Classes",
+                            example: 15
+                        },
+                        classes: {
+                            type: "array",
+                            description: "List of all non-archived Classes",
+                            items: {
+                                properties: {
+                                    id: {
+                                        type: "number",
+                                        description: "The ID of the Class",
+                                        example: 13
+                                    },
+                                    name: {
+                                        type: "string",
+                                        description: "The name of the Class",
+                                        example: "First Steps with Scratch"
+                                    },
+                                    ageGroup: {
+                                        type: "string",
+                                        description: "The age group of the Class",
+                                        example: "7 - 12 Grade"
+                                    },
+                                    description: {
+                                        type: "string",
+                                        description: "Some words describing the Class",
+                                        example: "Some words"
                                     }
                                 }
                             }
