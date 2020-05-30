@@ -3,6 +3,7 @@ import { APIMiddleware } from "../common/APIMiddleware";
 import { ClassesController } from "../controllers/classes/ClassesController";
 import { IRoutable } from "./IRoutable";
 import { ManipulationsResponseBuilder } from "../data/ManipulationsResponseBuilder";
+import {DataResponseBuilder} from "../data/DataResponseBuilder";
 
 export class ClassesRouter implements IRoutable {
 
@@ -21,6 +22,7 @@ export class ClassesRouter implements IRoutable {
         this.signCreateRoute();
         this.signEditRoute();
         this.signArchiveRoute();
+        this.signGetClassesRoute();
 
         return this.router;
     }
@@ -70,6 +72,21 @@ export class ClassesRouter implements IRoutable {
                         .send(result.buildResponse());
                 })
                 .catch(next);
+        });
+    }
+
+    private signGetClassesRoute() {
+        this.router.get("/",
+            APIMiddleware.isUserEmployee,
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            this.controller
+                .getAll()
+                .then((result: DataResponseBuilder) => {
+                    return res
+                        .status(result.getStatus())
+                        .send(result.buildResponse());
+                });
         });
     }
 }

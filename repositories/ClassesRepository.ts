@@ -1,7 +1,7 @@
-import { MysqlDatabase } from "../database/MysqlDatabase";
-import { ClassEditDTO } from "../data/classes/ClassEditDTO";
-import { ClassDTO } from "../data/classes/ClassDTO";
-import { IRepository } from "./IRepository";
+import {MysqlDatabase} from "../database/MysqlDatabase";
+import {ClassEditDTO} from "../data/classes/ClassEditDTO";
+import {ClassDTO} from "../data/classes/ClassDTO";
+import {IRepository} from "./IRepository";
 
 export class ClassesRepository implements IRepository {
     private db: MysqlDatabase;
@@ -97,6 +97,44 @@ export class ClassesRepository implements IRepository {
         `, [isArchived, id]);
 
         return result.affectedRows === 1;
+    }
+
+    public async findCount(): Promise<number> {
+        const isArchived: number = 0;
+
+        const result = await this.db.query(`
+            SELECT
+                COUNT(*) AS count
+            FROM
+                classes
+            WHERE
+                is_archived = ?
+        `, [isArchived]);
+
+        return result[0].count;
+    }
+
+    /**
+     * @return {Promise<ClassEditDTO[]>}
+     */
+    public async findAll(): Promise<ClassEditDTO[]> {
+        const isArchived: number = 0;
+
+        const result = await this.db.query(`
+            SELECT
+                c.id,
+                c.name,
+                c.age_group AS ageGroup,
+                c.description
+            FROM
+                classes AS c
+            WHERE
+                c.is_archived = ?
+        `, [isArchived]);
+
+        return result.map((currentClass: any) => {
+            return new ClassEditDTO(currentClass.id, currentClass);
+        });
     }
 
     /**

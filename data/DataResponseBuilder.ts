@@ -10,13 +10,6 @@ export class DataResponseBuilder {
         this.data = data;
     }
 
-    public buildData(): IDataResponseBuilder {
-        return {
-            httpStatus: this.status,
-            data: this.data
-        };
-    }
-
     public buildResponse() {
         return {
             data: this.data
