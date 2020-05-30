@@ -18,12 +18,15 @@ export class ClassEditDTO {
 
     private _description!: string;
 
+    private _isArchived!: number;
+
     constructor(id: number, reqBody: any) {
         this
             .setId(id)
             .setName(reqBody.name)
             .setAgeGroup(reqBody.ageGroup)
-            .setDescription(reqBody.description);
+            .setDescription(reqBody.description)
+            .setIsArchived(reqBody.isArchived);
     }
 
     get id(): number {
@@ -40,6 +43,10 @@ export class ClassEditDTO {
 
     get description(): string {
         return this._description;
+    }
+
+    get isArchived(): number {
+        return  this._isArchived;
     }
 
     public setId(id: number) {
@@ -59,6 +66,11 @@ export class ClassEditDTO {
 
     public setDescription(description: string) {
         this._description = description;
+        return this;
+    }
+
+    public setIsArchived(isArchived: number) {
+        this._isArchived = isArchived;
         return this;
     }
 }

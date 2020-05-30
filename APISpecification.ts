@@ -1519,6 +1519,11 @@ export class APISpecification {
                                         type: "string",
                                         description: "Some words describing the Class",
                                         example: "Some words"
+                                    },
+                                    isArchived: {
+                                        type: "boolean",
+                                        description: "Show if the Class is archived or not",
+                                        example: false
                                     }
                                 }
                             }

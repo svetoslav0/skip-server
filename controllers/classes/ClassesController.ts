@@ -147,4 +147,28 @@ export class ClassesController extends BaseController {
 
         return new DataResponseBuilder(httpStatus.OK, result);
     }
+
+    public async getById(request: express.Request): Promise<DataResponseBuilder> {
+        try {
+            this.validateIdParam(request.params.id);
+        } catch (error) {
+            const data = {
+                error: error.message
+            };
+            return new DataResponseBuilder(httpStatus.BAD_REQUEST, data);
+        }
+
+        const id: number = +request.params.id;
+        const currentClass = await this.repository.findById(id);
+
+        if (!currentClass) {
+            const data = {
+                error: MESSAGES.ERRORS.CLASSES.ID_FIELD_NOT_EXISTING_MESSAGE
+            };
+            return new DataResponseBuilder(httpStatus.BAD_REQUEST, data);
+        }
+
+        const response = new ClassesResponseFormatter().formatGetClassById(currentClass);
+        return new DataResponseBuilder(httpStatus.OK, response);
+    }
 }

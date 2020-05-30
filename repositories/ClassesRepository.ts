@@ -42,7 +42,8 @@ export class ClassesRepository implements IRepository {
                 id,
                 name,
                 age_group AS ageGroup,
-                description
+                description,
+                is_archived AS isArchived
             FROM
                 classes
             WHERE
