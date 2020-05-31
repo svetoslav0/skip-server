@@ -44,27 +44,27 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.CREATED);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.CREATED);
 
-                    await expect(result).to.have.property("body");
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("resourceId");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).not.to.have.property("error");
-                    await expect(result.body.data).not.to.have.property("errors");
+                    await expect(response).to.have.property("body");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("resourceId");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).not.to.have.property("error");
+                    await expect(response.body.data).not.to.have.property("errors");
 
-                    await expect(result.body.data.resourceId).to.be.a("number");
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(response.body.data.resourceId).to.be.a("number");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
 
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    return result.body.data.resourceId;
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    return response.body.data.resourceId;
                 })
                 .then(async (classRoleId: number) => {
-                    const result: boolean = await classRolesRepository.deleteById(classRoleId);
-                    await expect(result).to.eql(true);
+                    const response: boolean = await classRolesRepository.deleteById(classRoleId);
+                    await expect(response).to.eql(true);
                 });
         });
 
@@ -84,28 +84,28 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.CREATED);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.CREATED);
 
-                    await expect(result).to.have.property("body");
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("resourceId");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).not.to.have.property("error");
-                    await expect(result.body.data).not.to.have.property("errors");
+                    await expect(response).to.have.property("body");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("resourceId");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).not.to.have.property("error");
+                    await expect(response.body.data).not.to.have.property("errors");
 
-                    await expect(result.body.data.resourceId).to.be.a("number");
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(response.body.data.resourceId).to.be.a("number");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
 
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.resourceId;
+                    return response.body.data.resourceId;
                 })
                 .then(async (classRoleId: number) => {
-                    const result: boolean = await classRolesRepository.deleteById(classRoleId);
-                    await expect(result).to.eql(true);
+                    const response: boolean = await classRolesRepository.deleteById(classRoleId);
+                    await expect(response).to.eql(true);
                 });
         });
 
@@ -125,28 +125,28 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.CREATED);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.CREATED);
 
-                    await expect(result).to.have.property("body");
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("resourceId");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).not.to.have.property("error");
-                    await expect(result.body.data).not.to.have.property("errors");
+                    await expect(response).to.have.property("body");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("resourceId");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).not.to.have.property("error");
+                    await expect(response.body.data).not.to.have.property("errors");
 
-                    await expect(result.body.data.resourceId).to.be.a("number");
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(response.body.data.resourceId).to.be.a("number");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
 
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.resourceId;
+                    return response.body.data.resourceId;
                 })
                 .then(async (classRoleId: any) => {
-                    const result: boolean = await classRolesRepository.deleteById(classRoleId);
-                    await expect(result).to.eql(true);
+                    const response: boolean = await classRolesRepository.deleteById(classRoleId);
+                    await expect(response).to.eql(true);
                 });
         });
 
@@ -166,28 +166,28 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.CREATED);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.CREATED);
 
-                    await expect(result).to.have.property("body");
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("resourceId");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).not.to.have.property("error");
-                    await expect(result.body.data).not.to.have.property("errors");
+                    await expect(response).to.have.property("body");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("resourceId");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).not.to.have.property("error");
+                    await expect(response.body.data).not.to.have.property("errors");
 
-                    await expect(result.body.data.resourceId).to.be.a("number");
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(response.body.data.resourceId).to.be.a("number");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
 
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.resourceId;
+                    return response.body.data.resourceId;
                 })
                 .then(async (classRoleId: any) => {
-                    const result: boolean = await classRolesRepository.deleteById(classRoleId);
-                    await expect(result).to.eql(true);
+                    const response: boolean = await classRolesRepository.deleteById(classRoleId);
+                    await expect(response).to.eql(true);
                 });
         });
 
@@ -208,16 +208,16 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                .then(async (response: any) => {
+                    expect(response.status).to.eql(httpStatus.FORBIDDEN);
 
-                    expect(result).to.have.property("body");
-                    expect(result.body).to.have.property("data");
-                    expect(result.body.data).to.have.property("error");
-                    expect(result.body.data).to.have.property("message");
+                    expect(response).to.have.property("body");
+                    expect(response.body).to.have.property("data");
+                    expect(response.body.data).to.have.property("error");
+                    expect(response.body.data).to.have.property("message");
 
-                    expect(result.body.data.error).to.be.a("string");
-                    expect(result.body.data.message).to.be.a("string");
+                    expect(response.body.data.error).to.be.a("string");
+                    expect(response.body.data.message).to.be.a("string");
                 });
         });
 
@@ -235,20 +235,20 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    expect(response.status).to.eql(httpStatus.BAD_REQUEST);
 
-                    expect(result).to.have.property("body");
-                    expect(result.body).to.have.property("data");
-                    expect(result.body.data).to.have.property("success");
-                    expect(result.body.data).to.have.property("message");
-                    expect(result.body.data).to.have.property("errors");
+                    expect(response).to.have.property("body");
+                    expect(response.body).to.have.property("data");
+                    expect(response.body.data).to.have.property("success");
+                    expect(response.body.data).to.have.property("message");
+                    expect(response.body.data).to.have.property("errors");
 
-                    expect(result.body.data.success).to.be.a("boolean");
-                    expect(result.body.data.message).to.be.a("string");
-                    expect(result.body.data.errors).to.be.an("array");
+                    expect(response.body.data.success).to.be.a("boolean");
+                    expect(response.body.data.message).to.be.a("string");
+                    expect(response.body.data.errors).to.be.an("array");
 
-                    expect(result.body.data.success).to.eql(expectedSuccess);
+                    expect(response.body.data.success).to.eql(expectedSuccess);
                 });
         });
 
@@ -266,20 +266,20 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    expect(response.status).to.eql(httpStatus.BAD_REQUEST);
 
-                    expect(result).to.have.property("body");
-                    expect(result.body).to.have.property("data");
-                    expect(result.body.data).to.have.property("success");
-                    expect(result.body.data).to.have.property("message");
-                    expect(result.body.data).to.have.property("errors");
+                    expect(response).to.have.property("body");
+                    expect(response.body).to.have.property("data");
+                    expect(response.body.data).to.have.property("success");
+                    expect(response.body.data).to.have.property("message");
+                    expect(response.body.data).to.have.property("errors");
 
-                    expect(result.body.data.success).to.be.a("boolean");
-                    expect(result.body.data.message).to.be.a("string");
-                    expect(result.body.data.errors).to.be.an("array");
+                    expect(response.body.data.success).to.be.a("boolean");
+                    expect(response.body.data.message).to.be.a("string");
+                    expect(response.body.data.errors).to.be.an("array");
 
-                    expect(result.body.data.success).to.eql(expectedSuccess);
+                    expect(response.body.data.success).to.eql(expectedSuccess);
                 });
         });
 
@@ -297,20 +297,20 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    expect(response.status).to.eql(httpStatus.BAD_REQUEST);
 
-                    expect(result).to.have.property("body");
-                    expect(result.body).to.have.property("data");
-                    expect(result.body.data).to.have.property("success");
-                    expect(result.body.data).to.have.property("message");
-                    expect(result.body.data).to.have.property("errors");
+                    expect(response).to.have.property("body");
+                    expect(response.body).to.have.property("data");
+                    expect(response.body.data).to.have.property("success");
+                    expect(response.body.data).to.have.property("message");
+                    expect(response.body.data).to.have.property("errors");
 
-                    expect(result.body.data.success).to.be.a("boolean");
-                    expect(result.body.data.message).to.be.a("string");
-                    expect(result.body.data.errors).to.be.an("array");
+                    expect(response.body.data.success).to.be.a("boolean");
+                    expect(response.body.data.message).to.be.a("string");
+                    expect(response.body.data.errors).to.be.an("array");
 
-                    expect(result.body.data.success).to.eql(expectedSuccess);
+                    expect(response.body.data.success).to.eql(expectedSuccess);
                 });
         });
 
@@ -328,20 +328,20 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    expect(response.status).to.eql(httpStatus.BAD_REQUEST);
 
-                    expect(result).to.have.property("body");
-                    expect(result.body).to.have.property("data");
-                    expect(result.body.data).to.have.property("success");
-                    expect(result.body.data).to.have.property("message");
-                    expect(result.body.data).to.have.property("errors");
+                    expect(response).to.have.property("body");
+                    expect(response.body).to.have.property("data");
+                    expect(response.body.data).to.have.property("success");
+                    expect(response.body.data).to.have.property("message");
+                    expect(response.body.data).to.have.property("errors");
 
-                    expect(result.body.data.success).to.be.a("boolean");
-                    expect(result.body.data.message).to.be.a("string");
-                    expect(result.body.data.errors).to.be.an("array");
+                    expect(response.body.data.success).to.be.a("boolean");
+                    expect(response.body.data.message).to.be.a("string");
+                    expect(response.body.data.errors).to.be.an("array");
 
-                    expect(result.body.data.success).to.eql(expectedSuccess);
+                    expect(response.body.data.success).to.eql(expectedSuccess);
                 });
         });
     });
@@ -366,15 +366,15 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.OK);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("resourceId");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("resourceId");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
 
-                    await expect(result.body.data.success).to.eql(true);
-                    await expect(result.body.data.resourceId).to.eql(classRoleIdToSend);
+                    await expect(response.body.data.success).to.eql(true);
+                    await expect(response.body.data.resourceId).to.eql(classRoleIdToSend);
                 });
         });
 
@@ -391,14 +391,14 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("error");
-                    await expect(result.body.data).to.have.property("message");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.FORBIDDEN);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("error");
+                    await expect(response.body.data).to.have.property("message");
 
-                    await expect(result.body.data.error).to.be.a("string");
-                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(response.body.data.error).to.be.a("string");
+                    await expect(response.body.data.message).to.be.a("string");
                 });
         });
 
@@ -415,16 +415,16 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).to.have.property("errors");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).to.have.property("errors");
 
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
+                    await expect(response.body.data.errors).to.be.an("array");
                 });
         });
 
@@ -441,18 +441,18 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).to.have.property("errors");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).to.have.property("errors");
 
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
+                    await expect(response.body.data.errors).to.be.an("array");
 
-                    await expect(result.body.data.success).to.eql(false);
+                    await expect(response.body.data.success).to.eql(false);
                 });
         });
 
@@ -469,18 +469,18 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).to.have.property("errors");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).to.have.property("errors");
 
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
+                    await expect(response.body.data.errors).to.be.an("array");
 
-                    await expect(result.body.data.success).to.eql(false);
+                    await expect(response.body.data.success).to.eql(false);
                 });
         });
 
@@ -497,18 +497,18 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).to.have.property("errors");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).to.have.property("errors");
 
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
+                    await expect(response.body.data.errors).to.be.an("array");
 
-                    await expect(result.body.data.success).to.eql(false);
+                    await expect(response.body.data.success).to.eql(false);
                 });
         });
     });
@@ -526,16 +526,16 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.OK);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
 
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
 
-                    await expect(result.body.data.success).to.eql(true);
+                    await expect(response.body.data.success).to.eql(true);
                 });
         });
 
@@ -547,18 +547,18 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).to.have.property("errors");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).to.have.property("errors");
 
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
+                    await expect(response.body.data.errors).to.be.an("array");
 
-                    await expect(result.body.data.success).to.eql(false);
+                    await expect(response.body.data.success).to.eql(false);
                 });
         });
 
@@ -570,19 +570,19 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
 
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).to.have.property("errors");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).to.have.property("errors");
 
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
+                    await expect(response.body.data.errors).to.be.an("array");
 
-                    await expect(result.body.data.success).to.eql(false);
+                    await expect(response.body.data.success).to.eql(false);
                 });
         });
 
@@ -594,15 +594,15 @@ describe(`${CLASS_ROLES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.FORBIDDEN);
 
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("error");
-                    await expect(result.body.data).to.have.property("message");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("error");
+                    await expect(response.body.data).to.have.property("message");
 
-                    await expect(result.body.data.error).to.be.an("string");
-                    await expect(result.body.data.message).to.be.a("string");
+                    await expect(response.body.data.error).to.be.an("string");
+                    await expect(response.body.data.message).to.be.a("string");
                 });
         });
     });

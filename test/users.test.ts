@@ -42,12 +42,12 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(LOGIN_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.OK);
-                    await expect(result.body).to.have.property(expectedPropertyData);
-                    await expect(result.body.data).to.have.property(expectedPropertyMessage);
-                    await expect(result).to.have.header(expectedAuthHeader);
-                    await expect(result).header(expectedAuthHeader).not.to.be.null;
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
+                    await expect(response.body).to.have.property(expectedPropertyData);
+                    await expect(response.body.data).to.have.property(expectedPropertyMessage);
+                    await expect(response).to.have.header(expectedAuthHeader);
+                    await expect(response).header(expectedAuthHeader).not.to.be.null;
                 });
         });
 
@@ -67,11 +67,11 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(LOGIN_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body).to.have.property(expectedPropertyData);
-                    await expect(result.body.data).to.have.property(expectedPropertyMessage);
-                    await expect(result).not.to.have.header(expectedAuthHeader);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body).to.have.property(expectedPropertyData);
+                    await expect(response.body.data).to.have.property(expectedPropertyMessage);
+                    await expect(response).not.to.have.header(expectedAuthHeader);
                 });
         });
 
@@ -91,11 +91,11 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(LOGIN_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body).to.have.property(expectedPropertyData);
-                    await expect(result.body.data).to.have.property(expectedPropertyMessage);
-                    await expect(result).not.to.have.header(expectedAuthHeader);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body).to.have.property(expectedPropertyData);
+                    await expect(response.body.data).to.have.property(expectedPropertyMessage);
+                    await expect(response).not.to.have.header(expectedAuthHeader);
                 });
         });
     });
@@ -122,10 +122,10 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(REGISTER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.CREATED);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.CREATED);
 
-                    return  result.body.data.userId;
+                    return  response.body.data.userId;
                 })
                 .then(async (userId: any) => {
                     await usersRepository.removeById(userId);
@@ -161,18 +161,18 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(REGISTER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
 
-                    await expect(result.body).to.have.property(expectedPropertyData);
-                    await expect(result.body.data).to.have.property(expectedPropertySuccess);
-                    await expect(result.body.data).to.have.property(expectedPropertyMessage);
-                    await expect(result.body.data).to.have.property(expectedPropertyErrors);
+                    await expect(response.body).to.have.property(expectedPropertyData);
+                    await expect(response.body.data).to.have.property(expectedPropertySuccess);
+                    await expect(response.body.data).to.have.property(expectedPropertyMessage);
+                    await expect(response.body.data).to.have.property(expectedPropertyErrors);
 
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
-                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.message).to.be.a("string");
+                    await expect(response.body.data.errors).to.be.an("array");
+                    await expect(response.body.data.errors.length).to.eql(expectedErrorsCount);
                 });
         });
 
@@ -203,16 +203,16 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(REGISTER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
 
-                    await expect(result.body).to.have.property(expectedPropertyData);
-                    await expect(result.body.data).to.have.property(expectedPropertySuccess);
-                    await expect(result.body.data).to.have.property(expectedPropertyMessage);
-                    await expect(result.body.data).to.have.property(expectedPropertyErrors);
+                    await expect(response.body).to.have.property(expectedPropertyData);
+                    await expect(response.body.data).to.have.property(expectedPropertySuccess);
+                    await expect(response.body.data).to.have.property(expectedPropertyMessage);
+                    await expect(response.body.data).to.have.property(expectedPropertyErrors);
 
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.errors.length).to.eql(expectedErrorsCount);
                 });
         });
 
@@ -240,10 +240,10 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(REGISTER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.errors.length).to.eql(expectedErrorsCount);
                 });
         });
 
@@ -271,10 +271,10 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(REGISTER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.errors.length).to.eql(expectedErrorsCount);
                 });
         });
 
@@ -302,10 +302,10 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(REGISTER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.errors.length).to.eql(expectedErrorsCount);
                 });
         });
 
@@ -333,10 +333,10 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(REGISTER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.errors.length).to.eql(expectedErrorsCount);
                 });
         });
 
@@ -364,10 +364,10 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(REGISTER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.errors.length).to.eql(expectedErrorsCount);
                 });
         });
 
@@ -395,10 +395,10 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .post(REGISTER_URL)
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.errors.length).to.eql(expectedErrorsCount);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.errors.length).to.eql(expectedErrorsCount);
                 });
         });
     });
@@ -421,32 +421,32 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.OK);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
 
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("username");
-                    await expect(result.body.data).to.have.property("email");
-                    await expect(result.body.data).to.have.property("firstName");
-                    await expect(result.body.data).to.have.property("middleName");
-                    await expect(result.body.data).to.have.property("lastName");
-                    await expect(result.body.data).to.have.property("roleId");
-                    await expect(result.body.data).to.have.property("description");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("username");
+                    await expect(response.body.data).to.have.property("email");
+                    await expect(response.body.data).to.have.property("firstName");
+                    await expect(response.body.data).to.have.property("middleName");
+                    await expect(response.body.data).to.have.property("lastName");
+                    await expect(response.body.data).to.have.property("roleId");
+                    await expect(response.body.data).to.have.property("description");
 
-                    await expect(result.body.data.username).to.be.a("string");
-                    await expect(result.body.data.email).to.be.a("string");
-                    await expect(result.body.data.firstName).to.be.a("string");
-                    await expect(result.body.data.middleName).to.be.a("null");
-                    await expect(result.body.data.lastName).to.be.a("string");
-                    await expect(result.body.data.roleId).to.be.a("number");
-                    await expect(result.body.data.description).to.be.a("null");
+                    await expect(response.body.data.username).to.be.a("string");
+                    await expect(response.body.data.email).to.be.a("string");
+                    await expect(response.body.data.firstName).to.be.a("string");
+                    await expect(response.body.data.middleName).to.be.a("null");
+                    await expect(response.body.data.lastName).to.be.a("string");
+                    await expect(response.body.data.roleId).to.be.a("number");
+                    await expect(response.body.data.description).to.be.a("null");
 
-                    await expect(result.body.data.username).to.eql(expectedUsername);
-                    await expect(result.body.data.email).to.eql(expectedEmail);
-                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
-                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
-                    await expect(result.body.data.lastName).to.eql(expectedLastName);
-                    await expect(result.body.data.roleId).to.eql(expectedRoleId);
+                    await expect(response.body.data.username).to.eql(expectedUsername);
+                    await expect(response.body.data.email).to.eql(expectedEmail);
+                    await expect(response.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(response.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(response.body.data.lastName).to.eql(expectedLastName);
+                    await expect(response.body.data.roleId).to.eql(expectedRoleId);
                 });
         });
 
@@ -463,32 +463,32 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.OK);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
 
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("username");
-                    await expect(result.body.data).to.have.property("email");
-                    await expect(result.body.data).to.have.property("firstName");
-                    await expect(result.body.data).to.have.property("middleName");
-                    await expect(result.body.data).to.have.property("lastName");
-                    await expect(result.body.data).to.have.property("roleId");
-                    await expect(result.body.data).to.have.property("description");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("username");
+                    await expect(response.body.data).to.have.property("email");
+                    await expect(response.body.data).to.have.property("firstName");
+                    await expect(response.body.data).to.have.property("middleName");
+                    await expect(response.body.data).to.have.property("lastName");
+                    await expect(response.body.data).to.have.property("roleId");
+                    await expect(response.body.data).to.have.property("description");
 
-                    await expect(result.body.data.username).to.be.a("string");
-                    await expect(result.body.data.email).to.be.a("string");
-                    await expect(result.body.data.firstName).to.be.a("string");
-                    await expect(result.body.data.middleName).to.be.a("null");
-                    await expect(result.body.data.lastName).to.be.a("string");
-                    await expect(result.body.data.roleId).to.be.a("number");
-                    await expect(result.body.data.description).to.be.a("null");
+                    await expect(response.body.data.username).to.be.a("string");
+                    await expect(response.body.data.email).to.be.a("string");
+                    await expect(response.body.data.firstName).to.be.a("string");
+                    await expect(response.body.data.middleName).to.be.a("null");
+                    await expect(response.body.data.lastName).to.be.a("string");
+                    await expect(response.body.data.roleId).to.be.a("number");
+                    await expect(response.body.data.description).to.be.a("null");
 
-                    await expect(result.body.data.username).to.eql(expectedUsername);
-                    await expect(result.body.data.email).to.eql(expectedEmail);
-                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
-                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
-                    await expect(result.body.data.lastName).to.eql(expectedLastName);
-                    await expect(result.body.data.roleId).to.eql(expectedRoleId);
+                    await expect(response.body.data.username).to.eql(expectedUsername);
+                    await expect(response.body.data.email).to.eql(expectedEmail);
+                    await expect(response.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(response.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(response.body.data.lastName).to.eql(expectedLastName);
+                    await expect(response.body.data.roleId).to.eql(expectedRoleId);
                 });
         });
 
@@ -505,32 +505,32 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.OK);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
 
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("username");
-                    await expect(result.body.data).to.have.property("email");
-                    await expect(result.body.data).to.have.property("firstName");
-                    await expect(result.body.data).to.have.property("middleName");
-                    await expect(result.body.data).to.have.property("lastName");
-                    await expect(result.body.data).to.have.property("roleId");
-                    await expect(result.body.data).to.have.property("description");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("username");
+                    await expect(response.body.data).to.have.property("email");
+                    await expect(response.body.data).to.have.property("firstName");
+                    await expect(response.body.data).to.have.property("middleName");
+                    await expect(response.body.data).to.have.property("lastName");
+                    await expect(response.body.data).to.have.property("roleId");
+                    await expect(response.body.data).to.have.property("description");
 
-                    await expect(result.body.data.username).to.be.a("string");
-                    await expect(result.body.data.email).to.be.a("string");
-                    await expect(result.body.data.firstName).to.be.a("string");
-                    await expect(result.body.data.middleName).to.be.a("null");
-                    await expect(result.body.data.lastName).to.be.a("string");
-                    await expect(result.body.data.roleId).to.be.a("number");
-                    await expect(result.body.data.description).to.be.a("null");
+                    await expect(response.body.data.username).to.be.a("string");
+                    await expect(response.body.data.email).to.be.a("string");
+                    await expect(response.body.data.firstName).to.be.a("string");
+                    await expect(response.body.data.middleName).to.be.a("null");
+                    await expect(response.body.data.lastName).to.be.a("string");
+                    await expect(response.body.data.roleId).to.be.a("number");
+                    await expect(response.body.data.description).to.be.a("null");
 
-                    await expect(result.body.data.username).to.eql(expectedUsername);
-                    await expect(result.body.data.email).to.eql(expectedEmail);
-                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
-                    await expect(result.body.data.firstName).to.eql(expectedFirstName);
-                    await expect(result.body.data.lastName).to.eql(expectedLastName);
-                    await expect(result.body.data.roleId).to.eql(expectedRoleId);
+                    await expect(response.body.data.username).to.eql(expectedUsername);
+                    await expect(response.body.data.email).to.eql(expectedEmail);
+                    await expect(response.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(response.body.data.firstName).to.eql(expectedFirstName);
+                    await expect(response.body.data.lastName).to.eql(expectedLastName);
+                    await expect(response.body.data.roleId).to.eql(expectedRoleId);
                 });
         });
 
@@ -542,13 +542,13 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
 
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("error");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("error");
 
-                    await expect(result.body.data.error).to.be.a("string");
+                    await expect(response.body.data.error).to.be.a("string");
                 });
         });
 
@@ -560,13 +560,13 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
 
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("error");
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("error");
 
-                    await expect(result.body.data.error).to.be.a("string");
+                    await expect(response.body.data.error).to.be.a("string");
                 });
         });
     });
