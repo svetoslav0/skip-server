@@ -28,8 +28,8 @@ const noTokenTest = (httpMethod: HttpMethod, url: string) => {
         httpMethodFactory(httpMethod, url)
             .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
             .send()
-            .then(async (result: any) => {
-                await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
+            .then(async (response: any) => {
+                await expect(response.status).to.eql(httpStatus.UNAUTHORIZED);
             });
     });
 };
@@ -41,8 +41,8 @@ const wrongTokenTest = (httpMethod: HttpMethod, url: string) => {
         httpMethodFactory(httpMethod, url)
             .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
             .set(TOKEN_HEADING, wrongTokenToSend)
-            .then(async (result: any) => {
-                await expect(result.status).to.eql(httpStatus.UNAUTHORIZED);
+            .then(async (response: any) => {
+                await expect(response.status).to.eql(httpStatus.UNAUTHORIZED);
             });
     });
 };

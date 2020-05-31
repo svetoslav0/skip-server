@@ -1,4 +1,4 @@
-import {ClassEditDTO} from "../../data/classes/ClassEditDTO";
+import { ClassEditDTO } from "../../data/classes/ClassEditDTO";
 
 export class ClassesResponseFormatter {
 
@@ -9,21 +9,27 @@ export class ClassesResponseFormatter {
     public formatAllClasses(classesCount: number, classes: ClassEditDTO[]) {
         return {
             count: classesCount,
-            classes: this.formatClasses(classes)
+            classes: classes.map((currentClass: ClassEditDTO) => this.formatClass(currentClass))
         };
     }
 
     /**
-     * @param {ClassEditDTO[]} classes
+     * @param {ClassEditDTO} currentClass
      */
-    private formatClasses(classes: ClassEditDTO[]) {
-        return classes.map((currentClass: ClassEditDTO) => {
-            return {
-                id: currentClass.id,
-                name: currentClass.name,
-                ageGroup: currentClass.ageGroup,
-                description: currentClass.description
-            };
-        });
+    public formatGetClassById(currentClass: ClassEditDTO) {
+        return this.formatClass(currentClass);
+    }
+
+    /**
+     * @param {ClassEditDTO} currentClass
+     */
+    private formatClass(currentClass: ClassEditDTO) {
+        return {
+            id: currentClass.id,
+            name: currentClass.name,
+            ageGroup: currentClass.ageGroup || null,
+            description: currentClass.description || null,
+            isArchived: currentClass.isArchived === 1
+        };
     }
 }

@@ -34,9 +34,10 @@ export class APISpecification {
                 },
                 "/classes": {
                     post: this.buildClassesCreatePath(),
-                    get: this.buildGetClassesPath(),
+                    get: this.buildGetClassesPath()
                 },
                 "/classes/:id": {
+                    get: this.buildGetClassByIdPath(),
                     put: this.buildClassesEditPath(),
                     delete: this.buildClassesDeletePath()
                 },
@@ -91,10 +92,20 @@ export class APISpecification {
                             type: "number"
                         },
                         required: true
+                    },
+                    classIdParam: {
+                        in: "path",
+                        name: "id",
+                        description: "The Class ID",
+                        schema: {
+                            type: "number"
+                        },
+                        required: true
                     }
                 },
                 schemas: {
                     ReportEntitiesSchema: this.buildReportEntitiesSchema(),
+                    ClassEntitiesSchema: this.buildClassEntitiesSchema(),
 
                     RegisterUserSchema: this.buildRegisterUserSchema(),
                     LoginUserSchema: this.buildLoginUserSchema(),
@@ -125,6 +136,7 @@ export class APISpecification {
                     GetReportByIdResponseSchema: this.buildGetReportByIdResponseSchema(),
                     GetReportsForUserResponseSchema: this.buildGetReportsForUserResponseSchema(),
                     GetAllClassesResponseSchema: this.buildGetAllClassesResponseSchema(),
+                    GetClassByIdResponseSchema: this.buildGetClassByIdResponseSchema(),
 
                     BadRequestResponseSchema: this.buildBadRequestResponseSchema(),
                     UnauthorizedResponseSchema: this.buildUnauthorizedResponseSchema(),
@@ -559,6 +571,38 @@ export class APISpecification {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
                                 $ref: "#/components/schemas/DeleteClassResponseSchema"
+                            }
+                        }
+                    }
+                },
+                ...this.buildCommonResponses()
+            }
+        };
+    }
+
+    private buildGetClassByIdPath() {
+        return {
+            summary: "Get Class by its ID",
+            description: "This method returns a Class by requested ID parameter. " +
+                "Archived Classes will also be returned",
+            tags: [
+                "Classes"
+            ],
+            parameters: [
+                {
+                    $ref: "#/components/parameters/authHeaderParam"
+                },
+                {
+                    $ref: "#/components/parameters/classIdParam"
+                }
+            ],
+            responses: {
+                200: {
+                    description: "OK. Response with requested Class ID is returned.",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/GetClassByIdResponseSchema"
                             }
                         }
                     }
@@ -1435,6 +1479,17 @@ export class APISpecification {
         };
     }
 
+    private buildGetClassByIdResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    $ref: "#/components/schemas/ClassEntitiesSchema"
+                }
+            }
+        };
+    }
+
     private buildGetReportsForUserResponseSchema() {
         return {
             type: "object",
@@ -1499,28 +1554,7 @@ export class APISpecification {
                             type: "array",
                             description: "List of all non-archived Classes",
                             items: {
-                                properties: {
-                                    id: {
-                                        type: "number",
-                                        description: "The ID of the Class",
-                                        example: 13
-                                    },
-                                    name: {
-                                        type: "string",
-                                        description: "The name of the Class",
-                                        example: "First Steps with Scratch"
-                                    },
-                                    ageGroup: {
-                                        type: "string",
-                                        description: "The age group of the Class",
-                                        example: "7 - 12 Grade"
-                                    },
-                                    description: {
-                                        type: "string",
-                                        description: "Some words describing the Class",
-                                        example: "Some words"
-                                    }
-                                }
+                                $ref: "#/components/schemas/ClassEntitiesSchema"
                             }
                         }
                     }
@@ -1562,6 +1596,38 @@ export class APISpecification {
                     type: "string",
                     description: "Some words describing the Report Entity entry",
                     example: "The introduction lesson"
+                }
+            }
+        };
+    }
+
+    private buildClassEntitiesSchema() {
+        return {
+            properties: {
+                id: {
+                    type: "number",
+                    description: "The ID of the Class",
+                    example: 13
+                },
+                name: {
+                    type: "string",
+                    description: "The name of the Class",
+                    example: "First Steps with Scratch"
+                },
+                ageGroup: {
+                    type: "string",
+                    description: "The age group of the Class",
+                    example: "7 - 12 Grade"
+                },
+                description: {
+                    type: "string",
+                    description: "Some words describing the Class",
+                    example: "Some words"
+                },
+                isArchived: {
+                    type: "boolean",
+                    description: "Show if the Class is archived or not",
+                    example: false
                 }
             }
         };

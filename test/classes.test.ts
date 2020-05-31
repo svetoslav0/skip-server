@@ -15,6 +15,9 @@ const DEFAULT_CONTENT_TYPE = process.env.DEFAULT_CONTENT_TYPE || "";
 const TOKEN_HEADING = process.env.TOKEN_HEADING || "";
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 const EMPLOYEE_TOKEN = process.env.EMPLOYEE_TOKEN || "";
+const CLASS_ID_ONE = +process.env.CLASS_ID_ONE! || 0;
+const CLASS_ID_TWO = +process.env.CLASS_ID_TWO! || 0;
+const CLASS_ID_ARCHIVED = +process.env.CLASS_ID_ARCHIVED! || 0;
 
 const CLASSES_CONTROLLER_URL: string = "/classes";
 const URL_WITH_PARAM = (id: number | string) => {
@@ -44,15 +47,15 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.CREATED);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.CREATED);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.resourceId;
+                    return response.body.data.resourceId;
                 })
                 .then(async (id: number) => {
-                    const result = await classesRepository.deleteById(id);
-                    await expect(result).to.eql(expectedIsReportDeleted);
+                    const response = await classesRepository.deleteById(id);
+                    await expect(response).to.eql(expectedIsReportDeleted);
                 });
         });
 
@@ -70,8 +73,8 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.FORBIDDEN);
                 });
         });
 
@@ -90,15 +93,15 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.CREATED);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.CREATED);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
 
-                    return result.body.data.resourceId;
+                    return response.body.data.resourceId;
                 })
                 .then(async (classId: number) => {
-                    const result = await classesRepository.deleteById(classId);
-                    await expect(result).to.eql(expectedSuccess);
+                    const response = await classesRepository.deleteById(classId);
+                    await expect(response).to.eql(expectedSuccess);
                 });
         });
 
@@ -117,10 +120,10 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
-                    await expect(result.body.data.errors.length).to.eql(expectedErrors);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
+                    await expect(response.body.data.errors.length).to.eql(expectedErrors);
                 });
         });
     });
@@ -143,8 +146,8 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.FORBIDDEN);
                 });
         });
 
@@ -163,9 +166,9 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.OK);
-                    await expect(result.body.data.success).to.eql(expectedSuccess);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
+                    await expect(response.body.data.success).to.eql(expectedSuccess);
                 });
         });
 
@@ -182,18 +185,18 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).to.have.property("errors");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).to.have.property("errors");
 
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
+                    await expect(response.body.data.errors).to.be.an("array");
 
-                    await expect(result.body.data.success).to.eql(false);
+                    await expect(response.body.data.success).to.eql(false);
                 });
         });
 
@@ -215,10 +218,10 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send(objectToSend)
-                .then(async (result: any) => {
-                    expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    expect(result.body.data.success).to.eql(expectedSuccess);
-                    expect(result.body.data).to.have.property(errorsPropHeading);
+                .then(async (response: any) => {
+                    expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    expect(response.body.data.success).to.eql(expectedSuccess);
+                    expect(response.body.data).to.have.property(errorsPropHeading);
                 });
         });
     });
@@ -236,8 +239,8 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    expect(result.status).to.eql(httpStatus.FORBIDDEN);
+                .then(async (response: any) => {
+                    expect(response.status).to.eql(httpStatus.FORBIDDEN);
                 });
         });
 
@@ -249,8 +252,8 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    expect(result.status).to.eql(httpStatus.BAD_REQUEST);
+                .then(async (response: any) => {
+                    expect(response.status).to.eql(httpStatus.BAD_REQUEST);
                 });
         });
 
@@ -261,18 +264,18 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .put(URL_WITH_PARAM(classIdToSend))
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.BAD_REQUEST);
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data).to.have.property("success");
-                    await expect(result.body.data).to.have.property("message");
-                    await expect(result.body.data).to.have.property("errors");
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data).to.have.property("success");
+                    await expect(response.body.data).to.have.property("message");
+                    await expect(response.body.data).to.have.property("errors");
 
-                    await expect(result.body.data.success).to.be.a("boolean");
-                    await expect(result.body.data.message).to.be.a("string");
-                    await expect(result.body.data.errors).to.be.an("array");
+                    await expect(response.body.data.success).to.be.a("boolean");
+                    await expect(response.body.data.message).to.be.a("string");
+                    await expect(response.body.data.errors).to.be.an("array");
 
-                    await expect(result.body.data.success).to.eql(false);
+                    await expect(response.body.data.success).to.eql(false);
                 });
         });
 
@@ -286,9 +289,9 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, ADMIN_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    expect(result.status).to.eql(httpStatus.OK);
-                    expect(result.body.data.success).to.eql(expectedSuccess);
+                .then(async (response: any) => {
+                    expect(response.status).to.eql(httpStatus.OK);
+                    expect(response.body.data.success).to.eql(expectedSuccess);
                 });
         });
     });
@@ -311,21 +314,21 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .set(TOKEN_HEADING, EMPLOYEE_TOKEN)
                 .send()
-                .then(async (result: any) => {
-                    await expect(result.status).to.eql(httpStatus.OK);
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
 
-                    await expect(result.body).to.have.property("data");
-                    await expect(result.body.data)
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data)
                         .to.have.property("count")
                         .that.is.a("number")
                         .that.eql(expectedCount);
 
-                    await expect(result.body.data)
+                    await expect(response.body.data)
                         .to.have.property("classes")
                         .that.is.an("array")
                         .that.has.lengthOf(expectedCount);
 
-                    const secondClass = result.body.data.classes[1];
+                    const secondClass = response.body.data.classes[1];
 
                     await expect(secondClass)
                         .to.have.property("id")
@@ -346,6 +349,168 @@ describe(`${CLASSES_CONTROLLER_URL} tests`, () => {
                         .to.have.property("description")
                         .that.is.a("null")
                         .that.eql(expectedDescription);
+                });
+        });
+    });
+
+    describe(`GET ${CLASSES_CONTROLLER_URL}/id tests`, () => {
+
+        noTokenTest(HttpMethod.Get, URL_WITH_PARAM(1));
+        wrongTokenTest(HttpMethod.Get, URL_WITH_PARAM(1));
+
+        it("Should return requested Class. Success test No. 1", () => {
+            const classId: number = CLASS_ID_ONE;
+            const expectedName: string = "Micro:bit";
+            const expectedIsArchived: boolean = false;
+
+            return Request(server)
+                .get(URL_WITH_PARAM(classId))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
+
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data)
+                        .to.have.property("id")
+                        .that.is.a("number")
+                        .that.is.eql(classId);
+
+                    await expect(response.body.data)
+                        .to.have.property("name")
+                        .that.is.a("string")
+                        .that.is.eql(expectedName);
+
+                    await expect(response.body.data)
+                        .to.have.property("ageGroup")
+                        .that.is.a("null");
+
+                    await expect(response.body.data)
+                        .to.have.property("description")
+                        .that.is.a("null");
+
+                    await expect(response.body.data)
+                        .to.have.property("isArchived")
+                        .that.is.a("boolean")
+                        .that.is.eql(expectedIsArchived);
+                });
+        });
+
+        it("Should return requested Class. Success test No. 2", () => {
+            const classId: number = CLASS_ID_TWO;
+            const expectedName: string = "Scratch games";
+            const expectedAgeGroup: string = "2 - 3 grade";
+            const expectedIsArchived: boolean = false;
+
+            return Request(server)
+                .get(URL_WITH_PARAM(classId))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
+
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data)
+                        .to.have.property("id")
+                        .that.is.a("number")
+                        .that.is.eql(classId);
+
+                    await expect(response.body.data)
+                        .to.have.property("name")
+                        .that.is.a("string")
+                        .that.is.eql(expectedName);
+
+                    await expect(response.body.data)
+                        .to.have.property("ageGroup")
+                        .that.is.a("string")
+                        .that.is.eql(expectedAgeGroup);
+
+                    await expect(response.body.data)
+                        .to.have.property("description")
+                        .that.is.a("null");
+
+                    await expect(response.body.data)
+                        .to.have.property("isArchived")
+                        .that.is.a("boolean")
+                        .that.is.eql(expectedIsArchived);
+                });
+        });
+
+        it("Should return requested Class. Success test No. 3", () => {
+            const classId: number = CLASS_ID_ARCHIVED;
+            const expectedName: string = "HTML and CSS";
+            const expectedAgeGroup: string = "4-6";
+            const expectedIsArchived: boolean = true;
+
+            return Request(server)
+                .get(URL_WITH_PARAM(classId))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.OK);
+
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data)
+                        .to.have.property("id")
+                        .that.is.a("number")
+                        .that.is.eql(classId);
+
+                    await expect(response.body.data)
+                        .to.have.property("name")
+                        .that.is.a("string")
+                        .that.is.eql(expectedName);
+
+                    await expect(response.body.data)
+                        .to.have.property("ageGroup")
+                        .that.is.a("string")
+                        .that.is.eql(expectedAgeGroup);
+
+                    await expect(response.body.data)
+                        .to.have.property("description")
+                        .that.is.a("null");
+
+                    await expect(response.body.data)
+                        .to.have.property("isArchived")
+                        .that.is.a("boolean")
+                        .that.is.eql(expectedIsArchived);
+                });
+        });
+
+        it("Should fail. Provided ID is not numeric", () => {
+            const idToSend: string = "14as";
+
+            return Request(server)
+                .get(URL_WITH_PARAM(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .send()
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data)
+                        .to.have.property("error")
+                        .that.is.a("string");
+                });
+        });
+
+        it("Should not pass. Provided ID does not exist", () => {
+            const idToSend: number = 0;
+
+            return Request(server)
+                .get(URL_WITH_PARAM(idToSend))
+                .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
+                .set(TOKEN_HEADING, ADMIN_TOKEN)
+                .then(async (response: any) => {
+                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+
+                    await expect(response.body).to.have.property("data");
+                    await expect(response.body.data)
+                        .to.have.property("error")
+                        .that.is.a("string");
                 });
         });
     });
