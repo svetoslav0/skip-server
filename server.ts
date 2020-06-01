@@ -64,6 +64,12 @@ if (process.env.ENVIRONMENT !== "test") {
     server.use(morgan("dev"));
 }
 
+server.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 server.use("/users", usersRouter.registerRoutes());
 server.use("/reports", reportsRouter.registerRoutes());
 server.use("/classes", classesRouter.registerRoutes());

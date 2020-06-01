@@ -68,7 +68,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
                 .then(async (response: any) => {
-                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.status).to.eql(httpStatus.UNAUTHORIZED);
                     await expect(response.body).to.have.property(expectedPropertyData);
                     await expect(response.body.data).to.have.property(expectedPropertyMessage);
                     await expect(response).not.to.have.header(expectedAuthHeader);
@@ -92,7 +92,7 @@ describe(`${USERS_CONTROLLER_URL} tests`, () => {
                 .set(CONTENT_TYPE_HEADING, DEFAULT_CONTENT_TYPE)
                 .send(objectToSend)
                 .then(async (response: any) => {
-                    await expect(response.status).to.eql(httpStatus.BAD_REQUEST);
+                    await expect(response.status).to.eql(httpStatus.UNAUTHORIZED);
                     await expect(response.body).to.have.property(expectedPropertyData);
                     await expect(response.body.data).to.have.property(expectedPropertyMessage);
                     await expect(response).not.to.have.header(expectedAuthHeader);
