@@ -76,7 +76,7 @@ export class UsersController extends BaseController {
 
         if (!isPasswordValid || !user) {
             return responseBuilder
-                .setHttpStatus(httpStatus.BAD_REQUEST)
+                .setHttpStatus(httpStatus.UNAUTHORIZED)
                 .setSuccess(false)
                 .setMessage(MESSAGES.ERRORS.USERS.LOGIN_FAILED_MESSAGE);
         }

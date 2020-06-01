@@ -118,7 +118,8 @@ export class APISpecification {
                     CreateReportEntityRequestSchema: this.buildCreateReportEntityRequestSchema(),
                     EditReportEntityRequestSchema: this.buildEditReportEntityRequestSchema(),
 
-                    LoginResponseSchema: this.buildLoginResponseSchema(),
+                    LoginSucceededResponseSchema: this.buildLoginSucceededResponseSchema(),
+                    LoginFailedResponseSchema: this.buildLoginFailedResponseSchema(),
                     CreatedUserResponseSchema: this.buildCreatedUserResponseSchema(),
                     CreateReportResponseSchema: this.buildCreateReportResponseSchema(),
                     EditReportResponseSchema: this.buildEditReportResponseSchema(),
@@ -282,12 +283,21 @@ export class APISpecification {
                     content: {
                         [this.JSON_CONTENT_TYPE]: {
                             schema: {
-                                $ref: "#/components/schemas/LoginResponseSchema"
+                                $ref: "#/components/schemas/LoginSucceededResponseSchema"
                             }
                         }
                     }
                 },
-                ...this.buildCommonResponses(false)
+                401: {
+                    description: "Login has failed. Provided credentials are wrong",
+                    content: {
+                        [this.JSON_CONTENT_TYPE]: {
+                            schema: {
+                                $ref: "#/components/schemas/LoginFailedResponseSchema"
+                            }
+                        }
+                    }
+                }
             }
         };
     }
@@ -1147,7 +1157,7 @@ export class APISpecification {
         };
     }
 
-    private buildLoginResponseSchema() {
+    private buildLoginSucceededResponseSchema() {
         return {
             type: "object",
             properties: {
@@ -1156,6 +1166,27 @@ export class APISpecification {
                     properties: {
                         message: {
                             type: "string"
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    private buildLoginFailedResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                data: {
+                    type: "object",
+                    properties: {
+                        success: {
+                            type: "boolean",
+                            example: false
+                        },
+                        message: {
+                            type: "string",
+                            example: "Wrong credentials"
                         }
                     }
                 }
